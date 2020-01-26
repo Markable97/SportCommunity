@@ -5,7 +5,7 @@ import com.glushko.sportcommunity.domain.type.None
 import com.glushko.sportcommunity.domain.type.exception.Failure
 
 interface AccountCache {
-    fun getToken(): Either<Failure, String>
+    fun getToken(): Either.Right<String?>
     fun saveToken(token: String): Either<Failure, None>
 }
 /***
