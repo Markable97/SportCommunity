@@ -24,6 +24,9 @@ class RegisterFragment : BaseFragment() {
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         val data: LiveData<String> = model.getData()
         data.observe(this, Observer<String>{it: String ->
+            if(it == "success"){
+                activity?.finish()
+            }
             super.showMessage("$it")
             super.hideProgress()
             downloding = false
@@ -51,7 +54,7 @@ class RegisterFragment : BaseFragment() {
         }
 
         btnAlreadyHaveAccount.setOnClickListener {
-            super.showMessage("Данный функционал не поддерживается")
+            activity?.finish()
         }
     }
 

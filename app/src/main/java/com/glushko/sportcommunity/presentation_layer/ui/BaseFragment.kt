@@ -14,9 +14,11 @@ abstract class BaseFragment : Fragment(){
     open val titleToolbar = R.string.app_name
     open val showToolbar = true
 
+    var navigator: Navigator = Navigator()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(layoutId, container, false)
+
     }
 
     override fun onResume() {

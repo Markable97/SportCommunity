@@ -3,7 +3,6 @@ package com.glushko.sportcommunity.presentation_layer.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Insets.add
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -20,10 +19,12 @@ abstract class BaseActivity : AppCompatActivity() {
 
     open val contentId = R.layout.activity_main
 
+    lateinit var navigator: Navigator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(contentId)
-
+        navigator = Navigator()
         setSupportActionBar(toolbar)
         addFragment(savedInstanceState)
     }

@@ -7,14 +7,17 @@ import com.glushko.sportcommunity.data_layer.datasource.BaseResponse
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import retrofit2.await
 
-data class Register(
-    val email: String,
-    val name: String,
-    val password: String
+class Register(
+    val useCase: UseCase = UseCase()
 ){
-     fun sendData(data: MutableLiveData<String>, useCase: UseCase = UseCase()){
+
+    data class Params( val email: String,
+                       val name: String,
+                       val password: String)
+
+     fun sendData(params: Params, data: MutableLiveData<String> ){
          val response = useCase.request {
-             var request =  NetworkService.makeNetworkService().register(createRegisterMap(email, name, password, "1234", 0))
+             var request =  NetworkService.makeNetworkService().register(createRegisterMap(params.email, params.email, params.password, "1234", 0))
              try{
                  var answer = request.await()
                  println("Ответ от сервера ${answer.message} ${answer.success}")

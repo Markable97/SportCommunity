@@ -15,15 +15,15 @@ import java.lang.Exception
 class AccountViewModel : ViewModel() {
 
     var liveData: MutableLiveData<String> = MutableLiveData()
-
+    private val register = Register()
     fun getData(): MutableLiveData<String>{
         return liveData
     }
 
     fun registerUser(email: String, name: String, password: String) {
-        val register = Register(email, name, password)
+        val registerParam = Register.Params(email, name, password)
         println("Значение для регистраици $register")
-        val response = register.sendData(liveData)
+        val response = register.sendData(registerParam, liveData)
 
         /*GlobalScope.launch(Dispatchers.IO) {
             var request =  NetworkService.makeNetworkService().register(createRegisterMap(email, name, password, "1234", 0))
@@ -42,5 +42,8 @@ class AccountViewModel : ViewModel() {
         //liveData.postValue("Привет из Корутины через 3 секунлу")
     }
 
-
+    override fun onCleared() {
+        super.onCleared()
+        register.useCase.cancel()
+    }
 }

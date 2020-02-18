@@ -12,13 +12,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".presentation_layer.ui.register.RegisterActivity">
+        <!--ACTIVITIES-->
+        <!--Route-->
+        <activity android:name=".presentation_layer.ui.RouteActivity"
+            android:noHistory="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!--Login-->
+        <activity android:name=".presentation_layer.ui.login.LoginActivity"/>
+
+        <!--Register-->
+        <activity android:name=".presentation_layer.ui.register.RegisterActivity"/>
+
     </application>
 
 </manifest>
