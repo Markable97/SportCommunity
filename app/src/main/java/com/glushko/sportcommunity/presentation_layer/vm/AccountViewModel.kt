@@ -10,10 +10,9 @@ import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 
 import kotlinx.coroutines.*
 import retrofit2.await
-import retrofit2.awaitResponse
 import java.lang.Exception
 
-class RegisterViewModel : ViewModel() {
+class AccountViewModel : ViewModel() {
 
     var liveData: MutableLiveData<String> = MutableLiveData()
 
@@ -24,7 +23,9 @@ class RegisterViewModel : ViewModel() {
     fun registerUser(email: String, name: String, password: String) {
         val register = Register(email, name, password)
         println("Значение для регистраици $register")
-        GlobalScope.launch(Dispatchers.IO) {
+        val response = register.sendData(liveData)
+
+        /*GlobalScope.launch(Dispatchers.IO) {
             var request =  NetworkService.makeNetworkService().register(createRegisterMap(email, name, password, "1234", 0))
             try{
                 var answer = request.await()
@@ -36,24 +37,10 @@ class RegisterViewModel : ViewModel() {
             }
 
 
-        }
+        }*/
 
         //liveData.postValue("Привет из Корутины через 3 секунлу")
     }
 
-    private fun createRegisterMap(
-        email: String,
-        name: String,
-        password: String,
-        token: String,
-        userDate: Long
-    ): Map<String, String> {
-        val map = HashMap<String, String>()
-        map.put(ApiService.PARAM_EMAIL, email)
-        map.put(ApiService.PARAM_NAME, name)
-        map.put(ApiService.PARAM_PASSWORD, password)
-        map.put(ApiService.PARAM_TOKEN, token)
-        map.put(ApiService.PARAM_USER_DATE, userDate.toString())
-        return map
-    }
+
 }

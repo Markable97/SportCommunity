@@ -7,7 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
-import com.glushko.sportcommunity.presentation_layer.vm.RegisterViewModel
+import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.register_activity.*
 import kotlinx.coroutines.*
 
@@ -15,18 +15,16 @@ class RegisterFragment : BaseFragment() {
     override val layoutId = R.layout.register_activity
     override val titleToolbar = R.string.register
 
-    lateinit var model: RegisterViewModel
+    lateinit var model: AccountViewModel
 
     var downloding: Boolean = false
-    lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-         model = ViewModelProviders.of(this).get(RegisterViewModel::class.java)
+        model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         val data: LiveData<String> = model.getData()
         data.observe(this, Observer<String>{it: String ->
             super.showMessage("$it")
-            etUsername.setText("Тестовое значение из LiveData")
             super.hideProgress()
             downloding = false
         })
@@ -41,36 +39,19 @@ class RegisterFragment : BaseFragment() {
 
 
         btnNewMembership.setOnClickListener {
-
-            register()
-            /*if(!downloding){
+            if(!downloding){
                 downloding = true
-                super.showMessage("Start loading")
                 super.showProgress()
-                job = GlobalScope.launch(Dispatchers.IO) {
-                    model.registerUser()
-                }
+                register()
             }else{
                 println("Already downloading")
-            }*/
+            }
 
 
         }
 
         btnAlreadyHaveAccount.setOnClickListener {
-
-            if(downloding){
-                if (job.isActive){
-                    job.cancel()
-                    super.hideProgress()
-                    super.showMessage("End loading")
-                    downloding = false
-                }
-            }else{
-                println("Enough downloading")
-            }
-
-
+            super.showMessage("Данный функционал не поддерживается")
         }
     }
 
@@ -92,18 +73,25 @@ class RegisterFragment : BaseFragment() {
 
     private fun validateFields(): Boolean {
         val allFields = arrayOf(etEmail, etPassword, etConfirmPassword, etUsername)
-        val allValid = true
+        var allValid = true
         for(field in allFields){
             field.testValidity() && allValid
         }
         return allValid && validatePasswords()
     }
     private fun validatePasswords(): Boolean {
+        val test = etPassword.toString().length
+        val test2 = etConfirmPassword.toString().isEmpty()
+        if(etPassword.toString().isEmpty() || etConfirmPassword.toString().isEmpty()){
+            return false
+        }
         val valid = etPassword.text.toString() == etConfirmPassword.text.toString()
         if (!valid) {
             showMessage(getString(R.string.error_password_mismatch))
         }
+
         return valid
+
     }
 
 }
