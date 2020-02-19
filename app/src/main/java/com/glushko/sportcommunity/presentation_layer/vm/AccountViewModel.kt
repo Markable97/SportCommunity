@@ -3,6 +3,7 @@ package com.glushko.sportcommunity.presentation_layer.vm
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.glushko.sportcommunity.business_logic_layer.domain.Login
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
 import com.glushko.sportcommunity.data_layer.datasource.ApiService
 import com.glushko.sportcommunity.data_layer.datasource.BaseResponse
@@ -16,13 +17,20 @@ class AccountViewModel : ViewModel() {
 
     var liveData: MutableLiveData<String> = MutableLiveData()
     private val register = Register()
+    private val login = Login()
     fun getData(): MutableLiveData<String>{
         return liveData
     }
 
+    fun loginUser(email: String, password: String){
+        val loginParam = Login.Params(email, password)
+        println("Значения для входа $loginParam")
+        val response = login.sendData(loginParam, liveData)
+    }
+
     fun registerUser(email: String, name: String, password: String) {
         val registerParam = Register.Params(email, name, password)
-        println("Значение для регистраици $register")
+        println("Значение для регистраици $registerParam")
         val response = register.sendData(registerParam, liveData)
 
         /*GlobalScope.launch(Dispatchers.IO) {
@@ -45,5 +53,6 @@ class AccountViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         register.useCase.cancel()
+        login.useCase.cancel()
     }
 }

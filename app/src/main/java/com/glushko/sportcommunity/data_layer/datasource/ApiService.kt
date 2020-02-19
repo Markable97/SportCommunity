@@ -9,6 +9,7 @@ interface ApiService {
     companion object{ //Что то типо статических вспомогательных классов
         //Methods
         const val REGISTER = "Register"
+        const val LOGIN = "Login"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -21,4 +22,7 @@ interface ApiService {
     @POST(REGISTER)
     fun register(@FieldMap params: Map<String, String>) : Call<BaseResponse>
 
+    @FormUrlEncoded
+    @POST(LOGIN)
+    fun login(@FieldMap params: Map<String, String>) : Call<BaseResponse>
 }

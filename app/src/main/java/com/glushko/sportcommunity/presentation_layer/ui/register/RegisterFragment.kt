@@ -65,7 +65,7 @@ class RegisterFragment : BaseFragment() {
 
         if (allValid) {
             showProgress()
-            model.registerUser(etEmail.toString(), etUsername.toString(), etPassword.toString())
+            model.registerUser(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString())
             /*accountViewModel.register(
                 etEmail.text.toString(),
                 etusername.text.toString(),
@@ -83,9 +83,7 @@ class RegisterFragment : BaseFragment() {
         return allValid && validatePasswords()
     }
     private fun validatePasswords(): Boolean {
-        val test = etPassword.toString().length
-        val test2 = etConfirmPassword.toString().isEmpty()
-        if(etPassword.toString().isEmpty() || etConfirmPassword.toString().isEmpty()){
+        if(etPassword.text.toString().isEmpty() || etConfirmPassword.text.toString().isEmpty()){
             return false
         }
         val valid = etPassword.text.toString() == etConfirmPassword.text.toString()
