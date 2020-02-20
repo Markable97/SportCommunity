@@ -1,37 +1,56 @@
 package com.glushko.sportcommunity.presentation_layer.vm
 
-import androidx.lifecycle.LiveData
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.glushko.sportcommunity.business_logic_layer.domain.Login
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
-import com.glushko.sportcommunity.data_layer.datasource.ApiService
-import com.glushko.sportcommunity.data_layer.datasource.BaseResponse
-import com.glushko.sportcommunity.data_layer.datasource.NetworkService
+import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
+import com.glushko.sportcommunity.presentation_layer.ui.login.LoginActivity
 
-import kotlinx.coroutines.*
-import retrofit2.await
-import java.lang.Exception
-
-class AccountViewModel : ViewModel() {
+class AccountViewModel(application: Application) : AndroidViewModel(application) {
 
     var liveData: MutableLiveData<String> = MutableLiveData()
+    val liveDataLogin: MutableLiveData<Register.Params> = MutableLiveData()
     private val register = Register()
     private val login = Login()
     fun getData(): MutableLiveData<String>{
+
         return liveData
+    }
+
+    fun getLoginData(): MutableLiveData<Register.Params>{
+        //Получаем данные из репозитори, а именно из SharedPreferences
+        getAccountRepository()
+        return liveDataLogin
+    }
+
+    fun getAccountRepository(){
+        val context = getApplication<Application>()
+        val pref = context.getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE)
+        val prefManager = SharedPrefsManager(pref)
+        println("Данные из SharedPreferences ${prefManager.getAccount()}")
+        liveDataLogin.postValue(prefManager.getAccount())
+    }
+
+    fun saveAccountRepository(account: Register.Params){
+        val pref = SharedPrefsManager(getApplication<Application>().
+            getSharedPreferences(this.getApplication<Application>().packageName,Context.MODE_PRIVATE))
+        pref.saveAccount(account)
     }
 
     fun loginUser(email: String, password: String){
         val loginParam = Login.Params(email, password)
         println("Значения для входа $loginParam")
-        val response = login.sendData(loginParam, liveData)
+        login.sendData(loginParam, liveData)
     }
 
     fun registerUser(email: String, name: String, password: String) {
         val registerParam = Register.Params(email, name, password)
         println("Значение для регистраици $registerParam")
-        val response = register.sendData(registerParam, liveData)
+        //saveAccountRepository(registerParam)
+        register.sendData(registerParam, liveData)
 
         /*GlobalScope.launch(Dispatchers.IO) {
             var request =  NetworkService.makeNetworkService().register(createRegisterMap(email, name, password, "1234", 0))

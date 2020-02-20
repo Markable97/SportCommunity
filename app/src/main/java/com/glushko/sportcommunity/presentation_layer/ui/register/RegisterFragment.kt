@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.business_logic_layer.domain.Register
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.register_activity.*
@@ -16,7 +17,7 @@ class RegisterFragment : BaseFragment() {
     override val titleToolbar = R.string.register
 
     lateinit var model: AccountViewModel
-
+    lateinit var registerUser: Register.Params
     var downloding: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +26,7 @@ class RegisterFragment : BaseFragment() {
         val data: LiveData<String> = model.getData()
         data.observe(this, Observer<String>{it: String ->
             if(it == "success"){
+                model.saveAccountRepository(registerUser)
                 activity?.finish()
             }
             super.showMessage("$it")
@@ -66,6 +68,7 @@ class RegisterFragment : BaseFragment() {
         if (allValid) {
             showProgress()
             model.registerUser(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString())
+            registerUser = Register.Params(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString())
             /*accountViewModel.register(
                 etEmail.text.toString(),
                 etusername.text.toString(),

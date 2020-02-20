@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import kotlinx.android.synthetic.main.toolbar.*
 
 abstract class BaseActivity : AppCompatActivity() {

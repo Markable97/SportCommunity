@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.business_logic_layer.domain.Register
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.login_activity.*
@@ -15,6 +16,8 @@ class LoginFragment: BaseFragment(){
     override val titleToolbar: Int = R.string.screen_login
 
     lateinit var model: AccountViewModel
+    lateinit var data: LiveData<String>
+    lateinit var dataLogin: LiveData<Register.Params>
 
     var downloding: Boolean = false
 
@@ -22,7 +25,7 @@ class LoginFragment: BaseFragment(){
         super.onCreate(savedInstanceState)
 
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
-        val data: LiveData<String> = model.getData()
+        data = model.getData()
         data.observe(this, Observer<String>{
             if(it == "success"){
 
@@ -32,6 +35,17 @@ class LoginFragment: BaseFragment(){
             downloding = false
         })
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dataLogin  = model.getLoginData()
+        dataLogin.observe(this, Observer<Register.Params>{account: Register.Params ->
+            if(account.email.isNotEmpty()){
+                etEmail.setText(account.email)
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
