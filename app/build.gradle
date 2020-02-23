@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
+apply plugin: 'com.google.gms.google-services'
+
 apply plugin: 'kotlin-android-extensions'
 //Поддержка Dagger и Data Binding
 apply plugin: 'kotlin-kapt'
@@ -22,6 +24,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    //Поддержка dataBinding
+    dataBinding {
+        enabled = true
     }
     //Поддержка лямбы
     compileOptions {
@@ -46,6 +52,8 @@ ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //Google firebase
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
     //androidx
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     implementation "androidx.core:core-ktx:$appCompatVersion"

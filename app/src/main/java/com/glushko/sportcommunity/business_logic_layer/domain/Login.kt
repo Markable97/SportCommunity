@@ -28,6 +28,24 @@ class Login(val useCase: UseCase = UseCase()) {
         }
     }
 
+    /*fun sendData(params: Register.Params): BaseResponse{
+        println("sendData on Login.kt = $params")
+        var message: String = ""
+        val response = useCase.request{
+            var request = NetworkService.makeNetworkService().login(createLoginMap(params.email, params.password))
+            try {
+                val answer = request.await()
+                answer
+            }catch (ex: Exception){
+                println("${ex.message} \nERRRRRROOOOOOORRRRRR")
+                val responseError = BaseResponse(-1, "Server Error")
+                responseError
+            }
+        }
+        println("return sendData on Login.kt ={${response.message}}")
+        return response
+    }*/
+
     private fun createLoginMap(
         email: String,
         password: String

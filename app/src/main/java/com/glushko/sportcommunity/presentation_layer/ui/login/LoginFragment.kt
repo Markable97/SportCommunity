@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
+import com.glushko.sportcommunity.presentation_layer.ui.base
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.login_activity.*
 
@@ -27,12 +28,17 @@ class LoginFragment: BaseFragment(){
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         data = model.getData()
         data.observe(this, Observer<String>{
-            if(it == "success"){
-
-            }
             super.showMessage("$it")
             super.hideProgress()
             downloding = false
+            if(it == "success"){
+                model.saveAccountRepository(Register.Params(etEmail.text.toString(),"Пока тестовое", etPassword.text.toString()))
+                activity?.let {
+                    navigator.showHome(it, true)
+                    it.finish()
+                }
+            }
+
         })
 
 
