@@ -5,23 +5,26 @@ import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCase
 import com.glushko.sportcommunity.data_layer.datasource.ApiService
 import com.glushko.sportcommunity.data_layer.datasource.BaseResponse
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
+import com.glushko.sportcommunity.data_layer.datasource.ResponseLogin
 import retrofit2.await
 
 class Login(val useCase: UseCase = UseCase()) {
 
     data class Params(val email: String, val password: String)
 
-    fun sendData(params: Params, data: MutableLiveData<String>){
-        val response = useCase.request{
+    fun sendData(params: Params, data: MutableLiveData<ResponseLogin>){
+        useCase.request{
             var request = NetworkService.makeNetworkService().login(createLoginMap(params.email, params.password))
             try {
+                //println("Получаю токен типа ${useCase.getToken()}")
                 val answer = request.await()
-                data.postValue(answer.message)
+                println("Данные пришли  в Login ${answer.success}, ${answer.message}, ${answer.nameUser}")
+                data.postValue(answer)
                 answer
             }catch (ex: Exception){
                 println("${ex.message} \nERRRRRROOOOOOORRRRRR")
-                val responseError = BaseResponse(-1, "Server Error")
-                data.postValue(responseError.message)
+                val responseError = ResponseLogin(-1, "Server Error", "Err")
+                data.postValue(responseError)
                 responseError
             }
 

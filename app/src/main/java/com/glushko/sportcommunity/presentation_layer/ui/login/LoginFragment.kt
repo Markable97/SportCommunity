@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.data_layer.datasource.ResponseLogin
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.ui.base
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
@@ -17,7 +18,7 @@ class LoginFragment: BaseFragment(){
     override val titleToolbar: Int = R.string.screen_login
 
     lateinit var model: AccountViewModel
-    lateinit var data: LiveData<String>
+    lateinit var data: LiveData<ResponseLogin>
     lateinit var dataLogin: LiveData<Register.Params>
 
     var downloding: Boolean = false
@@ -26,13 +27,13 @@ class LoginFragment: BaseFragment(){
         super.onCreate(savedInstanceState)
 
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
-        data = model.getData()
-        data.observe(this, Observer<String>{
-            super.showMessage("$it")
+        data = model.getLiveDateResponseLogin()
+        data.observe(this, Observer<ResponseLogin>{
+            super.showMessage("${it.message}")
             super.hideProgress()
             downloding = false
-            if(it == "success"){
-                model.saveAccountRepository(Register.Params(etEmail.text.toString(),"Пока тестовое", etPassword.text.toString()))
+            if(it.message == "success"){
+                model.saveAccountRepository(it.nameUser)
                 activity?.let {
                     navigator.showHome(it, true)
                     it.finish()

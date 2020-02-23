@@ -1,6 +1,5 @@
 package com.glushko.sportcommunity.data_layer.datasource
 
-class BaseResponse (
+open class BaseResponse (
     var success: Int,
-    var message: String){
-}
+    var message: String)

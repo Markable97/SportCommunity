@@ -15,7 +15,7 @@ class Navigator {
         //провекра на вход: Есть ли данные в SharedPreferences, есть ли связь + подходит ли логин и пароль
         val account = SharedPrefsManager(context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)).getAccount()
         if(account.password.isNotEmpty()){
-            showHome(context)
+            showHome(context, false)
         }else{
             showLogin(context, false)
         }

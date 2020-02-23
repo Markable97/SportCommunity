@@ -5,19 +5,24 @@ import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCase
 import com.glushko.sportcommunity.data_layer.datasource.ApiService
 import com.glushko.sportcommunity.data_layer.datasource.BaseResponse
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import retrofit2.await
 
 class Register(
     val useCase: UseCase = UseCase()
 ){
 
-    data class Params( val email: String,
-                       val name: String,
-                       val password: String)
+    data class Params( var email: String,
+                       var name: String,
+                       var password: String,
+                       var token: String)
 
      fun sendData(params: Params, data: MutableLiveData<String> ){
-         val response = useCase.request {
-             var request =  NetworkService.makeNetworkService().register(createRegisterMap(params.email, params.name, params.password, "1234"))
+         var response = useCase.request {
+             var token = ""
+             var request =  NetworkService.makeNetworkService().register(createRegisterMap(params.email, params.name, params.password,params.token))
              try{
                  var answer = request.await()
                  println("Ответ от сервера ${answer.message} ${answer.success}")

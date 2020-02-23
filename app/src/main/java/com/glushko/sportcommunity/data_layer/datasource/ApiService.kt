@@ -24,5 +24,5 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST(LOGIN)
-    fun login(@FieldMap params: Map<String, String>) : Call<BaseResponse>
+    fun login(@FieldMap params: Map<String, String>) : Call<ResponseLogin>
 }

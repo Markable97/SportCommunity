@@ -20,13 +20,24 @@ class SharedPrefsManager(private val prefs: SharedPreferences) {
             //putSafely(ACCOUNT_ID, account.id)
             putSafely(ACCOUNT_NAME, account.name)
             putSafely(ACCOUNT_EMAIL, account.email)
-            //putSafely(ACCOUNT_TOKEN, account.token)
+            putSafely(ACCOUNT_TOKEN, account.token)
             //putString(ACCOUNT_STATUS, account.status)
             //putSafely(ACCOUNT_DATE, account.userDate)
             //putSafely(ACCOUNT_IMAGE, account.image)
             putSafely(ACCOUNT_PASSWORD, account.password)
         }.apply()
     }
+
+    fun updateToken(token: String){
+        prefs.edit().apply{
+            putSafely(ACCOUNT_TOKEN, token)
+        }.apply()
+    }
+
+    fun getToken(): String{
+        return prefs.getString(ACCOUNT_TOKEN, "")!!
+    }
+
     fun getAccount():Register.Params {
         //val id = prefs.getLong(ACCOUNT_ID, 0)
 
@@ -34,7 +45,8 @@ class SharedPrefsManager(private val prefs: SharedPreferences) {
         val account = Register.Params(
             prefs.getString(ACCOUNT_EMAIL, "")!!,
             prefs.getString(ACCOUNT_NAME, "")!!,
-            prefs.getString(ACCOUNT_PASSWORD, "")!!
+            prefs.getString(ACCOUNT_PASSWORD, "")!!,
+            prefs.getString(ACCOUNT_TOKEN, "")!!
         )
 
         return account

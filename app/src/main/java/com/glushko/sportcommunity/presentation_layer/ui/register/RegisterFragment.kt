@@ -1,5 +1,7 @@
 package com.glushko.sportcommunity.presentation_layer.ui.register
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.LiveData
@@ -7,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.data_layer.datasource.ApiService.Companion.PARAM_TOKEN
+import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.register_activity.*
@@ -15,18 +19,19 @@ import kotlinx.coroutines.*
 class RegisterFragment : BaseFragment() {
     override val layoutId = R.layout.register_activity
     override val titleToolbar = R.string.register
-
+    val context = activity
     lateinit var model: AccountViewModel
-    lateinit var registerUser: Register.Params
+    //lateinit var registerUser: Register.Params
     var downloding: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         val data: LiveData<String> = model.getData()
         data.observe(this, Observer<String>{it: String ->
             if(it == "success"){
-                model.saveAccountRepository(registerUser)
+                model.saveAccountRepository()
                 activity?.finish()
             }
             super.showMessage("$it")
@@ -67,14 +72,22 @@ class RegisterFragment : BaseFragment() {
 
         if (allValid) {
             showProgress()
-            model.registerUser(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString())
-            registerUser = Register.Params(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString())
+
+            model.registerUser(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString(), validToken()!!)
+            //registerUser = Register.Params(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString())
             /*accountViewModel.register(
                 etEmail.text.toString(),
                 etusername.text.toString(),
                 etPassword.text.toString()
             )*/
         }
+    }
+
+    private fun validToken(): String? {
+        val token = SharedPrefsManager(activity!!.getSharedPreferences(activity!!.packageName, MODE_PRIVATE)).getToken()
+        println("token in RegisterFragment $token")
+        return token
+
     }
 
     private fun validateFields(): Boolean {
