@@ -3,6 +3,7 @@ package com.glushko.sportcommunity.presentation_layer.ui.home
 import android.content.Context
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
@@ -22,11 +23,15 @@ class HomeActivity : AppCompatActivity() {
 
         val account = SharedPrefsManager(this.getSharedPreferences(this.packageName, Context.MODE_PRIVATE)).getAccount()
 
-        val token = SharedPrefsManager(this.getSharedPreferences(this.packageName, Context.MODE_PRIVATE)).getToken()
+        println("Home activity $account \n")
 
-        println("Home activity $account \n and token = $token")
-        test_text_view.text = "$account"
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
 
     }
 }
