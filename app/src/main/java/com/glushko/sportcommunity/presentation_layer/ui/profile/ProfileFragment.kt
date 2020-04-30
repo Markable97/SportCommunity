@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.glushko.sportcommunity.R
-import kotlinx.android.synthetic.main.profile_activity.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
 
-    val layoutId: Int = R.layout.profile_activity
+    val layoutId: Int = R.layout.fragment_profile
 
     override fun onCreateView(
         inflater: LayoutInflater,

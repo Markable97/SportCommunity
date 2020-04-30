@@ -33,7 +33,8 @@
     <string name="friends">Друзья</string>
     <string name="add_friend">Пригласить друга</string>
     <string name="profile">Аккаунт</string>
-    <string name="friend_requests">Входящие приглашения</string>
+    <string name="setting">Настройки</string>
+    <string name="notification">Уведомления</string>
     <string name="logout">Выйти</string>
 
     <string name="name_colon">Имя:</string>
