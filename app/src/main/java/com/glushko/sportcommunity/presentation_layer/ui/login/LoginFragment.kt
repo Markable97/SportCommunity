@@ -13,6 +13,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.base
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.login_activity.*
 
+
 class LoginFragment: BaseFragment(){
     override val layoutId: Int = R.layout.login_activity
     override val titleToolbar: Int = R.string.screen_login

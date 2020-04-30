@@ -116,6 +116,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
 
     override fun onCleared() {
         super.onCleared()
+        println("Метод очистки VewModel!!")
         register.useCase.cancel()
         login.useCase.cancel()
     }

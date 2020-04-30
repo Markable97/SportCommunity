@@ -3,7 +3,6 @@ package com.glushko.sportcommunity.presentation_layer.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.glushko.sportcommunity.business_logic_layer.domain.Login
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import com.glushko.sportcommunity.presentation_layer.ui.home.HomeActivity
 import com.glushko.sportcommunity.presentation_layer.ui.login.LoginActivity
@@ -13,6 +12,7 @@ class Navigator {
 
     fun showMain(context: Context){
         //провекра на вход: Есть ли данные в SharedPreferences, есть ли связь + подходит ли логин и пароль
+        //showHome(context, false)
         val account = SharedPrefsManager(context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)).getAccount()
         if(account.password.isNotEmpty()){
             showHome(context, false)
@@ -20,6 +20,7 @@ class Navigator {
             showLogin(context, false)
         }
     }
+
 
     fun showHome(context: Context, newTask: Boolean = true) = context.startActivity<HomeActivity>(newTask = newTask)
 

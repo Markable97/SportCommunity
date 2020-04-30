@@ -2,15 +2,17 @@ package com.glushko.sportcommunity.presentation_layer.ui.home
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import com.glushko.sportcommunity.R
-import com.glushko.sportcommunity.business_logic_layer.domain.Register
-import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCase
+
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
+import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
 import kotlinx.android.synthetic.main.home_activity.*
 import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.navigation.*
+
 
 class HomeActivity : AppCompatActivity() {
 
@@ -29,10 +31,21 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
+
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        btnFriends.setOnClickListener {
+            Toast.makeText(this, "This friands", Toast.LENGTH_SHORT).show()
+            drawerLayout.closeDrawers()
+            toolbar.title = btnFriendsText.text
+            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, ProfileFragment()).commit()
+        }
+
+
     }
+
+
 }
 
