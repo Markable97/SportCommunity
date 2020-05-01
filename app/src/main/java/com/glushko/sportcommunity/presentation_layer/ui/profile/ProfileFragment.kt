@@ -13,6 +13,7 @@ import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamPlayer
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
+import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Params>) : Fragment() {
@@ -28,11 +29,15 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(layoutId, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bt_notification.applyClickShrink()
+        bt_chat.applyClickShrink()
 
         val adapter = ProfileTeamsAdapter(listTeams, object : ProfileTeamsAdapter.Callback{
             override fun onItemCkicked(item: TeamPlayer) {
