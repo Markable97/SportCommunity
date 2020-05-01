@@ -9,10 +9,10 @@
     <color name="grey">#898989</color>
     <color name="translucent">#B2000000</color>
     <color name="translucent5">#0D000000</color>
-    <color name="darkGrey">#454e4f</color>
+    <color name="darkGrey">#454E4F</color>
 
 
-    <color name="background">#454e4f<!--@color/white--></color>
+    <color name="background">#454E4F</color>
 
     <color name="toolbarTextPrimary">@color/white</color>
     <color name="toolbarTextSecondary">@color/white</color>
