@@ -44,7 +44,7 @@
         app:layout_constraintEnd_toStartOf="@+id/ivUserImage" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"

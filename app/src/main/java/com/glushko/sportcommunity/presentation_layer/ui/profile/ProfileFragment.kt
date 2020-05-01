@@ -6,12 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-class ProfileFragment : Fragment() {
+class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Params>) : Fragment() {
 
     val layoutId: Int = R.layout.fragment_profile
+    val model: AccountViewModel = model
+    val dataLogin: LiveData<Register.Params> = dataLogin
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,5 +36,14 @@ class ProfileFragment : Fragment() {
         bt_chat.setOnClickListener {
             Toast.makeText(activity, "This is chat", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dataLogin.observe(this, Observer<Register.Params>{
+            if(it.name != null){
+                tv_profile_name.text = it.name
+            }
+        })
     }
 }
