@@ -19,11 +19,13 @@ class UseCase {
 
         //var response = BaseResponse(0,"")
         CoroutineScope(Dispatchers.IO + job).launch{
+            delay(10000)
             lam.invoke()
         }
 
     }
     fun cancel(){
+        println("Отмена задачи в USE_CASE")
         job.apply {
             cancelChildren()
             cancel()

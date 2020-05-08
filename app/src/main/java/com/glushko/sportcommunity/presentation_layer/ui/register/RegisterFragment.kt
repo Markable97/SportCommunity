@@ -22,7 +22,7 @@ class RegisterFragment : BaseFragment() {
     val context = activity
     lateinit var model: AccountViewModel
     //lateinit var registerUser: Register.Params
-    var downloding: Boolean = false
+    private var downloding: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,13 +30,14 @@ class RegisterFragment : BaseFragment() {
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         val data: LiveData<String> = model.getData()
         data.observe(this, Observer<String>{it: String ->
+            super.showMessage("$it")
+            super.hideProgress()
+            downloding = false
             if(it == "success"){
                 model.saveAccountRepository()
                 activity?.finish()
             }
-            super.showMessage("$it")
-            super.hideProgress()
-            downloding = false
+
         })
     }
 
@@ -47,7 +48,6 @@ class RegisterFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
         btnNewMembership.setOnClickListener {
             if(!downloding){
                 downloding = true
@@ -56,8 +56,6 @@ class RegisterFragment : BaseFragment() {
             }else{
                 println("Already downloading")
             }
-
-
         }
 
         btnAlreadyHaveAccount.setOnClickListener {
@@ -74,12 +72,6 @@ class RegisterFragment : BaseFragment() {
             showProgress()
 
             model.registerUser(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString(), validToken()!!)
-            //registerUser = Register.Params(etEmail.text.toString(), etUsername.text.toString(), etPassword.text.toString())
-            /*accountViewModel.register(
-                etEmail.text.toString(),
-                etusername.text.toString(),
-                etPassword.text.toString()
-            )*/
         }
     }
 

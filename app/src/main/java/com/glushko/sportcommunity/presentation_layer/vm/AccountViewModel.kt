@@ -3,18 +3,38 @@ package com.glushko.sportcommunity.presentation_layer.vm
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.glushko.sportcommunity.business_logic_layer.domain.Login
+import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
 import com.glushko.sportcommunity.data_layer.datasource.ResponseLogin
+import com.glushko.sportcommunity.data_layer.repository.MainDatabase
+import com.glushko.sportcommunity.data_layer.repository.Person
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import com.glushko.sportcommunity.presentation_layer.ui.login.LoginActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import kotlinx.coroutines.*
+import java.lang.Exception
 import kotlin.math.acos
 
 class AccountViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val useCaseRepository: UseCaseRepository
+
+    //val person: LiveData<Person>
+
+    init{
+        //val mainDao = MainDatabase.getDatabase(application).mainDao()
+        //useCaseRepository = UseCaseRepository(mainDao)
+        //person = useCaseRepository.personInfo
+        useCaseRepository = UseCaseRepository()
+    }
+
+    var job: Job = Job()
     var liveData: MutableLiveData<String> = MutableLiveData()
     val liveDataLogin: MutableLiveData<Register.Params> = MutableLiveData()
     val liveDataResponseLogin: MutableLiveData<ResponseLogin> = MutableLiveData()
@@ -23,7 +43,6 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
     private lateinit var loginParam: Login.Params
     private val login = Login()
     fun getData(): MutableLiveData<String>{
-
         return liveData
     }
 
@@ -69,55 +88,80 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
 
     }
     fun loginUser(email: String, password: String){
-       loginParam = Login.Params(email, password)
+        loginParam = Login.Params(email, password)
         println("Значения для входа $loginParam")
-        login.sendData(loginParam, liveDataResponseLogin)
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
+            if(!it.isSuccessful){
+                println("getInstanceId failed ${it.exception}")
+                liveDataResponseLogin.postValue(ResponseLogin(-1, "get instanced failed", "Err"))
+            }else{
+                val token = it.result?.token
+                if(token != null){
+                    loginParam.token = token
+                    job = viewModelScope.launch {
+                        println("Зашел в корутину, Ждем 5 секунд")
+                        try{
+                            useCaseRepository.loginUser(loginParam, liveDataResponseLogin)
+                        }catch(err: NetworkErrors){
+                            println(err.message)
+                            liveDataResponseLogin.postValue(ResponseLogin(-1, "Server Error", "Err"))
+                        }
+                    }
+                }else{
+                    println("TOKEN IS NULL")
+                    liveDataResponseLogin.postValue(ResponseLogin(-1, "Token is not received ", "Err"))
+                }
+            }
+        }
+
     }
 
     fun registerUser(email: String, name: String, password: String, token: String) {
         registerParams = Register.Params(email, name, password, token)
         println("Значение для регистраици $registerParams")
-        //saveAccountRepository(registerParam)
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     println("getInstanceId failed ${task.exception}")
-                    return@OnCompleteListener
+                    println("TOKEN IS NULL")
+                    liveData.postValue("Can`t receive token")
+                }else {
+                    val token = task.result?.token
+                    if (token != null) {
+                        println("Token in FragmentRegister $token")
+                        registerParams.token = token
+                        println("Значение для регистраици2 $registerParams")
+                        viewModelScope.launch{
+                            try {
+                                useCaseRepository.registerUser(registerParams, liveData)
+                            } catch (err: NetworkErrors) {
+                                println(err.message)
+                                liveData.postValue("Can`t register user now")
+                            }
+                        }
+                    } else {
+                        println("TOKEN IS NULL")
+                        liveData.postValue("Can`t receive token")
+                    }
                 }
-
-                // Get new Instance ID token
-                val token = task.result?.token
-                // Log and toast
-                println("Token in FragmentRegister $token")
-                registerParams.token = token!!
-                println("Значение для регистраици2 $registerParams")
-                register.sendData(registerParams, liveData)
-
-                //pref.saveAccount(Register.Params(loginParam.email, userName, loginParam.password, token!!))
             })
+    }
 
+    fun cancelDownloading(){
+        println("ViewModelScope  -  ${viewModelScope.isActive}")
+        println("ViewModelScope Context  -  ${viewModelScope.coroutineContext.isActive}")
+        println("ViewModelScope Job - ${job.isActive}")
+        if(job.isActive){
+            job.cancel()
+        }
+        println("ViewModelScope Job - ${job.isActive}")
+        println("ViewModelScope  Context-  ${viewModelScope.coroutineContext.isActive}")
+        println("ViewModelScope  -  ${viewModelScope.isActive}")
 
-        /*GlobalScope.launch(Dispatchers.IO) {
-            var request =  NetworkService.makeNetworkService().register(createRegisterMap(email, name, password, "1234", 0))
-            try{
-                var answer = request.await()
-                println("Ответ от сервера ${answer.message} ${answer.success}")
-                liveData.postValue(answer.message)
-            }catch (ce: Exception){
-                println("ERRRRRROOOOOOORRRRRR")
-                liveData.postValue("Пошел в жопу ниче не работает")
-            }
-
-
-        }*/
-
-        //liveData.postValue("Привет из Корутины через 3 секунлу")
     }
 
     override fun onCleared() {
         super.onCleared()
         println("Метод очистки VewModel!!")
-        register.useCase.cancel()
-        login.useCase.cancel()
     }
 }

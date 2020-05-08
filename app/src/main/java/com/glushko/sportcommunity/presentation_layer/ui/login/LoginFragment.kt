@@ -68,11 +68,17 @@ class LoginFragment: BaseFragment(){
             }
         }
         btnRegister.setOnClickListener{
+            model.cancelDownloading()
+            downloding = false
+            super.hideProgress()
             activity?.let { navigator.showSignUp(it) }
         }
 
         btnForgetPassword.setOnClickListener {
             super.showMessage("Нет функционала")
+            model.cancelDownloading()
+            downloding = false
+            super.hideProgress()
         }
     }
 

@@ -9,8 +9,9 @@ import retrofit2.create
 
 object NetworkService {
 
-    const val BASE_URL = "http://213.248.20.145:8080/SportCommunityServer/"
+    const val BASE_URL = "http://89.208.205.160:8080/SportCommunityServer/"
 
+    //Вовзращает retrofit, из него можно слать запросы к серверу
     fun makeNetworkService(): ApiService{
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
