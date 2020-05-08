@@ -56,9 +56,10 @@ class HomeActivity : AppCompatActivity() {
         toggle.syncState()
 
         profileContainer.setOnClickListener {
-            drawerLayout.closeDrawers()
+
             toolbar.title = "Профиль"
             supportFragmentManager.beginTransaction().replace(fragmentContainer, ProfileFragment(model, dataLogin)).commit()
+            drawerLayout.closeDrawers()
         }
 
         btnChats.setOnClickListener {

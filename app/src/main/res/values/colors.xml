@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@android:color/holo_red_light</color>
-    <color name="colorAccent">#FA4659</color>
+    <!--<color name="colorPrimary">@android:color/holo_red_light</color> -->
+    <color name="colorPrimary">#A2D793</color>
+   <!-- <color name="colorAccent">#FA4659</color>-->>
+    <color name="colorAccent">#454E4F</color>
 
     <color name="white">#FFFFFF</color>
     <color name="translucentWhite">#B2FFFFFF</color>

@@ -19,7 +19,7 @@ class UseCase {
 
         //var response = BaseResponse(0,"")
         CoroutineScope(Dispatchers.IO + job).launch{
-            val response = lam.invoke()
+            lam.invoke()
         }
 
     }

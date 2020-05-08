@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamPlayer
+import com.realpacific.clickshrinkeffect.applyClickShrink
 
 
 class ProfileTeamsAdapter(var list: MutableList<TeamPlayer>, val callback: Callback) : RecyclerView.Adapter<ProfileTeamsAdapter.TeamViewHolder>() {
@@ -30,6 +31,7 @@ class ProfileTeamsAdapter(var list: MutableList<TeamPlayer>, val callback: Callb
         private val teamName = itemView.findViewById<TextView>(R.id.item_team_name)
         private val amplua = itemView.findViewById<TextView>(R.id.iteam_amplua)
         private val statistics = itemView.findViewById<TextView>(R.id.item_statistics)
+
 
         fun bind(item: TeamPlayer){
             teamName.text = item.teamName

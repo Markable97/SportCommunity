@@ -9,7 +9,7 @@ import com.glushko.sportcommunity.R
 
 class FriendsFragment : Fragment() {
 
-    val layoutId: Int = R.layout.fragment_friends
+    val layoutId: Int = R.layout.activity_team_profile
 
     override fun onCreateView(
         inflater: LayoutInflater,
