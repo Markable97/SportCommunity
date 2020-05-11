@@ -10,12 +10,14 @@ interface ApiService {
         //Methods
         const val REGISTER = "Register"
         const val LOGIN = "Login"
+        const val MAIN_PAGE = "UserMainPage"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
         const val PARAM_NAME = "name"
         const val PARAM_TOKEN = "token"
         const val PARAM_USER_DATE = "user_date"
+        const val USER_ID = "user_id"
     }
 
     @FormUrlEncoded
@@ -25,4 +27,8 @@ interface ApiService {
     @FormUrlEncoded
     @POST(LOGIN)
     fun login(@FieldMap params: Map<String, String>) : Call<ResponseLogin>
+
+    @FormUrlEncoded
+    @POST(MAIN_PAGE)
+    fun main_page(@FieldMap params: Map<String, String>):Call<ResponseMainPage>
 }

@@ -4,8 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import com.glushko.sportcommunity.business_logic_layer.domain.Login
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.glushko.sportcommunity.data_layer.datasource.ResponseLogin
+import com.glushko.sportcommunity.data_layer.datasource.ResponseMainPage
 import com.glushko.sportcommunity.data_layer.repository.MainDao
 import retrofit2.await
 import kotlin.Exception
@@ -31,6 +33,16 @@ class UseCaseRepository {
         }catch (cause: Throwable){
             println("Error!!!! ${cause.message}")
             throw NetworkErrors(cause.message?: "Сервер не отвечает", cause)
+        }
+    }
+
+    suspend fun mainPage(param: Int, livaData: MutableLiveData<ResponseMainPage>){
+        try{
+            val response = NetworkService.makeNetworkService().main_page(TeamsUserInfo.createMap(param)).await()
+            livaData.postValue(response)
+        }catch (cause: Throwable){
+            println("Error!!!!${cause.message}")
+            throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
         }
     }
 }

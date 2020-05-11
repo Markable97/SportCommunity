@@ -6,6 +6,7 @@
     <string name="screen_friends">Друзья</string>
     <string name="screen_account">Аккаунт</string>
     <string name="screen_user">Пользователь</string>
+    <string name="screen_profile">Профиль</string>
 
     <string name="error_network">Нет сетевого подключения.</string>
     <string name="error_server">Ошибка сервера.</string>

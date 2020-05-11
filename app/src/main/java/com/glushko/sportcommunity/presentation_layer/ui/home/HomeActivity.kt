@@ -7,13 +7,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
 
-import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
+
+import com.glushko.sportcommunity.presentation_layer.ui.BaseActivity
+import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.ui.chat.ChatsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.friends.FriendsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.notification.NotificationFragment
@@ -25,9 +25,10 @@ import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.navigation.*
 
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
+    override var fragment: BaseFragment = ProfileFragment()
 
-    open val contentId = R.layout.home_activity
+    override val contentId = R.layout.home_activity
     val fragmentContainer = R.id.fragmentContainer
 
     lateinit var model: AccountViewModel
@@ -38,6 +39,8 @@ class HomeActivity : AppCompatActivity() {
         setContentView(contentId)
         setSupportActionBar(toolbar)
 
+        toolbar.title = "Test"
+
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         model.getAccountRepository()
 
@@ -47,8 +50,9 @@ class HomeActivity : AppCompatActivity() {
 
         //println("Home activity $account \n")
 
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        //supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -57,8 +61,8 @@ class HomeActivity : AppCompatActivity() {
 
         profileContainer.setOnClickListener {
 
-            toolbar.title = "Профиль"
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, ProfileFragment(model, dataLogin)).commit()
+            //toolbar.title = "Профиль"
+            supportFragmentManager.beginTransaction().replace(fragmentContainer, ProfileFragment()).commit()
             drawerLayout.closeDrawers()
         }
 

@@ -45,13 +45,18 @@ abstract class BaseActivity : AppCompatActivity() {
     // которое можно не передавать
     fun addFragment(savedInstanceState: Bundle? = null, fragment: BaseFragment = this.fragment) {
         savedInstanceState ?: supportFragmentManager.inTransaction {
-            add(R.id.fragmentContainer, fragment)
+            replace(R.id.fragmentContainer, fragment)
         }
         //val manager = supportFragmentManager
         /*val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.fragmentContainer, fragment).commit()*/
 
     }
+
+    fun changeTitle(title: String){
+        toolbar.title = title
+    }
+
     fun replaceFragment(fragment: BaseFragment) {
         this.fragment = fragment
         supportFragmentManager.inTransaction {

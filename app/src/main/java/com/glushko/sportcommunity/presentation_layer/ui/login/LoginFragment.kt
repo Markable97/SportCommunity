@@ -27,6 +27,8 @@ class LoginFragment: BaseFragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         data = model.getLiveDateResponseLogin()
         data.observe(this, Observer<ResponseLogin>{

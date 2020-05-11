@@ -36,7 +36,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
 
     var job: Job = Job()
     var liveData: MutableLiveData<String> = MutableLiveData()
-    val liveDataLogin: MutableLiveData<Register.Params> = MutableLiveData()
+    open val liveDataLogin: MutableLiveData<Register.Params> = MutableLiveData()
     val liveDataResponseLogin: MutableLiveData<ResponseLogin> = MutableLiveData()
     private val register = Register()
     private lateinit var registerParams: Register.Params
