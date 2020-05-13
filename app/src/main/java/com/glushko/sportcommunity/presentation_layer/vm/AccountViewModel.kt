@@ -69,7 +69,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
         pref.saveAccount(registerParams)
     }
 
-    fun saveAccountRepository(userName: String){
+    fun saveAccountRepository(userName: String, idUser: Int){
         val pref = SharedPrefsManager(getApplication<Application>().
             getSharedPreferences(this.getApplication<Application>().packageName,Context.MODE_PRIVATE))
         FirebaseInstanceId.getInstance().instanceId
@@ -83,7 +83,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
                 val token = task.result?.token
                 // Log and toast
                 println("Token in LoginFragmnet $token")
-                pref.saveAccount(Register.Params(loginParam.email, userName, loginParam.password, token!!))
+                pref.saveAccount(Register.Params(loginParam.email, userName, loginParam.password, token!!, idUser))
             })
 
     }
@@ -93,7 +93,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
             if(!it.isSuccessful){
                 println("getInstanceId failed ${it.exception}")
-                liveDataResponseLogin.postValue(ResponseLogin(-1, "get instanced failed", "Err"))
+                liveDataResponseLogin.postValue(ResponseLogin(-1, "get instanced failed", "Err",0))
             }else{
                 val token = it.result?.token
                 if(token != null){
@@ -104,16 +104,22 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
                             useCaseRepository.loginUser(loginParam, liveDataResponseLogin)
                         }catch(err: NetworkErrors){
                             println(err.message)
-                            liveDataResponseLogin.postValue(ResponseLogin(-1, "Server Error", "Err"))
+                            liveDataResponseLogin.postValue(ResponseLogin(-1, "Server Error", "Err", 0))
                         }
                     }
                 }else{
                     println("TOKEN IS NULL")
-                    liveDataResponseLogin.postValue(ResponseLogin(-1, "Token is not received ", "Err"))
+                    liveDataResponseLogin.postValue(ResponseLogin(-1, "Token is not received ", "Err", 0))
                 }
             }
         }
 
+    }
+
+    fun logout(){
+        val pref = SharedPrefsManager(getApplication<Application>().
+            getSharedPreferences(this.getApplication<Application>().packageName,Context.MODE_PRIVATE))
+        pref.logout()
     }
 
     fun registerUser(email: String, name: String, password: String, token: String) {

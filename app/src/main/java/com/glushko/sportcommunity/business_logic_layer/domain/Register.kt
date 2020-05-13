@@ -15,7 +15,8 @@ class Register {
     data class Params( var email: String,
                        var name: String,
                        var password: String,
-                       var token: String)
+                       var token: String,
+                       var idUser: Int = 0)
 
     companion object {
         fun createRegisterMap(

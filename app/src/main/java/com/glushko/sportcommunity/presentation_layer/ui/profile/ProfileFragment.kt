@@ -22,16 +22,19 @@ import com.glushko.sportcommunity.presentation_layer.vm.ProfileViewModel
 import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-class ProfileFragment : BaseFragment() {
+class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Params>) : BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_profile
     override val titleToolbar: Int = R.string.screen_profile
-    lateinit var  model: AccountViewModel
-    lateinit var dataLogin: LiveData<Register.Params>
+     var  model: AccountViewModel = model
+     var dataLogin: LiveData<Register.Params> = dataLogin
 
+    lateinit var adapter: ProfileTeamsAdapter
     lateinit var modelPage: ProfileViewModel
     lateinit var dataProfile: MutableLiveData<ResponseMainPage>
     val listTeams: MutableList<TeamPlayer> = MutableList(4) {TeamPlayer("Name $it", "Нападающий", "Голы: ${10*it} Ассисты: ${10+it} ЖК: $it КК: ${it+1}")}
+
+    var listInfoProfile: MutableList<TeamsUserInfo.Params> = mutableListOf()
 
     /*override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,13 +48,14 @@ class ProfileFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
-        dataLogin = model.liveDataLogin
 
         modelPage = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
         dataProfile = modelPage.getData()
         dataProfile.observe(this, Observer<ResponseMainPage>{
-            println("ProfileFragment: \n${it.success} ${it.message}, ${it.teamsUserinfo.size}")
+            println("ProfileFragment: \n${it.success} ${it.message}, ${it.teamsUserinfo}")
+            listInfoProfile = it.teamsUserinfo
+            adapter.list = listInfoProfile
+            adapter.notifyDataSetChanged()
         })
     }
 
@@ -61,9 +65,9 @@ class ProfileFragment : BaseFragment() {
         bt_notification.applyClickShrink()
         bt_chat.applyClickShrink()
 
-        val adapter = ProfileTeamsAdapter(listTeams, object : ProfileTeamsAdapter.Callback{
-            override fun onItemCkicked(item: TeamPlayer) {
-                Toast.makeText(activity, "This is team - ${item.teamName}", Toast.LENGTH_SHORT).show()
+        adapter = ProfileTeamsAdapter(listInfoProfile, object : ProfileTeamsAdapter.Callback{
+            override fun onItemCkicked(item: TeamsUserInfo.Params) {
+                Toast.makeText(activity, "This is team - ${item.team_name}", Toast.LENGTH_SHORT).show()
             }
 
         })

@@ -1,12 +1,14 @@
 package com.glushko.sportcommunity.presentation_layer.vm
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
 import com.glushko.sportcommunity.data_layer.datasource.ResponseMainPage
+import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
@@ -22,7 +24,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     val liveData:MutableLiveData<ResponseMainPage> = MutableLiveData()
 
     fun getData():MutableLiveData<ResponseMainPage>{
-        getMainPage()
+        val pref = SharedPrefsManager(getApplication<Application>().
+            getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
+        val idUser = pref.getAccount().idUser
+        getMainPage(idUser)
         return liveData
     }
 

@@ -14,6 +14,7 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Register
 
 import com.glushko.sportcommunity.presentation_layer.ui.BaseActivity
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
+import com.glushko.sportcommunity.presentation_layer.ui.Navigator
 import com.glushko.sportcommunity.presentation_layer.ui.chat.ChatsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.friends.FriendsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.notification.NotificationFragment
@@ -21,15 +22,16 @@ import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
 import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.home_activity.*
-import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.navigation.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 
-class HomeActivity : BaseActivity() {
-    override var fragment: BaseFragment = ProfileFragment()
+class HomeActivity :  AppCompatActivity() {
 
-    override val contentId = R.layout.home_activity
+    val contentId = R.layout.home_activity
     val fragmentContainer = R.id.fragmentContainer
+
+    val navigator = Navigator()
 
     lateinit var model: AccountViewModel
     lateinit var dataLogin: LiveData<Register.Params>
@@ -39,11 +41,20 @@ class HomeActivity : BaseActivity() {
         setContentView(contentId)
         setSupportActionBar(toolbar)
 
-        toolbar.title = "Test"
+        setSupportActionBar(toolbar)
+        toolbar.title = "Профиль"
+
 
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
-        model.getAccountRepository()
+        //model.getAccountRepository()
 
+        dataLogin = model.getLoginData()
+        dataLogin.observe(this, Observer<Register.Params> {
+            if(it.email != null ){
+                tvUserName.text = it.name
+                tvUserEmail.text = it.email
+            }
+        })
         //val account = SharedPrefsManager(this.getSharedPreferences(this.packageName, Context.MODE_PRIVATE)).getAccount()
 
 
@@ -51,19 +62,21 @@ class HomeActivity : BaseActivity() {
         //println("Home activity $account \n")
 
 
-        //supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        profileContainer.setOnClickListener {
+        supportFragmentManager.beginTransaction().replace(fragmentContainer, ProfileFragment(model, dataLogin)).commit()
 
-            //toolbar.title = "Профиль"
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, ProfileFragment()).commit()
+        profileContainer.setOnClickListener {
             drawerLayout.closeDrawers()
+            toolbar.title = "Профиль"
+            supportFragmentManager.beginTransaction().replace(fragmentContainer, ProfileFragment(model, dataLogin)).commit()
+
         }
 
         btnChats.setOnClickListener {
@@ -90,17 +103,11 @@ class HomeActivity : BaseActivity() {
             supportFragmentManager.beginTransaction().replace(fragmentContainer, SettingFragment()).commit()
         }
 
+        btnLogout.setOnClickListener {
+            model.logout()
+            navigator.showLogin(this)
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        dataLogin = model.getLoginData()
-        dataLogin.observe(this, Observer<Register.Params> {
-            if(it.email != null ){
-                tvUserName.text = it.name
-                tvUserEmail.text = it.email
-            }
-        })
-    }
 }
 

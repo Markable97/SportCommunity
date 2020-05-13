@@ -13,6 +13,7 @@ class SharedPrefsManager(private val prefs: SharedPreferences) {
         const val ACCOUNT_DATE = "account_date"
         const val ACCOUNT_IMAGE = "account_image"
         const val ACCOUNT_PASSWORD = "account_password"
+
     }
 
     fun saveAccount(account: Register.Params){
@@ -25,12 +26,23 @@ class SharedPrefsManager(private val prefs: SharedPreferences) {
             //putSafely(ACCOUNT_DATE, account.userDate)
             //putSafely(ACCOUNT_IMAGE, account.image)
             putSafely(ACCOUNT_PASSWORD, account.password)
+            putSafely(ACCOUNT_ID, account.idUser)
         }.apply()
     }
 
     fun updateToken(token: String){
         prefs.edit().apply{
             putSafely(ACCOUNT_TOKEN, token)
+        }.apply()
+    }
+
+    fun logout(){
+        prefs.edit().apply{
+            putInt(ACCOUNT_ID, 0)
+            putString(ACCOUNT_NAME, "")
+            putString(ACCOUNT_PASSWORD, "")
+            putString(ACCOUNT_EMAIL, "")
+            putString(ACCOUNT_TOKEN, "")
         }.apply()
     }
 
@@ -46,10 +58,17 @@ class SharedPrefsManager(private val prefs: SharedPreferences) {
             prefs.getString(ACCOUNT_EMAIL, "")!!,
             prefs.getString(ACCOUNT_NAME, "")!!,
             prefs.getString(ACCOUNT_PASSWORD, "")!!,
-            prefs.getString(ACCOUNT_TOKEN, "")!!
+            prefs.getString(ACCOUNT_TOKEN, "")!!,
+            prefs.getInt(ACCOUNT_ID, 0)
         )
 
         return account
+    }
+}
+
+fun SharedPreferences.Editor.putSafely(key: String, value: Int?) {
+    if(value!= null && value!=0){
+        putInt(key, value)
     }
 }
 

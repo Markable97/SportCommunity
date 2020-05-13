@@ -7,10 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamPlayer
+import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 import com.realpacific.clickshrinkeffect.applyClickShrink
 
 
-class ProfileTeamsAdapter(var list: MutableList<TeamPlayer>, val callback: Callback) : RecyclerView.Adapter<ProfileTeamsAdapter.TeamViewHolder>() {
+class ProfileTeamsAdapter(var list: MutableList<TeamsUserInfo.Params>, val callback: Callback) : RecyclerView.Adapter<ProfileTeamsAdapter.TeamViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -33,10 +34,10 @@ class ProfileTeamsAdapter(var list: MutableList<TeamPlayer>, val callback: Callb
         private val statistics = itemView.findViewById<TextView>(R.id.item_statistics)
 
 
-        fun bind(item: TeamPlayer){
-            teamName.text = item.teamName
+        fun bind(item: TeamsUserInfo.Params){
+            teamName.text = item.team_name
             amplua.text = item.amplua
-            statistics.text = item.statistics
+            statistics.text = "Игры ${item.games}, Голы ${item.goals}, Передачи ${item.assists}, ЖК ${item.yellow}, КК ${item.red}"
             itemView.setOnClickListener{
                 callback.onItemCkicked(list[adapterPosition])
             }
@@ -44,6 +45,6 @@ class ProfileTeamsAdapter(var list: MutableList<TeamPlayer>, val callback: Callb
     }
 
     interface Callback{
-        fun onItemCkicked(item: TeamPlayer)
+        fun onItemCkicked(item:  TeamsUserInfo.Params)
     }
 }

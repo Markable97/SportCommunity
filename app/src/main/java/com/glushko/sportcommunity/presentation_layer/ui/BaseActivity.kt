@@ -53,10 +53,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
-    fun changeTitle(title: String){
-        toolbar.title = title
-    }
-
     fun replaceFragment(fragment: BaseFragment) {
         this.fragment = fragment
         supportFragmentManager.inTransaction {

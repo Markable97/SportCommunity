@@ -36,7 +36,7 @@ class LoginFragment: BaseFragment(){
             super.hideProgress()
             downloding = false
             if(it.message == "success"){
-                model.saveAccountRepository(it.nameUser)
+                model.saveAccountRepository(it.nameUser, it.idUser)
                 activity?.let {
                     navigator.showHome(it, true)
                     it.finish()

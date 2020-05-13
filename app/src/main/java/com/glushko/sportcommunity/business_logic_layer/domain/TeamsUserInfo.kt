@@ -6,14 +6,14 @@ class TeamsUserInfo {
 
 
     data class Params(val team_name: String = "",
-                      val amplua: String = ""){
-        val team_id: Int = 0
-        val games: Int = 0
-        val goals = 0
-        val assists = 0
-        val yellow = 0
-        val red = 0
-    }
+                      val amplua: String = "",
+        val team_id: Int = 0,
+        val games: Int = 0,
+        val goals: Int = 0,
+        val assists: Int = 0,
+        val yellow: Int  = 0,
+        val red: Int = 0
+    )
 
     companion object{
         fun createMap(user_id: Int):Map<String, String>{
