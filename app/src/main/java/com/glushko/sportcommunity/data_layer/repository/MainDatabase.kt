@@ -3,7 +3,9 @@ package com.glushko.sportcommunity.data_layer.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
+import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 
 @Entity
 data class Person(
@@ -13,15 +15,31 @@ data class Person(
     val password: String,
     val token: String
 )
+/*@Entity
+data class TeamsUserInfo(
+    @PrimaryKey val team_id: Int = 0,
+    val team_name: String = "",
+    val amplua: String = "",
+    val team_desc: String = "",
+    val leader_id: Int = 0,
+    val games: Int = 0,
+    val goals: Int = 0,
+    val assists: Int = 0,
+    val yellow: Int  = 0,
+val red: Int = 0
+)*/
 @Dao
 interface MainDao{
     @Insert
-    suspend fun insertPerson(person: Person)
-
-    @Query("select * from Person")
-    fun getPerson(): LiveData<Person>
+    suspend fun insertMainPage(teamsUserInfo: MutableList<TeamsUserInfo.Params>)
+    @Update
+    suspend fun updateMainPage(teamsUserInfo: MutableList<TeamsUserInfo.Params>)
+    @Query("delete from main_page")
+    suspend fun deleteMainPage()
+    @Query("select * from main_page")
+    fun getMainPage(): LiveData<List<TeamsUserInfo.Params>>
 }
-@Database(entities = [Person::class], version = 1, exportSchema = false)
+@Database(entities = [TeamsUserInfo.Params::class], version = 1, exportSchema = false)
 abstract class MainDatabase: RoomDatabase(){
 
     abstract fun mainDao(): MainDao

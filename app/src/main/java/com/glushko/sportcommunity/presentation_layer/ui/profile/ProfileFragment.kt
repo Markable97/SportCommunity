@@ -52,13 +52,17 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
 
 
         modelPage = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+        modelPage.LiveDataRepository.observe(this, Observer{
+            println("Live data 1")
+            adapter.setList(it as MutableList<TeamsUserInfo.Params>)
+        })
         dataProfile = modelPage.getData()
         dataProfile.observe(this, Observer<ResponseMainPage>{
+            println("Live data 2")
             println("ProfileFragment: \n${it.success} ${it.message}, ${it.teamsUserinfo}")
             if(it.success == 1){
-                listInfoProfile = it.teamsUserinfo
-                adapter.list = listInfoProfile
-                adapter.notifyDataSetChanged()
+                //listInfoProfile = it.teamsUserinfo
+                //adapter.setList(listInfoProfile)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }

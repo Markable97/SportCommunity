@@ -120,6 +120,10 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
         val pref = SharedPrefsManager(getApplication<Application>().
             getSharedPreferences(this.getApplication<Application>().packageName,Context.MODE_PRIVATE))
         pref.logout()
+        val dao = MainDatabase.getDatabase(this.getApplication()).mainDao()
+        job = viewModelScope.launch {
+            dao.deleteMainPage()
+        }
     }
 
     fun registerUser(email: String, name: String, password: String, token: String) {

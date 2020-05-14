@@ -14,7 +14,7 @@ import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.realpacific.clickshrinkeffect.applyClickShrink
 
 
-class ProfileTeamsAdapter(var list: MutableList<TeamsUserInfo.Params>, val callback: Callback) : RecyclerView.Adapter<ProfileTeamsAdapter.TeamViewHolder>() {
+class ProfileTeamsAdapter(private var list: MutableList<TeamsUserInfo.Params>, val callback: Callback) : RecyclerView.Adapter<ProfileTeamsAdapter.TeamViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -52,6 +52,10 @@ class ProfileTeamsAdapter(var list: MutableList<TeamsUserInfo.Params>, val callb
         }
     }
 
+    internal fun setList(list: MutableList<TeamsUserInfo.Params>){
+        this.list = list
+        notifyDataSetChanged()
+    }
     interface Callback{
         fun onItemCkicked(item:  TeamsUserInfo.Params)
     }

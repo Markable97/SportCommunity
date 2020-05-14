@@ -1,5 +1,6 @@
 package com.glushko.sportcommunity.business_logic_layer.domain.interactor
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.glushko.sportcommunity.business_logic_layer.domain.Login
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
@@ -9,12 +10,14 @@ import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.glushko.sportcommunity.data_layer.datasource.ResponseLogin
 import com.glushko.sportcommunity.data_layer.datasource.ResponseMainPage
 import com.glushko.sportcommunity.data_layer.repository.MainDao
+import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import retrofit2.await
 import kotlin.Exception
 
 class UseCaseRepository {
     //val personInfo = mainDao.getPerson()
 
+    var mainPageInfo: LiveData<List<TeamsUserInfo.Params>> = MutableLiveData()
     suspend fun loginUser(params: Login.Params, data: MutableLiveData<ResponseLogin>){
         try{
             println("Выполняю запрос")
@@ -36,9 +39,21 @@ class UseCaseRepository {
         }
     }
 
-    suspend fun mainPage(param: Int, livaData: MutableLiveData<ResponseMainPage>){
+    fun mainPage(dao: MainDao): LiveData<List<TeamsUserInfo.Params>>{
+        mainPageInfo = dao.getMainPage()
+        return  mainPageInfo
+        }
+
+    suspend fun mainPage(param: Int, livaData: MutableLiveData<ResponseMainPage>, dao: MainDao){
         try{
             val response = NetworkService.makeNetworkService().main_page(TeamsUserInfo.createMap(param)).await()
+            try{
+                dao.insertMainPage(response.teamsUserinfo)
+            }catch (err: Throwable){
+                println(err.message)
+                println("Not insert but update")
+                dao.updateMainPage(response.teamsUserinfo)
+            }
             livaData.postValue(response)
         }catch (cause: Throwable){
             println("Error!!!!${cause.message}")

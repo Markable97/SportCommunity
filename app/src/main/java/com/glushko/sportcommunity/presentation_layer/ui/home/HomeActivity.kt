@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 
 
 import com.glushko.sportcommunity.presentation_layer.ui.BaseActivity
