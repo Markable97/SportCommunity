@@ -51,7 +51,7 @@
         app:layout_constraintTop_toBottomOf="@+id/team_name" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/team_profile_btn_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -60,15 +60,15 @@
         app:layout_constraintTop_toBottomOf="@+id/team_description" />
 
     <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
+        android:id="@+id/team_profile_btn_2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="110dp"
-        android:text="Настрйока команды"
+        android:text="@string/team_profile_btn_2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintStart_toEndOf="@+id/team_profile_btn_chat"
         app:layout_constraintTop_toBottomOf="@+id/team_description" />
 
     <LinearLayout
@@ -79,7 +79,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button">
+        app:layout_constraintTop_toBottomOf="@+id/team_profile_btn_chat">
 
         <LinearLayout
             android:layout_width="match_parent"

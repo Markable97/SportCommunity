@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.glushko.sportcommunity.R
 import kotlinx.android.synthetic.main.activity_team_profile.*
 
-class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap) : Fragment() {
+class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, val isLeader: Boolean) : Fragment() {
 
     val layoutId: Int = R.layout.activity_team_profile
     val bitmap: Bitmap = bitmap
@@ -28,5 +28,8 @@ class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap) : 
         team_image_profile.setImageBitmap(bitmap)
         team_name.text = teamName
         team_description.text = teamDescription
+        if(!isLeader){
+            team_profile_btn_2.text = getString(R.string.team_profile_btn_2_dop)
+        }
     }
 }

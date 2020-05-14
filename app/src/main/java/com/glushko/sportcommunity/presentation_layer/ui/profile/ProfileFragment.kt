@@ -79,7 +79,7 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
         adapter = ProfileTeamsAdapter(listInfoProfile, object : ProfileTeamsAdapter.Callback{
             override fun onItemCkicked(item: TeamsUserInfo.Params, bitmap: Bitmap) {
                 Toast.makeText(activity, "This is team - ${item.team_name}", Toast.LENGTH_SHORT).show()
-                callbackActivity.changeFragment(item.team_name, item.team_desc, bitmap)
+                callbackActivity.changeFragment(item.team_name, item.team_desc, bitmap, item.leader_id)
             }
 
         })
@@ -105,7 +105,7 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
     }
 
     interface Callback{
-        fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap)
+        fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int)
     }
 
     override fun onPause() {

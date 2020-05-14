@@ -74,9 +74,13 @@ class HomeActivity :  AppCompatActivity() {
         toggle.syncState()
 
         val fragment =  ProfileFragment(model, dataLogin, object : ProfileFragment.Callback{
-            override fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap) {
+            override fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int) {
                 toolbar.title = teamName
-                supportFragmentManager.beginTransaction().add(fragmentContainer, TeamFragment(teamName, teamDesc, bitmap)).commit()
+                val userId = dataLogin.value?.idUser?:0
+                var isLeader = false
+                if(userId == leader_id)
+                    isLeader = true
+                supportFragmentManager.beginTransaction().add(fragmentContainer, TeamFragment(teamName, teamDesc, bitmap, isLeader)).commit()
             }
 
         })
