@@ -1,6 +1,7 @@
 package com.glushko.sportcommunity.presentation_layer.ui.home
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -73,9 +74,9 @@ class HomeActivity :  AppCompatActivity() {
         toggle.syncState()
 
         val fragment =  ProfileFragment(model, dataLogin, object : ProfileFragment.Callback{
-            override fun changeFragment(teamName: String, teamDesc: String) {
+            override fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap) {
                 toolbar.title = teamName
-                supportFragmentManager.beginTransaction().add(fragmentContainer, TeamFragment(teamName, teamDesc)).commit()
+                supportFragmentManager.beginTransaction().add(fragmentContainer, TeamFragment(teamName, teamDesc, bitmap)).commit()
             }
 
         })

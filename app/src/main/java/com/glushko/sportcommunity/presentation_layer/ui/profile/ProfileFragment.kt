@@ -1,5 +1,6 @@
 package com.glushko.sportcommunity.presentation_layer.ui.profile
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -76,9 +77,9 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
         bt_chat.applyClickShrink()
 
         adapter = ProfileTeamsAdapter(listInfoProfile, object : ProfileTeamsAdapter.Callback{
-            override fun onItemCkicked(item: TeamsUserInfo.Params) {
+            override fun onItemCkicked(item: TeamsUserInfo.Params, bitmap: Bitmap) {
                 Toast.makeText(activity, "This is team - ${item.team_name}", Toast.LENGTH_SHORT).show()
-                callbackActivity.changeFragment(item.team_name, item.team_desc)
+                callbackActivity.changeFragment(item.team_name, item.team_desc, bitmap)
             }
 
         })
@@ -104,7 +105,7 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
     }
 
     interface Callback{
-        fun changeFragment(teamName: String, teamDesc: String)
+        fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap)
     }
 
     override fun onPause() {

@@ -1,10 +1,12 @@
 package com.glushko.sportcommunity.presentation_layer.ui.profile
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.glushko.sportcommunity.R
@@ -12,6 +14,7 @@ import com.glushko.sportcommunity.business_logic_layer.domain.TeamPlayer
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.realpacific.clickshrinkeffect.applyClickShrink
+import kotlinx.android.synthetic.main.recycler_item_team.view.*
 
 
 class ProfileTeamsAdapter(private var list: MutableList<TeamsUserInfo.Params>, val callback: Callback) : RecyclerView.Adapter<ProfileTeamsAdapter.TeamViewHolder>() {
@@ -47,7 +50,8 @@ class ProfileTeamsAdapter(private var list: MutableList<TeamsUserInfo.Params>, v
                 .placeholder(R.drawable.chatplaceholder)
                 .into(imageTeam)
             itemView.setOnClickListener{
-                callback.onItemCkicked(list[adapterPosition])
+                val bitmap: Bitmap = imageTeam.drawable.toBitmap()
+                callback.onItemCkicked(list[adapterPosition], bitmap)
             }
         }
     }
@@ -57,6 +61,6 @@ class ProfileTeamsAdapter(private var list: MutableList<TeamsUserInfo.Params>, v
         notifyDataSetChanged()
     }
     interface Callback{
-        fun onItemCkicked(item:  TeamsUserInfo.Params)
+        fun onItemCkicked(item:  TeamsUserInfo.Params, bitmap: Bitmap)
     }
 }
