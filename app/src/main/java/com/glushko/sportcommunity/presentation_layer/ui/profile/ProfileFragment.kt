@@ -55,9 +55,13 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
         dataProfile = modelPage.getData()
         dataProfile.observe(this, Observer<ResponseMainPage>{
             println("ProfileFragment: \n${it.success} ${it.message}, ${it.teamsUserinfo}")
-            listInfoProfile = it.teamsUserinfo
-            adapter.list = listInfoProfile
-            adapter.notifyDataSetChanged()
+            if(it.success == 1){
+                listInfoProfile = it.teamsUserinfo
+                adapter.list = listInfoProfile
+                adapter.notifyDataSetChanged()
+            }else{
+                Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+            }
         })
     }
 
@@ -87,6 +91,7 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
 
     override fun onResume() {
         super.onResume()
+        println("ProfileFragment: OnResume")
         dataLogin.observe(this, Observer<Register.Params>{
             if(it.name != null){
                 tv_profile_name.text = it.name
@@ -96,5 +101,15 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
 
     interface Callback{
         fun changeFragment(teamName: String, teamDesc: String)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        println("ProfileFragment: OnResume")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("ProfileFragment: OnDestroy")
     }
 }

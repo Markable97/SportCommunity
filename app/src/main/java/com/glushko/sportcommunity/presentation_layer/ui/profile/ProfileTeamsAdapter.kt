@@ -3,11 +3,14 @@ package com.glushko.sportcommunity.presentation_layer.ui.profile
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamPlayer
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
+import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.realpacific.clickshrinkeffect.applyClickShrink
 
 
@@ -29,6 +32,7 @@ class ProfileTeamsAdapter(var list: MutableList<TeamsUserInfo.Params>, val callb
 
     inner class TeamViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
+        private val imageTeam = itemView.findViewById<ImageView>(R.id.imageTeam)
         private val teamName = itemView.findViewById<TextView>(R.id.item_team_name)
         private val amplua = itemView.findViewById<TextView>(R.id.iteam_amplua)
         private val statistics = itemView.findViewById<TextView>(R.id.item_statistics)
@@ -38,6 +42,10 @@ class ProfileTeamsAdapter(var list: MutableList<TeamsUserInfo.Params>, val callb
             teamName.text = item.team_name
             amplua.text = item.amplua
             statistics.text = "Игры ${item.games}, Голы ${item.goals}, Передачи ${item.assists}, ЖК ${item.yellow}, КК ${item.red}"
+            Glide.with(itemView.context)
+                .load(NetworkService.BASE_URL_IMAGE+item.team_name+".png")
+                .placeholder(R.drawable.chatplaceholder)
+                .into(imageTeam)
             itemView.setOnClickListener{
                 callback.onItemCkicked(list[adapterPosition])
             }

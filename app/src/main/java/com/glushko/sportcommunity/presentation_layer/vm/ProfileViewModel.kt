@@ -41,4 +41,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        println("Метод очистки ProfileVewModel!!")
+    }
 }
