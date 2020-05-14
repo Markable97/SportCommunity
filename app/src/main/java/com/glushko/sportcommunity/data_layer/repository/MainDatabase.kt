@@ -30,12 +30,14 @@ val red: Int = 0
 )*/
 @Dao
 interface MainDao{
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMainPage(teamsUserInfo: MutableList<TeamsUserInfo.Params>)
     @Update
     suspend fun updateMainPage(teamsUserInfo: MutableList<TeamsUserInfo.Params>)
     @Query("delete from main_page")
     suspend fun deleteMainPage()
+    @Query("delete from main_page where team_id not in (:ids)")
+    suspend fun deleteBadInfoMainPage(ids: List<Long>)
     @Query("select * from main_page")
     fun getMainPage(): LiveData<List<TeamsUserInfo.Params>>
 }
