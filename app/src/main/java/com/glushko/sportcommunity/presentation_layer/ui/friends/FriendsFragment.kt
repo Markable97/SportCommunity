@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.glushko.sportcommunity.R
+import kotlinx.android.synthetic.main.activity_team_profile.*
 
 class FriendsFragment : Fragment() {
 
-    val layoutId: Int = R.layout.activity_team_profile
+    val layoutId: Int = R.layout.fragment_friends
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -18,4 +19,5 @@ class FriendsFragment : Fragment() {
     ): View? {
         return inflater.inflate(layoutId, container, false)
     }
+
 }

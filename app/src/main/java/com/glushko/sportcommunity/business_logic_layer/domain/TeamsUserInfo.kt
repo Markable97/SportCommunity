@@ -8,6 +8,8 @@ class TeamsUserInfo {
     data class Params(val team_name: String = "",
                       val amplua: String = "",
         val team_id: Int = 0,
+        val team_desc: String = "",
+        val leader_id: Int = 0,
         val games: Int = 0,
         val goals: Int = 0,
         val assists: Int = 0,

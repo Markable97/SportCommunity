@@ -20,6 +20,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.friends.FriendsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.notification.NotificationFragment
 import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
 import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
+import com.glushko.sportcommunity.presentation_layer.ui.team.TeamFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.home_activity.*
 import kotlinx.android.synthetic.main.navigation.*
@@ -70,12 +71,21 @@ class HomeActivity :  AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        supportFragmentManager.beginTransaction().replace(fragmentContainer, ProfileFragment(model, dataLogin)).commit()
+        val fragment =  ProfileFragment(model, dataLogin, object : ProfileFragment.Callback{
+            override fun changeFragment(teamName: String, teamDesc: String) {
+                toolbar.title = teamName
+                supportFragmentManager.beginTransaction().add(fragmentContainer, TeamFragment(teamName, teamDesc)).commit()
+            }
+
+        })
+
+        supportFragmentManager.beginTransaction().replace(fragmentContainer, fragment).commit()
 
         profileContainer.setOnClickListener {
             drawerLayout.closeDrawers()
             toolbar.title = "Профиль"
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, ProfileFragment(model, dataLogin)).commit()
+
+            supportFragmentManager.beginTransaction().replace(fragmentContainer,fragment).commit()
 
         }
 
@@ -88,8 +98,8 @@ class HomeActivity :  AppCompatActivity() {
         btnFriends.setOnClickListener {
             Toast.makeText(this, "This friends", Toast.LENGTH_SHORT).show()
             drawerLayout.closeDrawers()
-            toolbar.title = btnFriendsText.text
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, FriendsFragment()).commit()
+            /*toolbar.title = btnFriendsText.text
+            supportFragmentManager.beginTransaction().replace(fragmentContainer, FriendsFragment()).commit()*/
         }
         btnNotification.setOnClickListener {
             drawerLayout.closeDrawers()

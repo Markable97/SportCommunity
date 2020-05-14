@@ -22,12 +22,14 @@ import com.glushko.sportcommunity.presentation_layer.vm.ProfileViewModel
 import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Params>) : BaseFragment() {
+class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Params>, val callbackActivity: Callback) : BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_profile
     override val titleToolbar: Int = R.string.screen_profile
      var  model: AccountViewModel = model
      var dataLogin: LiveData<Register.Params> = dataLogin
+
+
 
     lateinit var adapter: ProfileTeamsAdapter
     lateinit var modelPage: ProfileViewModel
@@ -68,6 +70,7 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
         adapter = ProfileTeamsAdapter(listInfoProfile, object : ProfileTeamsAdapter.Callback{
             override fun onItemCkicked(item: TeamsUserInfo.Params) {
                 Toast.makeText(activity, "This is team - ${item.team_name}", Toast.LENGTH_SHORT).show()
+                callbackActivity.changeFragment(item.team_name, item.team_desc)
             }
 
         })
@@ -89,5 +92,9 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
                 tv_profile_name.text = it.name
             }
         })
+    }
+
+    interface Callback{
+        fun changeFragment(teamName: String, teamDesc: String)
     }
 }
