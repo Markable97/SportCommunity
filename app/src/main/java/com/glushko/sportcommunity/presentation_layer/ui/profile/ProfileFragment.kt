@@ -2,11 +2,8 @@ package com.glushko.sportcommunity.presentation_layer.ui.profile
 
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -14,9 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
-import com.glushko.sportcommunity.business_logic_layer.domain.TeamPlayer
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
-import com.glushko.sportcommunity.data_layer.datasource.ResponseMainPage
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.ProfileViewModel
@@ -35,7 +31,6 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
     lateinit var adapter: ProfileTeamsAdapter
     lateinit var modelPage: ProfileViewModel
     lateinit var dataProfile: MutableLiveData<ResponseMainPage>
-    val listTeams: MutableList<TeamPlayer> = MutableList(4) {TeamPlayer("Name $it", "Нападающий", "Голы: ${10*it} Ассисты: ${10+it} ЖК: $it КК: ${it+1}")}
 
     var listInfoProfile: MutableList<TeamsUserInfo.Params> = mutableListOf()
 
@@ -77,7 +72,7 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
         bt_chat.applyClickShrink()
 
         adapter = ProfileTeamsAdapter(listInfoProfile, object : ProfileTeamsAdapter.Callback{
-            override fun onItemCkicked(item: TeamsUserInfo.Params, bitmap: Bitmap) {
+            override fun onItemClicked(item: TeamsUserInfo.Params, bitmap: Bitmap) {
                 Toast.makeText(activity, "This is team - ${item.team_name}", Toast.LENGTH_SHORT).show()
                 callbackActivity.changeFragment(item.team_name, item.team_desc, bitmap, item.leader_id)
             }

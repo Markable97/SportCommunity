@@ -1,5 +1,9 @@
 package com.glushko.sportcommunity.data_layer.datasource
 
+import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseLogin
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import retrofit2.Call
 import retrofit2.http.POST
 import retrofit2.http.FieldMap
@@ -11,6 +15,7 @@ interface ApiService {
         const val REGISTER = "Register"
         const val LOGIN = "Login"
         const val MAIN_PAGE = "UserMainPage"
+        const val FRIENDS = "GetFriends"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -31,4 +36,8 @@ interface ApiService {
     @FormUrlEncoded
     @POST(MAIN_PAGE)
     fun main_page(@FieldMap params: Map<String, String>):Call<ResponseMainPage>
+
+    @FormUrlEncoded
+    @POST(FRIENDS)
+    fun getFriends(@FieldMap params: Map<String, String>):Call<ResponseFriends>
 }

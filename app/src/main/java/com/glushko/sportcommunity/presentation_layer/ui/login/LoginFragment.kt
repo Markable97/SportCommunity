@@ -7,9 +7,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
-import com.glushko.sportcommunity.data_layer.datasource.ResponseLogin
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseLogin
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
-import com.glushko.sportcommunity.presentation_layer.ui.base
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import kotlinx.android.synthetic.main.login_activity.*
 

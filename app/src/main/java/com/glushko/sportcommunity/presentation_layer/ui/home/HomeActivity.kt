@@ -102,10 +102,10 @@ class HomeActivity :  AppCompatActivity() {
         }
 
         btnFriends.setOnClickListener {
-            Toast.makeText(this, "This friends", Toast.LENGTH_SHORT).show()
+
             drawerLayout.closeDrawers()
-            /*toolbar.title = btnFriendsText.text
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, FriendsFragment()).commit()*/
+            toolbar.title = btnFriendsText.text
+            supportFragmentManager.beginTransaction().replace(fragmentContainer, FriendsFragment()).commit()
         }
         btnNotification.setOnClickListener {
             drawerLayout.closeDrawers()

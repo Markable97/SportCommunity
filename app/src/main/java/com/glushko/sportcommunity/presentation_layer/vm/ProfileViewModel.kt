@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
-import com.glushko.sportcommunity.data_layer.datasource.ResponseMainPage
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import kotlinx.coroutines.launch
@@ -42,7 +42,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 useCaseRepository.mainPage(user_id, liveData, mainDao)
             }catch(err: NetworkErrors){
                 println(err.message)
-                liveData.postValue(ResponseMainPage(-1, "Server Error"))
+                liveData.postValue(
+                    ResponseMainPage(
+                        -1,
+                        "Server Error"
+                    )
+                )
             }
         }
     }

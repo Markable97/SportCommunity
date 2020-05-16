@@ -2,17 +2,13 @@ package com.glushko.sportcommunity.business_logic_layer.domain.interactor
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.glushko.sportcommunity.business_logic_layer.domain.Login
-import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
-import com.glushko.sportcommunity.business_logic_layer.domain.Register
-import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
+import com.glushko.sportcommunity.business_logic_layer.domain.*
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
-import com.glushko.sportcommunity.data_layer.datasource.ResponseLogin
-import com.glushko.sportcommunity.data_layer.datasource.ResponseMainPage
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseLogin
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import com.glushko.sportcommunity.data_layer.repository.MainDao
-import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import retrofit2.await
-import kotlin.Exception
 
 class UseCaseRepository {
     //val personInfo = mainDao.getPerson()
@@ -55,6 +51,16 @@ class UseCaseRepository {
             }
             dao.deleteBadInfoMainPage(listId.toList())
             livaData.postValue(response)
+        }catch (cause: Throwable){
+            println("Error!!!!${cause.message}")
+            throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
+        }
+    }
+
+    suspend fun getfriends(param: Int, liveData: MutableLiveData<ResponseFriends>){
+        try{
+            val response =  NetworkService.makeNetworkService().getFriends(Friend.createMap(param)).await()
+            liveData.postValue(response)
         }catch (cause: Throwable){
             println("Error!!!!${cause.message}")
             throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)

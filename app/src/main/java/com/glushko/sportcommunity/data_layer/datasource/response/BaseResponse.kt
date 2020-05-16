@@ -1,4 +1,4 @@
-package com.glushko.sportcommunity.data_layer.datasource
+package com.glushko.sportcommunity.data_layer.datasource.response
 
 open class BaseResponse (
     var success: Int,

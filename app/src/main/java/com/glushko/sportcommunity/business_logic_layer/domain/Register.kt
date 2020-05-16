@@ -1,14 +1,6 @@
 package com.glushko.sportcommunity.business_logic_layer.domain
 
-import androidx.lifecycle.MutableLiveData
-import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCase
 import com.glushko.sportcommunity.data_layer.datasource.ApiService
-import com.glushko.sportcommunity.data_layer.datasource.BaseResponse
-import com.glushko.sportcommunity.data_layer.datasource.NetworkService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import retrofit2.await
 
 class Register {
 

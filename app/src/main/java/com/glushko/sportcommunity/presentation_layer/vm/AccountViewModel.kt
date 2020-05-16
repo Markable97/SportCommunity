@@ -3,23 +3,18 @@ package com.glushko.sportcommunity.presentation_layer.vm
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.glushko.sportcommunity.business_logic_layer.domain.Login
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
-import com.glushko.sportcommunity.data_layer.datasource.ResponseLogin
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseLogin
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
-import com.glushko.sportcommunity.data_layer.repository.Person
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
-import com.glushko.sportcommunity.presentation_layer.ui.login.LoginActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.*
-import java.lang.Exception
-import kotlin.math.acos
 
 class AccountViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -93,7 +88,14 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
             if(!it.isSuccessful){
                 println("getInstanceId failed ${it.exception}")
-                liveDataResponseLogin.postValue(ResponseLogin(-1, "get instanced failed", "Err",0))
+                liveDataResponseLogin.postValue(
+                    ResponseLogin(
+                        -1,
+                        "get instanced failed",
+                        "Err",
+                        0
+                    )
+                )
             }else{
                 val token = it.result?.token
                 if(token != null){
@@ -104,12 +106,26 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
                             useCaseRepository.loginUser(loginParam, liveDataResponseLogin)
                         }catch(err: NetworkErrors){
                             println(err.message)
-                            liveDataResponseLogin.postValue(ResponseLogin(-1, "Server Error", "Err", 0))
+                            liveDataResponseLogin.postValue(
+                                ResponseLogin(
+                                    -1,
+                                    "Server Error",
+                                    "Err",
+                                    0
+                                )
+                            )
                         }
                     }
                 }else{
                     println("TOKEN IS NULL")
-                    liveDataResponseLogin.postValue(ResponseLogin(-1, "Token is not received ", "Err", 0))
+                    liveDataResponseLogin.postValue(
+                        ResponseLogin(
+                            -1,
+                            "Token is not received ",
+                            "Err",
+                            0
+                        )
+                    )
                 }
             }
         }
