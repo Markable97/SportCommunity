@@ -5,5 +5,5 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Message
 class ResponseMessage(
     success: Int,
     message: String,
-    var messages: List<Message.Params> = listOf()
+    var messages: MutableList<Message.Params> = mutableListOf()
 ): BaseResponse(success, message)

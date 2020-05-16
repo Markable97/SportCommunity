@@ -23,7 +23,7 @@
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/tvDate"
+            android:id="@+id/tvDate_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -33,7 +33,7 @@
             tools:text="10:20 AM" />
 
         <TextView
-            android:id="@+id/tvMessage"
+            android:id="@+id/tvMessage_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"

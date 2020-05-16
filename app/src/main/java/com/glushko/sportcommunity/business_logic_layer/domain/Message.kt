@@ -10,8 +10,8 @@ class Message {
         @PrimaryKey(autoGenerate = true) var message_id: Long,
         var sender_id: Long,
         var receiver_id: Long,
-        var message_text: String = "",
-        var date: Long = 0
+        var message: String = "",
+        var message_date: Long = 0
     )
 
     companion object{
