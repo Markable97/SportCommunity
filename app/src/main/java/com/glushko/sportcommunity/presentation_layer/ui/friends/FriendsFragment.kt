@@ -1,5 +1,6 @@
 package com.glushko.sportcommunity.presentation_layer.ui.friends
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,7 @@ import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
 import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
 import kotlinx.android.synthetic.main.fragment_friends.*
 
-class FriendsFragment : Fragment() {
+class FriendsFragment(val callback: Callback) : Fragment() {
 
     val layoutId: Int = R.layout.fragment_friends
 
@@ -41,7 +42,7 @@ class FriendsFragment : Fragment() {
         dataFriends = modelFriend.getData()
         dataFriends.observe(this, Observer {
             println("Live data 2")
-            println("ProfileFragment: \n${it.success} ${it.message}, ${it.friends}")
+            println("FriendFragment: \n${it.success} ${it.message}, ${it.friends}")
             if(it.success == 1){
                 //Обновить адаптер
                 adapter.setList(it.friends)
@@ -55,7 +56,7 @@ class FriendsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = FriendsAdapter(callback = object : FriendsAdapter.Callback{
             override fun onClickFriend(item: Friend.Params) {
-                Toast.makeText(activity, item.friend_name, Toast.LENGTH_SHORT).show()
+                callback.changeFragment(item.friend_id)
             }
 
         })
@@ -63,4 +64,7 @@ class FriendsFragment : Fragment() {
         friends_recycler.layoutManager = LinearLayoutManager(activity)
     }
 
+    interface Callback{
+        fun changeFragment(friend_id: Int)
+    }
 }

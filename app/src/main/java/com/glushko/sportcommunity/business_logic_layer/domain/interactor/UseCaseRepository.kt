@@ -7,7 +7,9 @@ import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseLogin
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
 import com.glushko.sportcommunity.data_layer.repository.MainDao
+import com.glushko.sportcommunity.data_layer.repository.MessageDao
 import retrofit2.await
 
 class UseCaseRepository {
@@ -57,10 +59,22 @@ class UseCaseRepository {
         }
     }
 
-    suspend fun getfriends(param: Int, liveData: MutableLiveData<ResponseFriends>){
+    suspend fun getFriends(param: Int, liveData: MutableLiveData<ResponseFriends>){
         try{
             val response =  NetworkService.makeNetworkService().getFriends(Friend.createMap(param)).await()
             liveData.postValue(response)
+        }catch (cause: Throwable){
+            println("Error!!!!${cause.message}")
+            throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
+        }
+    }
+
+    suspend fun getMessages(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>, dao: MessageDao){
+        try{
+            val response = NetworkService.makeNetworkService().getMessage(Message.createMap(params.sender_id, params.receiver_id, token)).await()
+            println("${response.success} ${response.message} ${response.messages}")
+            dao.insert(response.messages)
+            livData.postValue(response)
         }catch (cause: Throwable){
             println("Error!!!!${cause.message}")
             throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)

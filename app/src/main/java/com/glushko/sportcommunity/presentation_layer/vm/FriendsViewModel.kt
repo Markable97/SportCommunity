@@ -2,7 +2,6 @@ package com.glushko.sportcommunity.presentation_layer.vm
 
 import android.app.Application
 import android.content.Context
-import android.net.Network
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -27,7 +26,7 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
     private fun getFriends(idUser: Int) {
         viewModelScope.launch {
             try {
-                useCaseRepository.getfriends(idUser, liveData)
+                useCaseRepository.getFriends(idUser, liveData)
             }catch (err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(ResponseFriends(

@@ -1,9 +1,6 @@
 package com.glushko.sportcommunity.data_layer.datasource
 
-import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseLogin
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
+import com.glushko.sportcommunity.data_layer.datasource.response.*
 import retrofit2.Call
 import retrofit2.http.POST
 import retrofit2.http.FieldMap
@@ -16,13 +13,17 @@ interface ApiService {
         const val LOGIN = "Login"
         const val MAIN_PAGE = "UserMainPage"
         const val FRIENDS = "GetFriends"
+        const val GET_MESSAGES = "GetMessages"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
         const val PARAM_NAME = "name"
         const val PARAM_TOKEN = "token"
         const val PARAM_USER_DATE = "user_date"
-        const val USER_ID = "user_id"
+        const val PARAM_USER_ID = "user_id"
+        const val PARAM_SENDER_ID = "sender_id"
+        const val PARAM_RECEIVER_ID = "receiver_id"
+        const val PARAM_MESSAGE = "message"
     }
 
     @FormUrlEncoded
@@ -40,4 +41,9 @@ interface ApiService {
     @FormUrlEncoded
     @POST(FRIENDS)
     fun getFriends(@FieldMap params: Map<String, String>):Call<ResponseFriends>
+
+    @FormUrlEncoded
+    @POST(GET_MESSAGES)
+    fun getMessage(@FieldMap params: Map<String, String>):Call<ResponseMessage>
+
 }

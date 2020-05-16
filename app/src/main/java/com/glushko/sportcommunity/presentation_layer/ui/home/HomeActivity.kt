@@ -18,6 +18,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.BaseActivity
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.ui.Navigator
 import com.glushko.sportcommunity.presentation_layer.ui.chat.ChatsFragment
+import com.glushko.sportcommunity.presentation_layer.ui.dialog.DialogFragment
 import com.glushko.sportcommunity.presentation_layer.ui.friends.FriendsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.notification.NotificationFragment
 import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
@@ -101,11 +102,17 @@ class HomeActivity :  AppCompatActivity() {
             supportFragmentManager.beginTransaction().replace(fragmentContainer, ChatsFragment()).commit()
         }
 
+        val fragmentFriends = FriendsFragment(object : FriendsFragment.Callback{
+            override fun changeFragment(friend_id: Int) {
+                supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(friend_id)).commit()
+            }
+
+        })
         btnFriends.setOnClickListener {
 
             drawerLayout.closeDrawers()
             toolbar.title = btnFriendsText.text
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, FriendsFragment()).commit()
+            supportFragmentManager.beginTransaction().replace(fragmentContainer, fragmentFriends).commit()
         }
         btnNotification.setOnClickListener {
             drawerLayout.closeDrawers()

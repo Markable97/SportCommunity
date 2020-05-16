@@ -13,7 +13,7 @@ class Friend {
     companion object{
         fun createMap(user_id: Int):Map<String, String>{
             val map = HashMap<String, String>()
-            map[ApiService.USER_ID] = user_id.toString()
+            map[ApiService.PARAM_USER_ID] = user_id.toString()
             return map
         }
     }

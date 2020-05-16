@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 
 @Entity
@@ -28,6 +31,16 @@ data class TeamsUserInfo(
     val yellow: Int  = 0,
 val red: Int = 0
 )*/
+/*@Entity(tableName = "messages_table")
+data class MessageEntity(
+    @PrimaryKey(autoGenerate = true) var message_id: Long,
+    var sender_id: Long,
+    var receiver_id: Long,
+    var message_text: String,
+    var date: Long
+)*/
+
+
 @Dao
 interface MainDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -41,10 +54,21 @@ interface MainDao{
     @Query("select * from main_page")
     fun getMainPage(): LiveData<List<TeamsUserInfo.Params>>
 }
-@Database(entities = [TeamsUserInfo.Params::class], version = 1, exportSchema = false)
+
+@Dao
+interface MessageDao{
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(entity: Message.Params)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(entity: List<Message.Params>)
+}
+
+@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class], version = 1, exportSchema = false)
 abstract class MainDatabase: RoomDatabase(){
 
     abstract fun mainDao(): MainDao
+    abstract fun messageDao(): MessageDao
 
     companion object{
         private val INSTANCE: MainDatabase? = null
@@ -54,10 +78,18 @@ abstract class MainDatabase: RoomDatabase(){
                 synchronized(this){
                     return Room.databaseBuilder(context.applicationContext,
                                                 MainDatabase::class.java,
-                                                "sport_community_db").build()
+                                                "sport_community_db")
+                        .build()
                 }
             }
             return INSTANCE
         }
+
+            private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // empty migration.
+            }
+        }
     }
+
 }
