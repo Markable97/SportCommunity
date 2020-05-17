@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.glushko.sportcommunity.business_logic_layer.domain.Friend
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 
@@ -52,7 +53,11 @@ interface MainDao{
     @Query("delete from main_page where team_id not in (:ids)")
     suspend fun deleteBadInfoMainPage(ids: List<Long>)
     @Query("select * from main_page")
-    fun getMainPage(): LiveData<List<TeamsUserInfo.Params>>
+    suspend fun getMainPage(): List<TeamsUserInfo.Params>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFriends(friends: MutableList<Friend.Params>)
+    @Query("select * from friends_table")
+    suspend fun getFriends():List<Friend.Params>
 }
 
 @Dao
@@ -62,9 +67,12 @@ interface MessageDao{
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entity: List<Message.Params>)
+
+    @Query("select * from messages_table order by message_date")
+    suspend fun getMessages():List<Message.Params>
 }
 
-@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class], version = 1, exportSchema = false)
+@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class], version = 1, exportSchema = false)
 abstract class MainDatabase: RoomDatabase(){
 
     abstract fun mainDao(): MainDao

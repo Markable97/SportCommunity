@@ -39,13 +39,17 @@ class FriendsFragment(val callback: Callback) : Fragment() {
 
 
         modelFriend = ViewModelProviders.of(this).get(FriendsViewModel::class.java)
+
+        modelFriend.liveDataRepository.observe(this, Observer {
+            println("Live data 1")
+            adapter.setList((it as MutableList<Friend.Params>))
+        })
         dataFriends = modelFriend.getData()
         dataFriends.observe(this, Observer {
             println("Live data 2")
             println("FriendFragment: \n${it.success} ${it.message}, ${it.friends}")
             if(it.success == 1){
-                //Обновить адаптер
-                adapter.setList(it.friends)
+                //adapter.setList(it.friends)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }

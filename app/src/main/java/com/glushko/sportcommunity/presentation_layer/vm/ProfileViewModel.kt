@@ -15,16 +15,11 @@ import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
-    private val useCaseRepository: UseCaseRepository
+    private val useCaseRepository: UseCaseRepository = UseCaseRepository()
     //val person: LiveData<Person>
     val liveData:MutableLiveData<ResponseMainPage> = MutableLiveData()
-    val LiveDataRepository: LiveData<List<TeamsUserInfo.Params>>
+    val LiveDataRepository: MutableLiveData<List<TeamsUserInfo.Params>> = MutableLiveData()
     private val mainDao = MainDatabase.getDatabase(application).mainDao()
-    init{
-        useCaseRepository = UseCaseRepository()
-        //person = useCaseRepository.personInfo
-        LiveDataRepository = useCaseRepository.mainPage(mainDao)
-    }
 
 
     fun getData():MutableLiveData<ResponseMainPage>{
@@ -39,7 +34,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun getMainPage(user_id: Int = 0){
         viewModelScope.launch {
             try {
-                useCaseRepository.mainPage(user_id, liveData, mainDao)
+                useCaseRepository.mainPage(user_id, liveData, LiveDataRepository,mainDao)
             }catch(err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(

@@ -3,6 +3,7 @@ package com.glushko.sportcommunity.presentation_layer.vm
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
@@ -17,6 +18,7 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
 
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
     private val dao = MainDatabase.getDatabase(application).messageDao()
+    val LiveDataRepository: MutableLiveData<List<Message.Params>> = MutableLiveData()
     private val liveData: MutableLiveData<ResponseMessage> = MutableLiveData()
 
     fun getData(friendId: Int): MutableLiveData<ResponseMessage>{
@@ -33,7 +35,7 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             try{
                 val params = Message.Params(message_id = 0,sender_id = userId.toLong(),receiver_id = friendId.toLong())
-                useCaseRepository.getMessages(params, token, liveData, dao)
+                useCaseRepository.getMessages(params, token, liveData, LiveDataRepository,dao)
             }catch (err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(

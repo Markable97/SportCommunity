@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
 import com.glushko.sportcommunity.presentation_layer.vm.DialogViewModel
 import kotlinx.android.synthetic.main.fragment_dialog.*
@@ -32,12 +33,19 @@ class DialogFragment(private val friendId: Int) : Fragment() {
         super.onCreate(savedInstanceState)
 
         modelDialog = ViewModelProviders.of(this).get(DialogViewModel::class.java)
+
+        modelDialog.LiveDataRepository.observe(this, Observer {
+            println("Live data 1")
+            adapter.setList((it as MutableList<Message.Params>))
+        })
+
+
         dataDialog = modelDialog.getData(friendId)//Передать id друга
         dataDialog.observe(this, Observer {
             println("Live data 2")
             println("DialogFragment: \n${it.success} ${it.message}, ${it.messages}")
             if(it.success==1){
-                adapter.setList(it.messages)
+                //adapter.setList(it.messages)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
