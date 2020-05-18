@@ -45,7 +45,7 @@ class DialogFragment(private val friendId: Int) : Fragment() {
             println("Live data 2")
             println("DialogFragment: \n${it.success} ${it.message}, ${it.messages}")
             if(it.success==1){
-                //adapter.setList(it.messages)
+                etText.text.clear()
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
@@ -58,5 +58,13 @@ class DialogFragment(private val friendId: Int) : Fragment() {
         dialog_recycle.adapter = adapter
         dialog_recycle.layoutManager = LinearLayoutManager(activity)
 
+        btnSend.setOnClickListener {
+            val message = etText.text.toString()
+            if(message.isNotEmpty()){
+                modelDialog.sendMessage(friendId, message)
+            }else{
+                Toast.makeText(activity, "Введите сообщение", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

@@ -2,9 +2,7 @@ package com.glushko.sportcommunity.data_layer.datasource
 
 import com.glushko.sportcommunity.data_layer.datasource.response.*
 import retrofit2.Call
-import retrofit2.http.POST
-import retrofit2.http.FieldMap
-import retrofit2.http.FormUrlEncoded
+import retrofit2.http.*
 
 interface ApiService {
     companion object{ //Что то типо статических вспомогательных классов
@@ -14,6 +12,7 @@ interface ApiService {
         const val MAIN_PAGE = "UserMainPage"
         const val FRIENDS = "GetFriends"
         const val GET_MESSAGES = "GetMessages"
+        const val SEND_MESSAGE = "SendMessage"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -44,6 +43,11 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST(GET_MESSAGES)
-    fun getMessage(@FieldMap params: Map<String, String>):Call<ResponseMessage>
+    fun getMessages(@FieldMap params: Map<String, String>):Call<ResponseMessage>
+
+    @FormUrlEncoded
+    @POST(SEND_MESSAGE)
+    fun sendMessage(@FieldMap params: Map<String, String>):Call<ResponseMessage>
+
 
 }

@@ -23,5 +23,14 @@ class Message {
 
             return map
         }
+        fun createMap(sender_id: Long, receiver_id: Long, token: String, message: String):Map<String, String>{
+            val map = HashMap<String, String>()
+            map[ApiService.PARAM_SENDER_ID] = sender_id.toString()
+            map[ApiService.PARAM_RECEIVER_ID] = receiver_id.toString()
+            map[ApiService.PARAM_TOKEN] = token
+            map[ApiService.PARAM_MESSAGE] = message
+            return map
+        }
+
     }
 }

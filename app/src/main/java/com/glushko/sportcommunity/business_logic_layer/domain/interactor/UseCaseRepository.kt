@@ -82,13 +82,13 @@ class UseCaseRepository {
         }
     }
 
-    private suspend fun getMessages(dao: MessageDao): List<Message.Params>{
-        return dao.getMessages()
+    private suspend fun getMessages(dao: MessageDao, sender_id_id: Long, receiver_id: Long): List<Message.Params>{
+        return dao.getMessages(sender_id_id, receiver_id)
     }
 
     suspend fun getMessages(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>,liveDataRepository: MutableLiveData<List<Message.Params>>,dao: MessageDao){
         try{
-            val response = NetworkService.makeNetworkService().getMessage(Message.createMap(params.sender_id, params.receiver_id, token)).await()
+            val response = NetworkService.makeNetworkService().getMessages(Message.createMap(params.sender_id, params.receiver_id, token)).await()
             println("${response.success} ${response.message} ${response.messages}")
             dao.insert(response.messages)
             livData.postValue(response)
@@ -97,7 +97,24 @@ class UseCaseRepository {
             throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
         }
         finally {
-            liveDataRepository.postValue(getMessages(dao))
+            liveDataRepository.postValue(getMessages(dao,params.sender_id, params.receiver_id))
         }
+    }
+
+    suspend fun sendMessage(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>,liveDataRepository: MutableLiveData<List<Message.Params>>, dao: MessageDao){
+         try{
+             val response = NetworkService.makeNetworkService().sendMessage(Message.createMap(params.sender_id, params.receiver_id, token, params.message)).await()
+             //Создаем локальную переменную собщения, в которой не хватает всего лишь времени
+             val local = params
+             //Получаем в ответе от сервера время и вставляем в локальную переменную
+             local.message_date = response.messages.first().message_date
+             //А теперь вставляем в бд
+             dao.insert(local)
+             livData.postValue(response)
+             liveDataRepository.postValue(getMessages(dao, params.sender_id, params.receiver_id))
+         }catch (cause: Throwable){
+             println("Error!!!!${cause.message}")
+             throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
+         }
     }
 }

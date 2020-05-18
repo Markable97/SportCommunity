@@ -68,8 +68,8 @@ interface MessageDao{
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entity: List<Message.Params>)
 
-    @Query("select * from messages_table order by message_date")
-    suspend fun getMessages():List<Message.Params>
+    @Query("select * from messages_table where sender_id in (:user_id, :friend_id) and receiver_id in (:user_id, :friend_id)order by message_date")
+    suspend fun getMessages(user_id: Long, friend_id: Long):List<Message.Params>
 }
 
 @Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class], version = 1, exportSchema = false)
