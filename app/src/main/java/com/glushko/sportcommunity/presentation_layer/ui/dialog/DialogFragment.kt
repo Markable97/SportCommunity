@@ -15,6 +15,9 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
 import com.glushko.sportcommunity.presentation_layer.vm.DialogViewModel
 import kotlinx.android.synthetic.main.fragment_dialog.*
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
+
 
 class DialogFragment(private val friendId: Int) : Fragment() {
 
@@ -34,9 +37,19 @@ class DialogFragment(private val friendId: Int) : Fragment() {
 
         modelDialog = ViewModelProviders.of(this).get(DialogViewModel::class.java)
 
+
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        adapter = DialogAdapter(friend_id = friendId.toLong())
+        dialog_recycle.adapter = adapter
+        dialog_recycle.layoutManager = LinearLayoutManager(activity)
+
         modelDialog.LiveDataRepository.observe(this, Observer {
             println("Live data 1")
             adapter.setList((it as MutableList<Message.Params>))
+            dialog_recycle.smoothScrollToPosition(adapter.itemCount)
         })
 
 
@@ -46,17 +59,11 @@ class DialogFragment(private val friendId: Int) : Fragment() {
             println("DialogFragment: \n${it.success} ${it.message}, ${it.messages}")
             if(it.success==1){
                 etText.text.clear()
+                dialog_recycle.smoothScrollToPosition(adapter.itemCount)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
         })
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        adapter = DialogAdapter(friend_id = friendId.toLong())
-        dialog_recycle.adapter = adapter
-        dialog_recycle.layoutManager = LinearLayoutManager(activity)
 
         btnSend.setOnClickListener {
             val message = etText.text.toString()
@@ -66,5 +73,14 @@ class DialogFragment(private val friendId: Int) : Fragment() {
                 Toast.makeText(activity, "Введите сообщение", Toast.LENGTH_SHORT).show()
             }
         }
+        setEventListener(
+            activity!!,
+            viewLifecycleOwner,
+            object : KeyboardVisibilityEventListener {
+                override fun onVisibilityChanged(isOpen: Boolean) {
+                    dialog_recycle.smoothScrollToPosition(adapter.itemCount)
+                }
+            })
+
     }
 }
