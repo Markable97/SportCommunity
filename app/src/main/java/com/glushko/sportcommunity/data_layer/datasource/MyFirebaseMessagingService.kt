@@ -15,7 +15,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        Log.i(TAG, remoteMessage.notification?.body)
+        println(TAG + " From: ${remoteMessage.from}")
+        remoteMessage.data.isNotEmpty().let {
+            println(TAG + " Message data payload: " + remoteMessage.data)
+        }
 
     }
 
