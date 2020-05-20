@@ -1,5 +1,6 @@
 package com.glushko.sportcommunity.presentation_layer.ui.dialog
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class DialogAdapter(private var list: MutableList<Message.Params> = mutableListOf(), val friend_id: Long):
@@ -52,9 +55,11 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
         override val tvDate: TextView = itemView.findViewById(R.id.tvDate_me)
         override val tvMessage: TextView = itemView.findViewById(R.id.tvMessage_me)
 
+        @SuppressLint("SimpleDateFormat")
         override fun bind(item: Message.Params) {
-            val date = Date(item.message_date)
-            tvDate.text = formating.format(date.time)
+            val sdf = SimpleDateFormat("HH:mm")
+            val date = Date(item.message_date * 1000)
+            tvDate.text = sdf.format(date)
             tvMessage.text = item.message
         }
 
@@ -63,9 +68,11 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
         override val tvDate: TextView = itemView.findViewById(R.id.tvDate_other)
         override val tvMessage: TextView = itemView.findViewById(R.id.tvMessage_other)
 
+        @SuppressLint("SimpleDateFormat")
         override fun bind(item: Message.Params) {
-            val date = Date(item.message_date)
-            tvDate.text = formating.format(date.time)
+            val sdf = SimpleDateFormat("HH:mm")
+            val date = Date(item.message_date * 1000)
+            tvDate.text = sdf.format(date)
             tvMessage.text = item.message
         }
 

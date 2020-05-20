@@ -27,7 +27,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val message_date = remoteMessage.data["message_date"]?.toLong()?:0.toLong()
             val message = remoteMessage.data["message"]?:""
 
-            if(message_id != 0L){
+            if(sender_id != 0L && receiver_id != 0L && message_date!=0L && message!=""){
                 dao.insert(Message.Params(message_id,
                     sender_id, receiver_id, message, message_date
                 ))
