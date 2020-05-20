@@ -2,13 +2,15 @@ package com.glushko.sportcommunity.data_layer.datasource
 
 import android.content.Context
 import android.util.Log
-import com.glushko.sportcommunity.data_layer.datasource.ApiService.Companion.PARAM_EMAIL
-import com.glushko.sportcommunity.data_layer.datasource.ApiService.Companion.PARAM_TOKEN
+import com.glushko.sportcommunity.business_logic_layer.domain.Message
+import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager.Companion.ACCOUNT_TOKEN
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
     companion object {
 
         private const val TAG = "MyFirebaseMsgService"
@@ -16,8 +18,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         println(TAG + " From: ${remoteMessage.from}")
+        val dao = MainDatabase.getDatabase(this).messageDao()
         remoteMessage.data.isNotEmpty().let {
             println(TAG + " Message data payload: " + remoteMessage.data)
+            println(TAG + "toString() " + remoteMessage.data.toString())
+            val message: Message.Params = Gson().fromJson<Message.Params>(remoteMessage.data.toString(), Message.Params::class.java)
+            println("Message from JSON $message")
+            dao.insert(message)
         }
 
     }

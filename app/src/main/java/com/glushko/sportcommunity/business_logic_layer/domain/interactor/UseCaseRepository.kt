@@ -1,5 +1,6 @@
 package com.glushko.sportcommunity.business_logic_layer.domain.interactor
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.glushko.sportcommunity.business_logic_layer.domain.*
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
@@ -82,7 +83,7 @@ class UseCaseRepository {
         }
     }
 
-    private suspend fun getMessages(dao: MessageDao, sender_id_id: Long, receiver_id: Long): List<Message.Params>{
+    suspend fun getMessages(dao: MessageDao, sender_id_id: Long, receiver_id: Long): List<Message.Params>{
         return dao.getMessages(sender_id_id, receiver_id)
     }
 

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -25,6 +26,7 @@ class DialogFragment(private val friendId: Int) : Fragment() {
     lateinit var adapter: DialogAdapter
     lateinit var modelDialog: DialogViewModel
     lateinit var dataDialog: MutableLiveData<ResponseMessage>
+    lateinit var LiveDataRepository:  LiveData<List<Message.Params>>
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,11 +49,10 @@ class DialogFragment(private val friendId: Int) : Fragment() {
         dialog_recycle.layoutManager = LinearLayoutManager(activity)
 
         modelDialog.LiveDataRepository.observe(this, Observer {
-            println("Live data 1")
+            //println("Live data 1")
             adapter.setList((it as MutableList<Message.Params>))
             dialog_recycle.smoothScrollToPosition(adapter.itemCount)
         })
-
 
         dataDialog = modelDialog.getData(friendId)//Передать id друга
         dataDialog.observe(this, Observer {

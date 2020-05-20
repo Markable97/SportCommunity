@@ -12,7 +12,10 @@ import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCase
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okio.Timeout
 import java.net.URLDecoder
 
 class DialogViewModel(application: Application) : AndroidViewModel(application) {
@@ -29,9 +32,16 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
 
 
     fun getData(friendId: Int): MutableLiveData<ResponseMessage>{
+        whileGetMessages(friendId.toLong())
         getMessages(idUser, friendId, token)
         return liveData
     }
+
+    /*fun getDataRepositiry(friendId: Int): LiveData<List<Message.Params>>{
+        LiveDataRepository = useCaseRepository.getMessages(dao, idUser.toLong(), friendId.toLong())
+
+        return LiveDataRepository
+    }*/
 
     private fun getMessages(userId: Int, friendId: Int, token: String){
         viewModelScope.launch {
@@ -50,7 +60,7 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun sendMessage(friendId: Int, message: String){
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try{
 
                 val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),receiver_id = friendId.toLong(), message = URLDecoder.decode(message, "UTF-8"))
@@ -66,6 +76,17 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+
+    private fun whileGetMessages(friend_id: Long){
+        println("Start?")
+        viewModelScope.launch(Dispatchers.IO){
+            while(true){
+                delay(1000)
+                LiveDataRepository.postValue(useCaseRepository.getMessages(dao, idUser.toLong(), friend_id))
+            }
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         println("Метод очистки DialogVewModel!!")

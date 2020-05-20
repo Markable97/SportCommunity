@@ -63,7 +63,7 @@ interface MainDao{
 @Dao
 interface MessageDao{
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(entity: Message.Params)
+    fun insert(entity: Message.Params)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entity: List<Message.Params>)
