@@ -58,6 +58,8 @@ interface MainDao{
     suspend fun insertFriends(friends: MutableList<Friend.Params>)
     @Query("select * from friends_table")
     suspend fun getFriends():List<Friend.Params>
+    @Query("delete from friends_table")
+    suspend fun deleteFriends()
 }
 
 @Dao
@@ -68,8 +70,11 @@ interface MessageDao{
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entity: List<Message.Params>)
 
-    @Query("select * from messages_table where sender_id in (:user_id, :friend_id) and receiver_id in (:user_id, :friend_id)order by message_date")
+    @Query("select * from messages_table where sender_id in (:user_id, :friend_id) and receiver_id in (:user_id, :friend_id)order by message_date desc")
     suspend fun getMessages(user_id: Long, friend_id: Long):List<Message.Params>
+
+    @Query("delete from messages_table")
+    suspend fun deleteAllMessages()
 }
 
 @Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class], version = 1, exportSchema = false)

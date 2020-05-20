@@ -46,12 +46,14 @@ class DialogFragment(private val friendId: Int) : Fragment() {
 
         adapter = DialogAdapter(friend_id = friendId.toLong())
         dialog_recycle.adapter = adapter
-        dialog_recycle.layoutManager = LinearLayoutManager(activity)
+        val manager = LinearLayoutManager(activity)
+        manager.reverseLayout = true
+        dialog_recycle.layoutManager = manager
 
         modelDialog.LiveDataRepository.observe(this, Observer {
             //println("Live data 1")
             adapter.setList((it as MutableList<Message.Params>))
-            dialog_recycle.smoothScrollToPosition(adapter.itemCount)
+            dialog_recycle.smoothScrollToPosition(0)
         })
 
         dataDialog = modelDialog.getData(friendId)//Передать id друга
@@ -60,7 +62,7 @@ class DialogFragment(private val friendId: Int) : Fragment() {
             println("DialogFragment: \n${it.success} ${it.message}, ${it.messages}")
             if(it.success==1){
                 etText.text.clear()
-                dialog_recycle.smoothScrollToPosition(adapter.itemCount)
+                dialog_recycle.smoothScrollToPosition(0)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
@@ -79,7 +81,7 @@ class DialogFragment(private val friendId: Int) : Fragment() {
             viewLifecycleOwner,
             object : KeyboardVisibilityEventListener {
                 override fun onVisibilityChanged(isOpen: Boolean) {
-                    dialog_recycle.smoothScrollToPosition(adapter.itemCount)
+                    dialog_recycle.smoothScrollToPosition(0)
                 }
             })
 
