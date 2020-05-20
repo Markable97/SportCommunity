@@ -11,6 +11,7 @@ import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
 import com.glushko.sportcommunity.data_layer.repository.MainDao
 import com.glushko.sportcommunity.data_layer.repository.MessageDao
 import retrofit2.await
+import java.lang.Exception
 
 class UseCaseRepository {
     //val personInfo = mainDao.getPerson()
@@ -105,6 +106,9 @@ class UseCaseRepository {
     suspend fun sendMessage(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>,liveDataRepository: MutableLiveData<List<Message.Params>>, dao: MessageDao){
          try{
              val response = NetworkService.makeNetworkService().sendMessage(Message.createMap(params.sender_id, params.receiver_id, token, params.message)).await()
+             if(response.messages.isEmpty()){
+                 throw NetworkErrors(response.message, Exception())
+             }
              //Создаем локальную переменную собщения, в которой не хватает всего лишь времени
              val local = params
              //Получаем в ответе от сервера время и вставляем в локальную переменную

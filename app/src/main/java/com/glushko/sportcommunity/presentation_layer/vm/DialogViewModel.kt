@@ -71,7 +71,7 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
                 liveData.postValue(
                     ResponseMessage(
                         -1,
-                        "Server Error")
+                        err.message?:"Ошибка сервера")
                 )
             }
         }

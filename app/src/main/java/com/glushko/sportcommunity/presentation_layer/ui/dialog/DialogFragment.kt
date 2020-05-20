@@ -53,7 +53,7 @@ class DialogFragment(private val friendId: Int) : Fragment() {
         modelDialog.LiveDataRepository.observe(this, Observer {
             //println("Live data 1")
             adapter.setList((it as MutableList<Message.Params>))
-            dialog_recycle.smoothScrollToPosition(0)
+            //dialog_recycle.smoothScrollToPosition(0)
         })
 
         dataDialog = modelDialog.getData(friendId)//Передать id друга
