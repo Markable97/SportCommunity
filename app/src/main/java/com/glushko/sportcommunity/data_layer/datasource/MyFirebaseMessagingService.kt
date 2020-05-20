@@ -21,10 +21,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val dao = MainDatabase.getDatabase(this).messageDao()
         remoteMessage.data.isNotEmpty().let {
             println(TAG + " Message data payload: " + remoteMessage.data)
-            println(TAG + "toString() " + remoteMessage.data.toString())
-            val message: Message.Params = Gson().fromJson<Message.Params>(remoteMessage.data.toString(), Message.Params::class.java)
-            println("Message from JSON $message")
-            dao.insert(message)
+            val message_id = remoteMessage.data["message_id"]?.toLong()?:0.toLong()
+            val sender_id = remoteMessage.data["sender_id"]?.toLong()?:0.toLong()
+            val receiver_id = remoteMessage.data["receiver_id"]?.toLong()?:0.toLong()
+            val message_date = remoteMessage.data["message_date"]?.toLong()?:0.toLong()
+            val message = remoteMessage.data["message"]?:""
+
+            if(message_id != 0L){
+                dao.insert(Message.Params(message_id,
+                    sender_id, receiver_id, message, message_date
+                ))
+            }
         }
 
     }
