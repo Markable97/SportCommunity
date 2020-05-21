@@ -52,12 +52,16 @@ interface MainDao{
     suspend fun deleteMainPage()
     @Query("delete from main_page where team_id not in (:ids)")
     suspend fun deleteBadInfoMainPage(ids: List<Long>)
+
     @Query("select * from main_page")
-    suspend fun getMainPage(): List<TeamsUserInfo.Params>
+    fun getMainPage(): LiveData<List<TeamsUserInfo.Params>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFriends(friends: MutableList<Friend.Params>)
+
     @Query("select * from friends_table")
-    suspend fun getFriends():List<Friend.Params>
+    fun getFriends():LiveData<List<Friend.Params>>
+
     @Query("delete from friends_table")
     suspend fun deleteFriends()
 }

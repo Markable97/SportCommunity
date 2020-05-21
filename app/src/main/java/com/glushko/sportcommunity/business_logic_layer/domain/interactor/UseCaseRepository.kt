@@ -16,7 +16,7 @@ import java.lang.Exception
 class UseCaseRepository {
     //val personInfo = mainDao.getPerson()
 
-    var mainPageInfo: List<TeamsUserInfo.Params> = listOf()
+    //var mainPageInfo: List<TeamsUserInfo.Params> = listOf()
     suspend fun loginUser(params: Login.Params, data: MutableLiveData<ResponseLogin>){
         try{
             println("Выполняю запрос")
@@ -38,12 +38,12 @@ class UseCaseRepository {
         }
     }
 
-    private suspend fun mainPage(dao: MainDao):List<TeamsUserInfo.Params>{
-        mainPageInfo = dao.getMainPage()
+    fun mainPage(dao: MainDao):LiveData<List<TeamsUserInfo.Params>>{
+        val mainPageInfo = dao.getMainPage()
         return  mainPageInfo
         }
 
-    suspend fun mainPage(param: Int, livaData: MutableLiveData<ResponseMainPage>,liveDataRepository: MutableLiveData<List<TeamsUserInfo.Params>>,dao: MainDao){
+    suspend fun mainPage(param: Int, livaData: MutableLiveData<ResponseMainPage>,dao: MainDao){
         try{
             val response = NetworkService.makeNetworkService().main_page(TeamsUserInfo.createMap(param)).await()
             dao.insertMainPage(response.teamsUserinfo)
@@ -58,18 +58,17 @@ class UseCaseRepository {
             println("Error!!!!${cause.message}")
             throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
         }finally {
-            liveDataRepository.postValue(mainPage(dao))
+            //liveDataRepository.postValue(mainPage(dao))
         }
     }
 
-    private suspend fun getFriends(dao: MainDao): List<Friend.Params>{
+    fun getFriends(dao: MainDao): LiveData<List<Friend.Params>>{
         return dao.getFriends()
     }
 
     suspend fun getFriends(
         param: Int,
         liveData: MutableLiveData<ResponseFriends>,
-        liveDataRepository: MutableLiveData<List<Friend.Params>>,
         dao: MainDao
     ){
         try{
@@ -80,7 +79,7 @@ class UseCaseRepository {
             println("Error!!!!${cause.message}")
             throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
         }finally {
-            liveDataRepository.postValue(getFriends(dao))
+            //liveDataRepository.postValue(getFriends(dao))
         }
     }
 
