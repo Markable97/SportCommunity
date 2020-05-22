@@ -75,7 +75,7 @@ interface MessageDao{
     suspend fun insert(entity: List<Message.Params>)
 
     @Query("select * from messages_table where sender_id in (:user_id, :friend_id) and receiver_id in (:user_id, :friend_id)order by message_date desc")
-    suspend fun getMessages(user_id: Long, friend_id: Long):List<Message.Params>
+    fun getMessages(user_id: Long, friend_id: Long):LiveData<List<Message.Params>>
 
     @Query("delete from messages_table")
     suspend fun deleteAllMessages()

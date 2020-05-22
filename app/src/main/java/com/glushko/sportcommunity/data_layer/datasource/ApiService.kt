@@ -18,7 +18,7 @@ interface ApiService {
         const val PARAM_PASSWORD = "password"
         const val PARAM_NAME = "name"
         const val PARAM_TOKEN = "token"
-        const val PARAM_USER_DATE = "user_date"
+        const val PARAM_MESSAGE_DATE = "user_date"
         const val PARAM_USER_ID = "user_id"
         const val PARAM_SENDER_ID = "sender_id"
         const val PARAM_RECEIVER_ID = "receiver_id"

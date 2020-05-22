@@ -1,38 +1,73 @@
 package com.glushko.sportcommunity.presentation_layer.vm
 
 import android.app.Application
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
+import com.glushko.sportcommunity.data_layer.datasource.ApiService
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okio.Timeout
 import java.net.URLDecoder
 
-class DialogViewModel(application: Application) : AndroidViewModel(application) {
+class DialogViewModel(application: Application, private val friend_id: Long) : AndroidViewModel(application) {
+
+    companion object{
+        const val TAG = "DialogViewModel"
+        const val BROADCOAST_FILTER = "return.firebasemessage.service"
+    }
 
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
     private val dao = MainDatabase.getDatabase(application).messageDao()
-    val LiveDataRepository: MutableLiveData<List<Message.Params>> = MutableLiveData()
+    val liveDataRepository: LiveData<List<Message.Params>>
     private val liveData: MutableLiveData<ResponseMessage> = MutableLiveData()
     private val pref =  SharedPrefsManager(getApplication<Application>().
         getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
     private val account = pref.getAccount()
     private val idUser = account.idUser
     private val token = account.token
+    private lateinit var broadCoast: BroadcastReceiver
 
+    init {
+        liveDataRepository = useCaseRepository.getMessages(dao, idUser.toLong(), friend_id)
+        getRegisterBroadCoast()
+    }
+
+    private fun getRegisterBroadCoast(){
+        broadCoast = object : BroadcastReceiver() {
+            override fun onReceive(p0: Context?, intent: Intent?) {
+                println("$TAG данные из сервиса")
+                println("$TAG вставляю в локальную бд")
+                val senderId = intent?.getLongExtra(ApiService.PARAM_SENDER_ID, 0L)?:0L
+                val receiverId = intent?.getLongExtra(ApiService.PARAM_RECEIVER_ID, 0L)?:0L
+                val messageDate = intent?.getLongExtra(ApiService.PARAM_MESSAGE_DATE, 0L)?:0L
+                val message = intent?.getStringExtra(ApiService.PARAM_MESSAGE)?:""
+                viewModelScope.launch(Dispatchers.IO){
+                    dao.insert(Message.Params(0,
+                        senderId, receiverId, message, messageDate
+                    ))
+                }
+            }
+
+        }
+        LocalBroadcastManager.getInstance(getApplication()).registerReceiver(broadCoast, IntentFilter(BROADCOAST_FILTER))
+    }
 
     fun getData(friendId: Int): MutableLiveData<ResponseMessage>{
-        whileGetMessages(friendId.toLong())
+        //whileGetMessages(friendId.toLong())
+
         getMessages(idUser, friendId, token)
         return liveData
     }
@@ -47,7 +82,7 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             try{
                 val params = Message.Params(message_id = 0,sender_id = userId.toLong(),receiver_id = friendId.toLong())
-                useCaseRepository.getMessages(params, token, liveData, LiveDataRepository,dao)
+                useCaseRepository.getMessages(params, token, liveData,dao)
             }catch (err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(
@@ -65,7 +100,7 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
 
                 val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),receiver_id = friendId.toLong(), message = URLDecoder.decode(message, "UTF-8"))
                 println("Send message to server $params")
-                useCaseRepository.sendMessage(params, token, liveData, LiveDataRepository, dao)
+                useCaseRepository.sendMessage(params, token, liveData, dao)
             }catch (err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(
@@ -82,7 +117,7 @@ class DialogViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch(Dispatchers.IO){
             while(true){
                 delay(1000)
-                LiveDataRepository.postValue(useCaseRepository.getMessages(dao, idUser.toLong(), friend_id))
+                //LiveDataRepository.postValue(useCaseRepository.getMessages(dao, idUser.toLong(), friend_id))
             }
         }
     }

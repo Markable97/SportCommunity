@@ -1,13 +1,16 @@
 package com.glushko.sportcommunity.data_layer.datasource
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager.Companion.ACCOUNT_TOKEN
+import com.glushko.sportcommunity.presentation_layer.vm.DialogViewModel
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.Gson
+
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -21,18 +24,27 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val dao = MainDatabase.getDatabase(this).messageDao()
         remoteMessage.data.isNotEmpty().let {
             println(TAG + " Message data payload: " + remoteMessage.data)
-            val message_id = remoteMessage.data["message_id"]?.toLong()?:0.toLong()
-            val sender_id = remoteMessage.data["sender_id"]?.toLong()?:0.toLong()
-            val receiver_id = remoteMessage.data["receiver_id"]?.toLong()?:0.toLong()
-            val message_date = remoteMessage.data["message_date"]?.toLong()?:0.toLong()
+            val messageId = remoteMessage.data["message_id"]?.toLong()?:0.toLong()
+            val senderId = remoteMessage.data["sender_id"]?.toLong()?:0.toLong()
+            val receiverId = remoteMessage.data["receiver_id"]?.toLong()?:0.toLong()
+            val messageDate = remoteMessage.data["message_date"]?.toLong()?:0.toLong()
             val message = remoteMessage.data["message"]?:""
 
-            if(sender_id != 0L && receiver_id != 0L && message_date!=0L && message!=""){
-                dao.insert(Message.Params(message_id,
-                    sender_id, receiver_id, message, message_date
-                ))
+            if(senderId != 0L && receiverId != 0L && messageDate!=0L && message!=""){
+                println("Отправляю данные в диалог")
+                val intentForDialog = Intent(DialogViewModel.BROADCOAST_FILTER)
+                intentForDialog.putExtra(ApiService.PARAM_SENDER_ID, senderId)
+                intentForDialog.putExtra(ApiService.PARAM_RECEIVER_ID, receiverId)
+                intentForDialog.putExtra(ApiService.PARAM_MESSAGE_DATE, messageDate)
+                intentForDialog.putExtra(ApiService.PARAM_MESSAGE, message)
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intentForDialog)
+
+                /*dao.insert(Message.Params(messageId,
+                    senderId, receiverId, message, messageDate
+                ))*/
             }
         }
+
 
     }
 

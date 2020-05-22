@@ -1,5 +1,6 @@
 package com.glushko.sportcommunity.presentation_layer.ui.dialog
 
+import android.app.Application
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,8 @@ import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
 import com.glushko.sportcommunity.presentation_layer.vm.DialogViewModel
+import com.glushko.sportcommunity.presentation_layer.vm.ModelFactoryForDialog
+
 import kotlinx.android.synthetic.main.fragment_dialog.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
@@ -25,6 +28,7 @@ class DialogFragment(private val friendId: Int) : Fragment() {
     val layoutId: Int = R.layout.fragment_dialog
     lateinit var adapter: DialogAdapter
     lateinit var modelDialog: DialogViewModel
+    lateinit var modelDialogFactory: ModelFactoryForDialog
     lateinit var dataDialog: MutableLiveData<ResponseMessage>
     lateinit var LiveDataRepository:  LiveData<List<Message.Params>>
     override fun onCreateView(
@@ -32,15 +36,13 @@ class DialogFragment(private val friendId: Int) : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(layoutId, container, false)
+        val view = inflater.inflate(layoutId, container, false)
+        val context = context ?: return view
+        modelDialogFactory = ModelFactoryForDialog(context.applicationContext as Application, friendId.toLong())
+        modelDialog = ViewModelProviders.of(this, modelDialogFactory).get(DialogViewModel::class.java)
+        return view
     }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        modelDialog = ViewModelProviders.of(this).get(DialogViewModel::class.java)
-
-
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,8 +52,8 @@ class DialogFragment(private val friendId: Int) : Fragment() {
         manager.reverseLayout = true
         dialog_recycle.layoutManager = manager
 
-        modelDialog.LiveDataRepository.observe(this, Observer {
-            //println("Live data 1")
+        modelDialog.liveDataRepository.observe(this, Observer {
+            println("Live data 1")
             adapter.setList((it as MutableList<Message.Params>))
             //dialog_recycle.smoothScrollToPosition(0)
         })
