@@ -21,7 +21,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         println(TAG + " From: ${remoteMessage.from}")
-        val dao = MainDatabase.getDatabase(this).messageDao()
+        val dao = MainDatabase.getMessageDao(this)
         remoteMessage.data.isNotEmpty().let {
             println(TAG + " Message data payload: " + remoteMessage.data)
             val messageId = remoteMessage.data["message_id"]?.toLong()?:0.toLong()
@@ -31,17 +31,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val message = remoteMessage.data["message"]?:""
 
             if(senderId != 0L && receiverId != 0L && messageDate!=0L && message!=""){
-                println("Отправляю данные в диалог")
-                val intentForDialog = Intent(DialogViewModel.BROADCOAST_FILTER)
-                intentForDialog.putExtra(ApiService.PARAM_SENDER_ID, senderId)
-                intentForDialog.putExtra(ApiService.PARAM_RECEIVER_ID, receiverId)
-                intentForDialog.putExtra(ApiService.PARAM_MESSAGE_DATE, messageDate)
-                intentForDialog.putExtra(ApiService.PARAM_MESSAGE, message)
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intentForDialog)
-
-                /*dao.insert(Message.Params(messageId,
+                println("Вставляю данные в сервисе")
+                dao.insert(Message.Params(messageId,
                     senderId, receiverId, message, messageDate
-                ))*/
+                ))
             }
         }
 

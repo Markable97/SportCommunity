@@ -2,6 +2,7 @@ package com.glushko.sportcommunity.data_layer.repository
 
 
 import android.content.Context
+import android.graphics.LightingColorFilter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
@@ -77,6 +78,7 @@ interface MessageDao{
     @Query("select * from messages_table where sender_id in (:user_id, :friend_id) and receiver_id in (:user_id, :friend_id)order by message_date desc")
     fun getMessages(user_id: Long, friend_id: Long):LiveData<List<Message.Params>>
 
+
     @Query("delete from messages_table")
     suspend fun deleteAllMessages()
 }
@@ -84,12 +86,12 @@ interface MessageDao{
 @Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class], version = 1, exportSchema = false)
 abstract class MainDatabase: RoomDatabase(){
 
-    abstract fun mainDao(): MainDao
-    abstract fun messageDao(): MessageDao
+     abstract fun mainDao(): MainDao
+     abstract fun messageDao(): MessageDao
 
     companion object{
         private val INSTANCE: MainDatabase? = null
-
+        private var MESSAGE_DAO: MessageDao? = null
         fun getDatabase(context: Context): MainDatabase{
             if(INSTANCE==null){
                 synchronized(this){
@@ -100,6 +102,13 @@ abstract class MainDatabase: RoomDatabase(){
                 }
             }
             return INSTANCE
+        }
+
+        fun getMessageDao(context: Context): MessageDao{
+            if(MESSAGE_DAO ==null){
+                MESSAGE_DAO = getDatabase(context).messageDao()
+            }
+            return MESSAGE_DAO!!
         }
 
             private val MIGRATION_1_2 = object : Migration(1, 2) {

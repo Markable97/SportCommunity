@@ -30,7 +30,7 @@ class DialogViewModel(application: Application, private val friend_id: Long) : A
     }
 
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
-    private val dao = MainDatabase.getDatabase(application).messageDao()
+    private val dao = MainDatabase.getMessageDao(application)
     val liveDataRepository: LiveData<List<Message.Params>>
     private val liveData: MutableLiveData<ResponseMessage> = MutableLiveData()
     private val pref =  SharedPrefsManager(getApplication<Application>().
@@ -42,28 +42,8 @@ class DialogViewModel(application: Application, private val friend_id: Long) : A
 
     init {
         liveDataRepository = useCaseRepository.getMessages(dao, idUser.toLong(), friend_id)
-        getRegisterBroadCoast()
     }
 
-    private fun getRegisterBroadCoast(){
-        broadCoast = object : BroadcastReceiver() {
-            override fun onReceive(p0: Context?, intent: Intent?) {
-                println("$TAG данные из сервиса")
-                println("$TAG вставляю в локальную бд")
-                val senderId = intent?.getLongExtra(ApiService.PARAM_SENDER_ID, 0L)?:0L
-                val receiverId = intent?.getLongExtra(ApiService.PARAM_RECEIVER_ID, 0L)?:0L
-                val messageDate = intent?.getLongExtra(ApiService.PARAM_MESSAGE_DATE, 0L)?:0L
-                val message = intent?.getStringExtra(ApiService.PARAM_MESSAGE)?:""
-                viewModelScope.launch(Dispatchers.IO){
-                    dao.insert(Message.Params(0,
-                        senderId, receiverId, message, messageDate
-                    ))
-                }
-            }
-
-        }
-        LocalBroadcastManager.getInstance(getApplication()).registerReceiver(broadCoast, IntentFilter(BROADCOAST_FILTER))
-    }
 
     fun getData(friendId: Int): MutableLiveData<ResponseMessage>{
         //whileGetMessages(friendId.toLong())

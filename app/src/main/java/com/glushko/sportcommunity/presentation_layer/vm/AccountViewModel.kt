@@ -137,7 +137,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
             getSharedPreferences(this.getApplication<Application>().packageName,Context.MODE_PRIVATE))
         pref.logout()
         val dao = MainDatabase.getDatabase(this.getApplication()).mainDao()
-        val messageDao = MainDatabase.getDatabase(this.getApplication()).messageDao()
+        val messageDao = MainDatabase.getMessageDao(this.getApplication())
         job = viewModelScope.launch {
             println("Clear all table")
             dao.deleteMainPage()
