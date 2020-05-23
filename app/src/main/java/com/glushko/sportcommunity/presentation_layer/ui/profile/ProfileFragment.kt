@@ -4,27 +4,23 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
-import com.glushko.sportcommunity.business_logic_layer.domain.Register
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
-import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.ProfileViewModel
 import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-class ProfileFragment(var userId: Int = 0, var userName: String = "" ,val callbackActivity: Callback) : BaseFragment() {
+class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: Boolean = true,val callbackActivity: Callback ) : BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_profile
     override val titleToolbar: Int = R.string.screen_profile
-     //var  model: AccountViewModel = model
-     //var dataLogin: LiveData<Register.Params>? = dataLogin
+
 
 
 
@@ -34,29 +30,14 @@ class ProfileFragment(var userId: Int = 0, var userName: String = "" ,val callba
 
     var listInfoProfile: MutableList<TeamsUserInfo.Params> = mutableListOf()
 
-    /*override fun onCreateView(
-        inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-    ): View? {
 
-        return inflater.inflate(layoutId, container, false)
-    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         modelPage = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
-        /*modelPage.LiveDataRepository.observe(this, Observer{
-            println("Live data 1")
-            adapter.setList(it as MutableList<TeamsUserInfo.Params>)
-        })*/
-        dataProfile = if(userId == 0){
-            modelPage.getData()
-        }else{
-            modelPage.getData(userId.toLong())
-        }
+        dataProfile = modelPage.getData(userId.toLong())
+
 
         dataProfile.observe(this, Observer<ResponseMainPage>{
             println("Live data 2")
@@ -73,24 +54,32 @@ class ProfileFragment(var userId: Int = 0, var userName: String = "" ,val callba
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bt_notification.applyClickShrink()
-        bt_chat.applyClickShrink()
+        btn_profile_1.applyClickShrink()
+        bt_profile_2.applyClickShrink()
+
+        if(isMe){
+            btn_profile_1.background = context?.getDrawable(R.drawable.ic_notifications_black_36dp)
+            bt_profile_2.background = context?.getDrawable(R.drawable.ic_settings_black_36dp)
+        }else{
+            btn_profile_1.background = context?.getDrawable(R.drawable.ic_check)
+            bt_profile_2.background = context?.getDrawable(R.drawable.ic_chat)
+        }
 
         adapter = ProfileTeamsAdapter(listInfoProfile, object : ProfileTeamsAdapter.Callback{
             override fun onItemClicked(item: TeamsUserInfo.Params, bitmap: Bitmap) {
                 Toast.makeText(activity, "This is team - ${item.team_name}", Toast.LENGTH_SHORT).show()
-                callbackActivity.changeFragment(item.team_name, item.team_desc, bitmap, item.leader_id)
+                callbackActivity.onClickTeam(item.team_name, item.team_desc, bitmap, item.leader_id)
             }
 
         })
         profile_recycler_teams.adapter = adapter
         profile_recycler_teams.layoutManager = LinearLayoutManager(activity)
 
-        bt_notification.setOnClickListener {
-            Toast.makeText(activity, "This is Notification", Toast.LENGTH_SHORT).show()
+        btn_profile_1.setOnClickListener {
+            callbackActivity.onClickBtnLeft(isMe)
         }
-        bt_chat.setOnClickListener {
-            Toast.makeText(activity, "This is chat", Toast.LENGTH_SHORT).show()
+        bt_profile_2.setOnClickListener {
+            callbackActivity.onClickBtnRight(isMe, userId, userName)
         }
     }
 
@@ -98,17 +87,14 @@ class ProfileFragment(var userId: Int = 0, var userName: String = "" ,val callba
         super.onResume()
         println("ProfileFragment: OnResume")
         tv_profile_name.text = userName
-        /*dataLogin?.let {
-            it.observe(this, Observer<Register.Params>{
-                if(it.name != null){
-                    tv_profile_name.text = it.name
-                }
-            })
-        }*/
     }
 
     interface Callback{
-        fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int)
+        fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int)
+
+        fun onClickBtnLeft(isMe: Boolean)
+
+        fun onClickBtnRight(isMe: Boolean, idUser: Int = 0, userName: String = "")
     }
 
     override fun onPause() {

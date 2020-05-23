@@ -104,14 +104,12 @@ class HomeActivity :  AppCompatActivity() {
         }
         btnNotification.setOnClickListener {
             drawerLayout.closeDrawers()
-            toolbar.title = btnNotificationText.text
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, NotificationFragment()).commit()
+            openNotificationFragment()
         }
 
         btnSetting.setOnClickListener {
             drawerLayout.closeDrawers()
-            toolbar.title = btnSettingText.text
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, SettingFragment()).commit()
+            openSettingFragment()
         }
 
         btnLogout.setOnClickListener {
@@ -120,16 +118,51 @@ class HomeActivity :  AppCompatActivity() {
         }
     }
 
-    private fun openProfileFragment(user_id: Int?, user_name: String?){
+    private fun openProfileFragment(user_id: Int?, user_name: String?, isMe: Boolean = true){
         if(user_id!=null && user_name!=null){
-            val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, callbackActivity = object : ProfileFragment.Callback{
-                override fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int) {
+            val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, isMe = isMe, callbackActivity = object : ProfileFragment.Callback{
+                override fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int) {
                     openTeamFragment(teamName, teamDesc, bitmap, leader_id)
+                }
+
+                override fun onClickBtnLeft(isMe: Boolean) {
+                    if(isMe){
+                        openNotificationFragment()
+                    }else{
+                        openAddDialogFragment()
+                    }
+                }
+
+                override fun onClickBtnRight(isMe: Boolean, idUser: Int, user_name: String) {
+                    if(isMe){
+                        openSettingFragment()
+                    }else{
+                        toolbar.title = user_name
+                        openDialogFragment(idUser)
+                    }
                 }
 
             })
             supportFragmentManager.beginTransaction().replace(fragmentContainer, fragmentProfile).commit()
         }
+    }
+
+    private fun openDialogFragment(id_user: Int) {
+        supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(id_user)).commit()
+    }
+
+    private fun openSettingFragment() {
+        toolbar.title = btnSettingText.text
+        supportFragmentManager.beginTransaction().replace(fragmentContainer, SettingFragment()).commit()
+    }
+
+    private fun openAddDialogFragment() {
+        Toast.makeText(this, "Диалог фрагмент отправки запроса на дружбу", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun openNotificationFragment() {
+        toolbar.title = btnNotificationText.text
+        supportFragmentManager.beginTransaction().replace(fragmentContainer, NotificationFragment()).commit()
     }
 
     private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int){
@@ -144,12 +177,13 @@ class HomeActivity :  AppCompatActivity() {
     private fun openFriendsFragment(){
         val fragmentFriends = FriendsFragment(object : FriendsFragment.Callback{
             override fun changeFragment(friend_id: Int, friend_name: String) {
-                openProfileFragment(friend_id, friend_name)
+                openProfileFragment(friend_id, friend_name, false)
             }
 
         })
         supportFragmentManager.beginTransaction().replace(fragmentContainer, fragmentFriends).commit()
     }
+
 
     fun hideSoftKeyboard() {
         if (currentFocus != null) {

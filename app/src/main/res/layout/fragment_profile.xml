@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/bt_chat"
+        android:id="@+id/bt_profile_2"
         android:layout_width="30dp"
         android:layout_height="35dp"
         android:layout_marginStart="5dp"
@@ -36,7 +36,7 @@
         app:layout_constraintStart_toEndOf="@+id/ivUserImage" />
 
     <Button
-        android:id="@+id/bt_notification"
+        android:id="@+id/btn_profile_1"
         android:layout_width="30dp"
         android:layout_height="35dp"
 
