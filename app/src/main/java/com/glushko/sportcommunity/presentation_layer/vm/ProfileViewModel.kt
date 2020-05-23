@@ -18,11 +18,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
     //val person: LiveData<Person>
     val liveData:MutableLiveData<ResponseMainPage> = MutableLiveData()
-    val LiveDataRepository: LiveData<List<TeamsUserInfo.Params>>
+    //val LiveDataRepository: LiveData<List<TeamsUserInfo.Params>>
     private val mainDao = MainDatabase.getDatabase(application).mainDao()
 
     init{
-        LiveDataRepository = useCaseRepository.mainPage(mainDao)
+        //LiveDataRepository = useCaseRepository.mainPage(mainDao)
     }
 
     fun getData():MutableLiveData<ResponseMainPage>{
@@ -34,7 +34,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         return liveData
     }
 
-    fun getMainPage(user_id: Int = 0){
+    fun getData(id: Long):MutableLiveData<ResponseMainPage>{
+        getMainPage(id.toInt())
+        return liveData
+    }
+
+    private fun getMainPage(user_id: Int = 0){
         viewModelScope.launch {
             try {
                 useCaseRepository.mainPage(user_id, liveData, mainDao)

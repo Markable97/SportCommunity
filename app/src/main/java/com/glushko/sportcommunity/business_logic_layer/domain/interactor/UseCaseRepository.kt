@@ -43,16 +43,18 @@ class UseCaseRepository {
         return  mainPageInfo
         }
 
+
+
     suspend fun mainPage(param: Int, livaData: MutableLiveData<ResponseMainPage>,dao: MainDao){
         try{
-            val response = NetworkService.makeNetworkService().main_page(TeamsUserInfo.createMap(param)).await()
-            dao.insertMainPage(response.teamsUserinfo)
+            val response = NetworkService.makeNetworkService().mainPage(TeamsUserInfo.createMap(param)).await()
+            /*dao.insertMainPage(response.teamsUserinfo)
             //вытащить список всех id
             val listId = mutableListOf<Long>()
             for(info in response.teamsUserinfo){
                 listId.add(info.team_id.toLong())
             }
-            dao.deleteBadInfoMainPage(listId.toList())
+            dao.deleteBadInfoMainPage(listId.toList())*/
             livaData.postValue(response)
         }catch (cause: Throwable){
             println("Error!!!!${cause.message}")

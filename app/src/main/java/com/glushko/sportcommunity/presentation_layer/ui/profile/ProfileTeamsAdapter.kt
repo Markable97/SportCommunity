@@ -54,6 +54,7 @@ class ProfileTeamsAdapter(private var list: MutableList<TeamsUserInfo.Params>, v
     }
 
     internal fun setList(list: MutableList<TeamsUserInfo.Params>){
+        this.list.clear()
         this.list = list
         notifyDataSetChanged()
     }

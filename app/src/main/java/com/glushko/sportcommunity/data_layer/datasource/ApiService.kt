@@ -35,7 +35,7 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST(MAIN_PAGE)
-    fun main_page(@FieldMap params: Map<String, String>):Call<ResponseMainPage>
+    fun mainPage(@FieldMap params: Map<String, String>):Call<ResponseMainPage>
 
     @FormUrlEncoded
     @POST(FRIENDS)

@@ -19,12 +19,12 @@ import com.glushko.sportcommunity.presentation_layer.vm.ProfileViewModel
 import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Params>, val callbackActivity: Callback) : BaseFragment() {
+class ProfileFragment(var userId: Int = 0, var userName: String = "" ,val callbackActivity: Callback) : BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_profile
     override val titleToolbar: Int = R.string.screen_profile
-     var  model: AccountViewModel = model
-     var dataLogin: LiveData<Register.Params> = dataLogin
+     //var  model: AccountViewModel = model
+     //var dataLogin: LiveData<Register.Params>? = dataLogin
 
 
 
@@ -48,17 +48,22 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
 
 
         modelPage = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
-        modelPage.LiveDataRepository.observe(this, Observer{
+        /*modelPage.LiveDataRepository.observe(this, Observer{
             println("Live data 1")
             adapter.setList(it as MutableList<TeamsUserInfo.Params>)
-        })
-        dataProfile = modelPage.getData()
+        })*/
+        dataProfile = if(userId == 0){
+            modelPage.getData()
+        }else{
+            modelPage.getData(userId.toLong())
+        }
+
         dataProfile.observe(this, Observer<ResponseMainPage>{
             println("Live data 2")
             println("ProfileFragment: \n${it.success} ${it.message}, ${it.teamsUserinfo}")
             if(it.success == 1){
-                //listInfoProfile = it.teamsUserinfo
-                //adapter.setList(listInfoProfile)
+                listInfoProfile = it.teamsUserinfo
+                adapter.setList(listInfoProfile)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
@@ -92,11 +97,14 @@ class ProfileFragment(model: AccountViewModel, dataLogin: LiveData<Register.Para
     override fun onResume() {
         super.onResume()
         println("ProfileFragment: OnResume")
-        dataLogin.observe(this, Observer<Register.Params>{
-            if(it.name != null){
-                tv_profile_name.text = it.name
-            }
-        })
+        tv_profile_name.text = userName
+        /*dataLogin?.let {
+            it.observe(this, Observer<Register.Params>{
+                if(it.name != null){
+                    tv_profile_name.text = it.name
+                }
+            })
+        }*/
     }
 
     interface Callback{

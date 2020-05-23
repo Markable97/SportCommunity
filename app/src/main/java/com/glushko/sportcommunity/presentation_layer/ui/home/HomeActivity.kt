@@ -53,20 +53,14 @@ class HomeActivity :  AppCompatActivity() {
 
 
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
-        //model.getAccountRepository()
 
         dataLogin = model.getLoginData()
         dataLogin.observe(this, Observer<Register.Params> {
-            if(it.email != null ){
-                tvUserName.text = it.name
-                tvUserEmail.text = it.email
-            }
+            tvUserName.text = it.name
+            tvUserEmail.text = it.email
+            openProfileFragment(it.idUser, it.name)
         })
-        //val account = SharedPrefsManager(this.getSharedPreferences(this.packageName, Context.MODE_PRIVATE)).getAccount()
 
-
-
-        //println("Home activity $account \n")
 
 
         supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
@@ -84,25 +78,14 @@ class HomeActivity :  AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        val fragment =  ProfileFragment(model, dataLogin, object : ProfileFragment.Callback{
-            override fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int) {
-                toolbar.title = teamName
-                val userId = dataLogin.value?.idUser?:0
-                var isLeader = false
-                if(userId == leader_id)
-                    isLeader = true
-                supportFragmentManager.beginTransaction().add(fragmentContainer, TeamFragment(teamName, teamDesc, bitmap, isLeader)).commit()
-            }
 
-        })
 
-        supportFragmentManager.beginTransaction().replace(fragmentContainer, fragment).commit()
+
 
         profileContainer.setOnClickListener {
             drawerLayout.closeDrawers()
             toolbar.title = "Профиль"
-
-            supportFragmentManager.beginTransaction().replace(fragmentContainer,fragment).commit()
+            openProfileFragment(dataLogin.value?.idUser, dataLogin.value?.name)
 
         }
 
@@ -112,17 +95,12 @@ class HomeActivity :  AppCompatActivity() {
             supportFragmentManager.beginTransaction().replace(fragmentContainer, ChatsFragment()).commit()
         }
 
-        val fragmentFriends = FriendsFragment(object : FriendsFragment.Callback{
-            override fun changeFragment(friend_id: Int) {
-                supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(friend_id)).commit()
-            }
 
-        })
         btnFriends.setOnClickListener {
-
             drawerLayout.closeDrawers()
             toolbar.title = btnFriendsText.text
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, fragmentFriends).commit()
+            openFriendsFragment()
+
         }
         btnNotification.setOnClickListener {
             drawerLayout.closeDrawers()
@@ -140,6 +118,37 @@ class HomeActivity :  AppCompatActivity() {
             model.logout()
             navigator.showLogin(this)
         }
+    }
+
+    private fun openProfileFragment(user_id: Int?, user_name: String?){
+        if(user_id!=null && user_name!=null){
+            val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, callbackActivity = object : ProfileFragment.Callback{
+                override fun changeFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int) {
+                    openTeamFragment(teamName, teamDesc, bitmap, leader_id)
+                }
+
+            })
+            supportFragmentManager.beginTransaction().replace(fragmentContainer, fragmentProfile).commit()
+        }
+    }
+
+    private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int){
+        toolbar.title = teamName
+        val userId = dataLogin.value?.idUser?:0
+        var isLeader = false
+        if(userId == leader_id)
+            isLeader = true
+        supportFragmentManager.beginTransaction().add(fragmentContainer, TeamFragment(teamName, teamDesc, bitmap, isLeader)).commit()
+    }
+
+    private fun openFriendsFragment(){
+        val fragmentFriends = FriendsFragment(object : FriendsFragment.Callback{
+            override fun changeFragment(friend_id: Int, friend_name: String) {
+                openProfileFragment(friend_id, friend_name)
+            }
+
+        })
+        supportFragmentManager.beginTransaction().replace(fragmentContainer, fragmentFriends).commit()
     }
 
     fun hideSoftKeyboard() {

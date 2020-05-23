@@ -60,7 +60,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = FriendsAdapter(callback = object : FriendsAdapter.Callback{
             override fun onClickFriend(item: Friend.Params) {
-                callback.changeFragment(item.friend_id)
+                callback.changeFragment(item.friend_id, item.friend_name)
             }
 
         })
@@ -69,6 +69,6 @@ class FriendsFragment(val callback: Callback) : Fragment() {
     }
 
     interface Callback{
-        fun changeFragment(friend_id: Int)
+        fun changeFragment(friend_id: Int, friend_name: String)
     }
 }
