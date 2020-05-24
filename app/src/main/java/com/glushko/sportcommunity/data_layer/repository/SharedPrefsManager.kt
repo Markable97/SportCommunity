@@ -14,6 +14,17 @@ class SharedPrefsManager(private val prefs: SharedPreferences) {
         const val ACCOUNT_IMAGE = "account_image"
         const val ACCOUNT_PASSWORD = "account_password"
 
+        private var INSTANCE: SharedPrefsManager? = null
+
+        fun getSharedPrefsManager(prefs: SharedPreferences): SharedPrefsManager{
+            if(INSTANCE==null) {
+                INSTANCE = SharedPrefsManager(prefs)
+
+            }
+            return INSTANCE!!
+        }
+
+
     }
 
     fun saveAccount(account: Register.Params){

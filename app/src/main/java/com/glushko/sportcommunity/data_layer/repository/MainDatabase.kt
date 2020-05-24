@@ -82,6 +82,9 @@ interface MessageDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLastMessage(entity: List<LastMessage.Params>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertLastMessage(entity: LastMessage.Params)
+
     @Query("select * from last_messages_table order by message_date desc")
     fun getLastMessage(): LiveData<List<LastMessage.Params>>
 
