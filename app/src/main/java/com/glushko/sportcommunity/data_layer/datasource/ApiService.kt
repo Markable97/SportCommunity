@@ -13,6 +13,7 @@ interface ApiService {
         const val FRIENDS = "GetFriends"
         const val GET_MESSAGES = "GetMessages"
         const val SEND_MESSAGE = "SendMessage"
+        const val LAST_MESSAGE_CONTACT = "GetLastContactMessage"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -48,6 +49,11 @@ interface ApiService {
     @FormUrlEncoded
     @POST(SEND_MESSAGE)
     fun sendMessage(@FieldMap params: Map<String, String>):Call<ResponseMessage>
+
+    @FormUrlEncoded
+    @POST(LAST_MESSAGE_CONTACT)
+    fun getLastContactMessage(@FieldMap params: Map<String, String>):Call<ResponseLastMessage>
+
 
 
 }

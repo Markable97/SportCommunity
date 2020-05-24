@@ -92,7 +92,7 @@ class HomeActivity :  AppCompatActivity() {
         btnChats.setOnClickListener {
             drawerLayout.closeDrawers()
             toolbar.title = btnChatsText.text
-            supportFragmentManager.beginTransaction().replace(fragmentContainer, ChatsFragment()).commit()
+            openChatsFragment()
         }
 
 
@@ -138,7 +138,7 @@ class HomeActivity :  AppCompatActivity() {
                         openSettingFragment()
                     }else{
                         toolbar.title = user_name
-                        openDialogFragment(idUser)
+                        openDialogFragment(idUser.toLong())
                     }
                 }
 
@@ -147,7 +147,17 @@ class HomeActivity :  AppCompatActivity() {
         }
     }
 
-    private fun openDialogFragment(id_user: Int) {
+    private fun openChatsFragment(){
+        val frgmentChats = ChatsFragment(object : ChatsFragment.Callback{
+            override fun changeFragment(contact_id: Long) {
+                openDialogFragment(contact_id)
+            }
+
+        })
+        supportFragmentManager.beginTransaction().replace(fragmentContainer, frgmentChats).commit()
+    }
+
+    private fun openDialogFragment(id_user: Long) {
         supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(id_user)).commit()
     }
 

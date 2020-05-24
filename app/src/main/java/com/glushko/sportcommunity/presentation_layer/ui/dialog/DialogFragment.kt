@@ -23,7 +23,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.set
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
 
-class DialogFragment(private val friendId: Int) : Fragment() {
+class DialogFragment(private val friendId: Long) : Fragment() {
 
     val layoutId: Int = R.layout.fragment_dialog
     lateinit var adapter: DialogAdapter
@@ -38,7 +38,7 @@ class DialogFragment(private val friendId: Int) : Fragment() {
     ): View? {
         val view = inflater.inflate(layoutId, container, false)
         val context = context ?: return view
-        modelDialogFactory = ModelFactoryForDialog(context.applicationContext as Application, friendId.toLong())
+        modelDialogFactory = ModelFactoryForDialog(context.applicationContext as Application, friendId)
         modelDialog = ViewModelProviders.of(this, modelDialogFactory).get(DialogViewModel::class.java)
         return view
     }

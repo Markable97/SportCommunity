@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.glushko.sportcommunity.business_logic_layer.domain.*
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseLogin
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
+import com.glushko.sportcommunity.data_layer.datasource.response.*
 import com.glushko.sportcommunity.data_layer.repository.MainDao
 import com.glushko.sportcommunity.data_layer.repository.MessageDao
 import retrofit2.await
@@ -91,6 +88,7 @@ class UseCaseRepository {
 
     suspend fun getMessages(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>,dao: MessageDao){
         try{
+            println("$params")
             val response = NetworkService.makeNetworkService().getMessages(Message.createMap(params.sender_id, params.receiver_id, token)).await()
             println("${response.success} ${response.message} ${response.messages}")
             dao.insert(response.messages)
@@ -123,5 +121,21 @@ class UseCaseRepository {
              println("Error!!!!${cause.message}")
              throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
          }
+    }
+
+    suspend fun getLastContactMessage(userId: Long, token: String, liveData: MutableLiveData<ResponseLastMessage>, dao: MessageDao){
+        try{
+            val response =  NetworkService.makeNetworkService().getLastContactMessage(LastMessage.createMap(userId, token)).await()
+            println(response.message)
+            if(response.lastMessages.isEmpty()){
+                throw NetworkErrors(response.message, Exception())
+            }
+            dao.insertLastMessage(response.lastMessages.toList())
+            liveData.postValue(response)
+        }catch (cause: Throwable){
+            println("Error!!!!${cause.message}")
+            throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
+        }
+
     }
 }

@@ -22,7 +22,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 
-class DialogViewModel(application: Application, private val friend_id: Long) : AndroidViewModel(application) {
+class DialogViewModel(application: Application, val friend_id: Long) : AndroidViewModel(application) {
 
     companion object{
         const val TAG = "DialogViewModel"
@@ -45,10 +45,10 @@ class DialogViewModel(application: Application, private val friend_id: Long) : A
     }
 
 
-    fun getData(friendId: Int): MutableLiveData<ResponseMessage>{
+    fun getData(friendId: Long): MutableLiveData<ResponseMessage>{
         //whileGetMessages(friendId.toLong())
 
-        getMessages(idUser, friendId, token)
+        getMessages(idUser, friend_id, token)
         return liveData
     }
 
@@ -58,10 +58,10 @@ class DialogViewModel(application: Application, private val friend_id: Long) : A
         return LiveDataRepository
     }*/
 
-    private fun getMessages(userId: Int, friendId: Int, token: String){
+    private fun getMessages(userId: Int, friendId: Long, token: String){
         viewModelScope.launch {
             try{
-                val params = Message.Params(message_id = 0,sender_id = userId.toLong(),receiver_id = friendId.toLong())
+                val params = Message.Params(message_id = 0,sender_id = userId.toLong(),receiver_id = friendId)
                 useCaseRepository.getMessages(params, token, liveData,dao)
             }catch (err: NetworkErrors){
                 println(err.message)
@@ -74,11 +74,11 @@ class DialogViewModel(application: Application, private val friend_id: Long) : A
         }
     }
 
-    fun sendMessage(friendId: Int, message: String){
+    fun sendMessage(friendId: Long, message: String){
         viewModelScope.launch(Dispatchers.IO) {
             try{
 
-                val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),receiver_id = friendId.toLong(), message = URLDecoder.decode(message, "UTF-8"))
+                val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),receiver_id = friendId, message = URLDecoder.decode(message, "UTF-8"))
                 println("Send message to server $params")
                 useCaseRepository.sendMessage(params, token, liveData, dao)
             }catch (err: NetworkErrors){

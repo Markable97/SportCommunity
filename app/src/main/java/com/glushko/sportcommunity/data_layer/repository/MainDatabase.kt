@@ -9,6 +9,7 @@ import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.glushko.sportcommunity.business_logic_layer.domain.Friend
+import com.glushko.sportcommunity.business_logic_layer.domain.LastMessage
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 
@@ -78,12 +79,20 @@ interface MessageDao{
     @Query("select * from messages_table where sender_id in (:user_id, :friend_id) and receiver_id in (:user_id, :friend_id)order by message_date desc")
     fun getMessages(user_id: Long, friend_id: Long):LiveData<List<Message.Params>>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertLastMessage(entity: List<LastMessage.Params>)
+
+    @Query("select * from last_messages_table order by message_date desc")
+    fun getLastMessage(): LiveData<List<LastMessage.Params>>
 
     @Query("delete from messages_table")
     suspend fun deleteAllMessages()
+
+    @Query("delete from last_messages_table")
+    suspend fun deleteAllLastMessage()
 }
 
-@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class], version = 1, exportSchema = false)
+@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class, LastMessage.Params::class], version = 1, exportSchema = false)
 abstract class MainDatabase: RoomDatabase(){
 
      abstract fun mainDao(): MainDao

@@ -143,6 +143,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
             dao.deleteMainPage()
             dao.deleteFriends()
             messageDao.deleteAllMessages()
+            messageDao.deleteAllLastMessage()
             println("Clear done" +
                     "")
         }
