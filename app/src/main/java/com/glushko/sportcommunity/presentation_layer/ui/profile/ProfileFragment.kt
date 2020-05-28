@@ -1,6 +1,10 @@
 package com.glushko.sportcommunity.presentation_layer.ui.profile
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -15,6 +19,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.vm.ProfileViewModel
 import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.io.File
 
 class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: Boolean = true,val callbackActivity: Callback ) : BaseFragment() {
 
@@ -81,12 +86,26 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
         bt_profile_2.setOnClickListener {
             callbackActivity.onClickBtnRight(isMe, userId, userName)
         }
+
+        ivUserImage.setOnClickListener {
+            super.takePhotoIntent()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         println("ProfileFragment: OnResume")
         tv_profile_name.text = userName
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode==TAKE_PICTURE_REQUEST && resultCode == RESULT_OK){
+            val file = File(currentPhotoPath)
+            val photo: Uri = Uri.fromFile(file)
+            ivUserImage.setImageURI(photo)
+            super.saveImage(((ivUserImage.drawable) as BitmapDrawable).bitmap, "${System.currentTimeMillis()}")
+        }
     }
 
     interface Callback{
