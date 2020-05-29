@@ -104,7 +104,7 @@ class UseCaseRepository {
 
     suspend fun sendMessage(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>, dao: MessageDao){
          try{
-             val response = NetworkService.makeNetworkService().sendMessage(Message.createMap(params.sender_id, params.receiver_id, token, params.message)).await()
+             val response = NetworkService.makeNetworkService().sendMessage(Message.createMap(params.sender_id, params.receiver_id, token, params.message, params.message_type)).await()
              if(response.messages.isEmpty()){
                  throw NetworkErrors(response.message, Exception())
              }

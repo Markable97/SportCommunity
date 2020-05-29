@@ -23,7 +23,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val dao = MainDatabase.getMessageDao(this)
         remoteMessage.data.isNotEmpty().let {
             println(TAG + " Message data payload: " + remoteMessage.data)
-            val messageType = remoteMessage.data["message_type"]?.toInt()?:0
+            val messageType = remoteMessage.data["type_message"]?.toInt()?:0
             val messageId = remoteMessage.data["message_id"]?.toLong()?:0.toLong()
             val senderId = remoteMessage.data["sender_id"]?.toLong()?:0.toLong()
             val receiverId = remoteMessage.data["receiver_id"]?.toLong()?:0.toLong()
