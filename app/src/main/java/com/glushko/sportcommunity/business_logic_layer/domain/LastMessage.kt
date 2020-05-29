@@ -10,6 +10,7 @@ class LastMessage {
     data class Params(
         var message_id: Long,
         @PrimaryKey var contact_id: Long,
+        var message_type: Int,
         var contact_name: String,
         var sender_id: Long,
         var receiver_id: Long,

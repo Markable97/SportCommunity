@@ -61,7 +61,7 @@ class DialogViewModel(application: Application, val friend_id: Long) : AndroidVi
     private fun getMessages(userId: Int, friendId: Long, token: String){
         viewModelScope.launch {
             try{
-                val params = Message.Params(message_id = 0,sender_id = userId.toLong(),receiver_id = friendId)
+                val params = Message.Params(message_id = 0,message_type = 1, sender_id = userId.toLong(),receiver_id = friendId)
                 useCaseRepository.getMessages(params, token, liveData,dao)
             }catch (err: NetworkErrors){
                 println(err.message)
@@ -78,7 +78,7 @@ class DialogViewModel(application: Application, val friend_id: Long) : AndroidVi
         viewModelScope.launch(Dispatchers.IO) {
             try{
 
-                val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),receiver_id = friendId, message = URLDecoder.decode(message, "UTF-8"))
+                val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),message_type = 1, receiver_id = friendId, message = URLDecoder.decode(message, "UTF-8"))
                 println("Send message to server $params")
                 useCaseRepository.sendMessage(params, token, liveData, dao)
             }catch (err: NetworkErrors){

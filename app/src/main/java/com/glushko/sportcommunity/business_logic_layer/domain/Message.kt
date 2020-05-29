@@ -8,6 +8,7 @@ class Message {
     @Entity(tableName = "messages_table")
     data class Params(
         @PrimaryKey(autoGenerate = true) var message_id: Long,
+        var message_type: Int,
         var sender_id: Long,
         var receiver_id: Long,
         var message: String = "",

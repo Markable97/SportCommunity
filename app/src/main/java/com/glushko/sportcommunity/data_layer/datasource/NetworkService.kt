@@ -13,6 +13,8 @@ object NetworkService {
 
     const val BASE_URL_IMAGE = "http://89.208.205.160:8080/SportCommunityServer/ImagesOfTeams/"
 
+    const val BASE_URL_IMAGE_CHAT = "http://89.208.205.160:8080/SportCommunityServer/ImagesOfChats/"
+
     //Вовзращает retrofit, из него можно слать запросы к серверу
     fun makeNetworkService(): ApiService{
         val interceptor = HttpLoggingInterceptor()

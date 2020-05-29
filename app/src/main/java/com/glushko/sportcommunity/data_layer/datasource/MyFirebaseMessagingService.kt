@@ -23,16 +23,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val dao = MainDatabase.getMessageDao(this)
         remoteMessage.data.isNotEmpty().let {
             println(TAG + " Message data payload: " + remoteMessage.data)
+            val messageType = remoteMessage.data["message_type"]?.toInt()?:0
             val messageId = remoteMessage.data["message_id"]?.toLong()?:0.toLong()
             val senderId = remoteMessage.data["sender_id"]?.toLong()?:0.toLong()
             val receiverId = remoteMessage.data["receiver_id"]?.toLong()?:0.toLong()
             val messageDate = remoteMessage.data["message_date"]?.toLong()?:0.toLong()
             val message = remoteMessage.data["message"]?:""
             val contactName = remoteMessage.data["contact_name"]?:""
+            //val image = remoteMessage.data["image"]?:""
 
-            if(senderId != 0L && receiverId != 0L && messageDate!=0L && message!=""){
+            if(messageType  != 0 && senderId != 0L && receiverId != 0L && messageDate!=0L){
                 println("Вставляю данные в сервисе")
-                dao.insert(Message.Params(messageId,
+
+                dao.insert(Message.Params(messageId, messageType,
                     senderId, receiverId, message, messageDate
                 ))
                 val pref = SharedPrefsManager.getSharedPrefsManager(this.getSharedPreferences(this.packageName, Context.MODE_PRIVATE))
@@ -43,7 +46,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }else{
                     contactId = senderId
                 }
-                dao.insertLastMessage(LastMessage.Params(messageId, contactId, contactName, senderId, receiverId, message, messageDate))
+                val _message = if(message=="") "Фотография" else message
+                dao.insertLastMessage(LastMessage.Params(messageId, contactId, messageType, contactName, senderId, receiverId, _message, messageDate))
+
 
             }
         }

@@ -90,7 +90,7 @@ class UseCaseRepository {
         try{
             println("$params")
             val response = NetworkService.makeNetworkService().getMessages(Message.createMap(params.sender_id, params.receiver_id, token)).await()
-            println("${response.success} ${response.message} ${response.messages}")
+            println("UseCase: getMessages() ${response.success} ${response.message} ${response.messages}")
             dao.insert(response.messages)
             livData.postValue(response)
         }catch (cause: Throwable){

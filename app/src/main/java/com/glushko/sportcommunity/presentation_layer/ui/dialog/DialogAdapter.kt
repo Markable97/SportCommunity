@@ -4,10 +4,14 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
+import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -43,37 +47,63 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
         holder.bind(list[position])
     }
 
-    abstract class BaseViewHolder(protected val itemView: View) : RecyclerView.ViewHolder(itemView){
+    abstract class BaseViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView){
         abstract val tvDate: TextView
         abstract val tvMessage: TextView
+        abstract val ivImage: ImageView
         val formating = SimpleDateFormat("HH:mm")
         abstract fun bind(item: Message.Params)
     }
 
-    inner class MessageMeViewHolder(itemView: View
-    ): BaseViewHolder(itemView){
-        override val tvDate: TextView = itemView.findViewById(R.id.tvDate_me)
-        override val tvMessage: TextView = itemView.findViewById(R.id.tvMessage_me)
-
+    inner class MessageMeViewHolder(private val itemViewMe: View): BaseViewHolder(itemViewMe){
+        override val tvDate: TextView = itemViewMe.findViewById(R.id.tvDate_me)
+        override val tvMessage: TextView = itemViewMe.findViewById(R.id.tvMessage_me)
+        override val ivImage: ImageView = itemViewMe.findViewById(R.id.imgPhoto_me)
         @SuppressLint("SimpleDateFormat")
         override fun bind(item: Message.Params) {
             val sdf = SimpleDateFormat("HH:mm")
             val date = Date(item.message_date * 1000)
             tvDate.text = sdf.format(date)
-            tvMessage.text = item.message
+            if(item.message_type == 1){
+                tvMessage.visibility = View.VISIBLE
+                ivImage.visibility = View.GONE
+                tvMessage.text = item.message
+            }else{
+                tvMessage.visibility = View.GONE
+                ivImage.visibility = View.VISIBLE
+                Glide.with(itemViewMe)
+                    .load("${NetworkService.BASE_URL_IMAGE_CHAT}/${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
+                    //.placeholder(R.drawable.ic_healing_black_36dp)
+                    .into(ivImage)
+            }
         }
 
     }
-    inner class MessageOtherViewHolder(itemView: View): BaseViewHolder(itemView){
-        override val tvDate: TextView = itemView.findViewById(R.id.tvDate_other)
-        override val tvMessage: TextView = itemView.findViewById(R.id.tvMessage_other)
+    inner class MessageOtherViewHolder(private val itemViewOther: View): BaseViewHolder(itemViewOther){
+        override val tvDate: TextView = itemViewOther.findViewById(R.id.tvDate_other)
+        override val tvMessage: TextView = itemViewOther.findViewById(R.id.tvMessage_other)
+        override val ivImage: ImageView = itemViewOther.findViewById(R.id.imgPhoto_other)
 
         @SuppressLint("SimpleDateFormat")
         override fun bind(item: Message.Params) {
             val sdf = SimpleDateFormat("HH:mm")
             val date = Date(item.message_date * 1000)
             tvDate.text = sdf.format(date)
-            tvMessage.text = item.message
+            if(item.message_type == 1){
+                tvMessage.visibility = View.VISIBLE
+                ivImage.visibility = View.GONE
+                tvMessage.text = item.message
+            }else{
+                tvMessage.visibility = View.GONE
+                ivImage.visibility = View.VISIBLE
+                Glide.with(itemViewOther)
+                    .load("${NetworkService.BASE_URL_IMAGE_CHAT}/${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
+                    .fitCenter()
+                    //.placeholder(R.drawable.ic_healing_black_36dp)
+                    //.apply(RequestOptions().override(600, 200))
+                    .into(ivImage)
+
+            }
         }
 
     }
