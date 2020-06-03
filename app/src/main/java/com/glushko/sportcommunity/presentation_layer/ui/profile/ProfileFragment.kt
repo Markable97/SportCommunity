@@ -88,7 +88,10 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
         }
 
         ivUserImage.setOnClickListener {
-            super.takePhotoIntent()
+            photoFile = createImageFile()
+            photoUri = createUri(photoFile)
+            super.takePhotoIntent(photoUri)
+            //super.takePhotoIntent()
         }
     }
 

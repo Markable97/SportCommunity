@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -33,6 +34,8 @@ abstract class BaseFragment : Fragment(){
     open val titleToolbar = R.string.app_name
     open val showToolbar = true
 
+    var photoFile: File? = null
+    var photoUri: Uri? = null
     var navigator: Navigator = Navigator()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -67,22 +70,12 @@ abstract class BaseFragment : Fragment(){
         var currentPhotoPath = ""
     }
 
-    fun takePhotoIntent(){
+    fun takePhotoIntent(photoUri: Uri?){
        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         activity?.let{_activity ->
             if(intent.resolveActivity(_activity.packageManager)!=null){
 
-                val photoFile =try{
-                    createImageFile()}
-                catch (ex: Exception){
-                    null
-                }
-                photoFile?.let {
-                    val photoUri = FileProvider.getUriForFile(
-                        _activity,
-                        BuildConfig.APPLICATION_ID+".provider",
-                        it
-                    )
+                photoUri?.let {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
                     startActivityForResult(intent, TAKE_PICTURE_REQUEST)
                 }
@@ -90,7 +83,7 @@ abstract class BaseFragment : Fragment(){
         }
     }
 
-    private fun createImageFile(): File?{
+    fun createImageFile(): File?{
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         activity?.let {
             val storageDir: File? = it.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -103,6 +96,19 @@ abstract class BaseFragment : Fragment(){
         return null
     }
 
+    fun createUri(photoFile: File?): Uri?{
+        activity?.let{_activity ->
+            photoFile?.let {
+                val photoUri = FileProvider.getUriForFile(
+                    _activity,
+                    BuildConfig.APPLICATION_ID+".provider",
+                    it
+                )
+                return photoUri
+            }
+        }
+        return null
+    }
     fun saveImage(bitmap: Bitmap, name: String){
         CoroutineScope(Dispatchers.IO).launch {
             var fos: OutputStream? = null

@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
+import android.os.FileUtils
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +22,10 @@ import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 import java.net.URLDecoder
 
 class DialogViewModel(application: Application, val friend_id: Long) : AndroidViewModel(application) {
@@ -74,13 +80,14 @@ class DialogViewModel(application: Application, val friend_id: Long) : AndroidVi
         }
     }
 
-    fun sendMessage(friendId: Long, message: String){
+    fun sendMessage(friendId: Long, message: String, photoFile: File?, photoUri: Uri?,messageType: Int = 1 ){
         viewModelScope.launch(Dispatchers.IO) {
             try{
 
-                val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),message_type = 1, receiver_id = friendId, message = URLDecoder.decode(message, "UTF-8"))
+                val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),message_type = messageType, receiver_id = friendId, message = URLDecoder.decode(message, "UTF-8"))
                 println("Send message to server $params")
-                useCaseRepository.sendMessage(params, token, liveData, dao)
+                val body: MultipartBody.Part? = prepareFilePart(photoFile, photoUri)
+                useCaseRepository.sendMessage(params, token, body, liveData, dao)
             }catch (err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(
@@ -92,6 +99,15 @@ class DialogViewModel(application: Application, val friend_id: Long) : AndroidVi
         }
     }
 
+    private fun  prepareFilePart(photoFile: File?, photoUri: Uri?): MultipartBody.Part?{
+        if(photoFile != null && photoUri != null){
+            val requestFile = RequestBody.create(MediaType.parse(
+                getApplication<Application>().contentResolver.getType(photoUri))
+                ,photoFile)
+            return MultipartBody.Part.createFormData("test_image", photoFile.name, requestFile)
+        }
+        return null
+    }
     private fun whileGetMessages(friend_id: Long){
         println("Start?")
         viewModelScope.launch(Dispatchers.IO){

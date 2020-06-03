@@ -1,6 +1,9 @@
 package com.glushko.sportcommunity.data_layer.datasource
 
+import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.response.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -47,10 +50,16 @@ interface ApiService {
     @POST(GET_MESSAGES)
     fun getMessages(@FieldMap params: Map<String, String>):Call<ResponseMessage>
 
+
+    @Multipart
+    @POST(SEND_MESSAGE)
+    fun sendMessage(@PartMap params: MutableMap<String, RequestBody>, @Part file: MultipartBody.Part? ):Call<ResponseMessage>
+
+
+
     @FormUrlEncoded
     @POST(SEND_MESSAGE)
     fun sendMessage(@FieldMap params: Map<String, String>):Call<ResponseMessage>
-
     @FormUrlEncoded
     @POST(LAST_MESSAGE_CONTACT)
     fun getLastContactMessage(@FieldMap params: Map<String, String>):Call<ResponseLastMessage>

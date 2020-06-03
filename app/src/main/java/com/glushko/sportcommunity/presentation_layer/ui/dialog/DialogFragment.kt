@@ -1,6 +1,9 @@
 package com.glushko.sportcommunity.presentation_layer.ui.dialog
 
+import android.app.Activity.RESULT_OK
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,23 +18,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
+import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.vm.DialogViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.ModelFactoryForDialog
 
 import kotlinx.android.synthetic.main.fragment_dialog.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
+import java.io.File
 
 
-class DialogFragment(private val friendId: Long) : Fragment() {
+class DialogFragment(private val friendId: Long) : BaseFragment() {
 
-    val layoutId: Int = R.layout.fragment_dialog
+    override val layoutId: Int = R.layout.fragment_dialog
     lateinit var adapter: DialogAdapter
     lateinit var modelDialog: DialogViewModel
     lateinit var modelDialogFactory: ModelFactoryForDialog
     lateinit var dataDialog: MutableLiveData<ResponseMessage>
     lateinit var LiveDataRepository:  LiveData<List<Message.Params>>
-    override fun onCreateView(
+
+    /*override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,11 +47,13 @@ class DialogFragment(private val friendId: Long) : Fragment() {
         modelDialogFactory = ModelFactoryForDialog(context.applicationContext as Application, friendId)
         modelDialog = ViewModelProviders.of(this, modelDialogFactory).get(DialogViewModel::class.java)
         return view
-    }
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        modelDialogFactory = ModelFactoryForDialog(context?.applicationContext as Application, friendId)
+        modelDialog = ViewModelProviders.of(this, modelDialogFactory).get(DialogViewModel::class.java)
         adapter = DialogAdapter(friend_id = friendId.toLong())
         dialog_recycle.adapter = adapter
         val manager = LinearLayoutManager(activity)
@@ -73,10 +81,15 @@ class DialogFragment(private val friendId: Long) : Fragment() {
         btnSend.setOnClickListener {
             val message = etText.text.toString()
             if(message.isNotEmpty()){
-                modelDialog.sendMessage(friendId, message)
+                modelDialog.sendMessage(friendId, message, photoFile, photoUri)
             }else{
                 Toast.makeText(activity, "Введите сообщение", Toast.LENGTH_SHORT).show()
             }
+        }
+        btnPhoto.setOnClickListener {
+             super.photoFile = createImageFile()
+             super.photoUri = createUri(photoFile)
+             super.takePhotoIntent(photoUri)
         }
         setEventListener(
             activity!!,
@@ -87,5 +100,15 @@ class DialogFragment(private val friendId: Long) : Fragment() {
                 }
             })
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode==TAKE_PICTURE_REQUEST && resultCode == RESULT_OK){
+            modelDialog.sendMessage(friendId, "Фотография", photoFile, photoUri, 0)
+            //val file = File(currentPhotoPath)
+            //val photo: Uri = Uri.fromFile(file)
+            //super.saveImage(((ivUserImage.drawable) as BitmapDrawable).bitmap, "${System.currentTimeMillis()}")
+        }
     }
 }

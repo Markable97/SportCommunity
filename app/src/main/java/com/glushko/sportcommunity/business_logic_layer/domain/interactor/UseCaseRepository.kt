@@ -7,6 +7,7 @@ import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.glushko.sportcommunity.data_layer.datasource.response.*
 import com.glushko.sportcommunity.data_layer.repository.MainDao
 import com.glushko.sportcommunity.data_layer.repository.MessageDao
+import okhttp3.MultipartBody
 import retrofit2.await
 import java.lang.Exception
 
@@ -102,9 +103,13 @@ class UseCaseRepository {
         }
     }
 
-    suspend fun sendMessage(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>, dao: MessageDao){
+    suspend fun sendMessage(params: Message.Params, token: String, file: MultipartBody.Part?, livData: MutableLiveData<ResponseMessage>, dao: MessageDao){
          try{
-             val response = NetworkService.makeNetworkService().sendMessage(Message.createMap(params.sender_id, params.receiver_id, token, params.message, params.message_type)).await()
+             val response =  if(file != null) {
+                 NetworkService.makeNetworkService().sendMessage(Message.createMapFile(params.sender_id, params.receiver_id, token, params.message, params.message_type), file).await()
+             }else{
+                 NetworkService.makeNetworkService().sendMessage(Message.createMap(params.sender_id, params.receiver_id, token, params.message, params.message_type)).await()
+             }
              if(response.messages.isEmpty()){
                  throw NetworkErrors(response.message, Exception())
              }

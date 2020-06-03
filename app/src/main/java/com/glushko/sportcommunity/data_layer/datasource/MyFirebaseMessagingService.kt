@@ -23,7 +23,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val dao = MainDatabase.getMessageDao(this)
         remoteMessage.data.isNotEmpty().let {
             println(TAG + " Message data payload: " + remoteMessage.data)
-            val messageType = remoteMessage.data["type_message"]?.toInt()?:0
+            val messageType = remoteMessage.data["type_message"]?.toInt()?:100
             val messageId = remoteMessage.data["message_id"]?.toLong()?:0.toLong()
             val senderId = remoteMessage.data["sender_id"]?.toLong()?:0.toLong()
             val receiverId = remoteMessage.data["receiver_id"]?.toLong()?:0.toLong()
@@ -32,7 +32,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val contactName = remoteMessage.data["contact_name"]?:""
             //val image = remoteMessage.data["image"]?:""
 
-            if(messageType  != 0 && senderId != 0L && receiverId != 0L && messageDate!=0L){
+            if(messageType  != 100 && senderId != 0L && receiverId != 0L && messageDate!=0L){
                 println("Вставляю данные в сервисе")
 
                 dao.insert(Message.Params(messageId, messageType,

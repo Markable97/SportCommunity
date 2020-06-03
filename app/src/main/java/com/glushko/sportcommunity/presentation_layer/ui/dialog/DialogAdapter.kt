@@ -1,6 +1,7 @@
 package com.glushko.sportcommunity.presentation_layer.ui.dialog
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
+import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -75,6 +76,7 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
                     .load("${NetworkService.BASE_URL_IMAGE_CHAT}/${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
                     //.placeholder(R.drawable.ic_healing_black_36dp)
                     .into(ivImage)
+
             }
         }
 
@@ -97,10 +99,9 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
                 tvMessage.visibility = View.GONE
                 ivImage.visibility = View.VISIBLE
                 Glide.with(itemViewOther)
-                    .load("${NetworkService.BASE_URL_IMAGE_CHAT}/${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
-                    .fitCenter()
+                    .load("${NetworkService.BASE_URL_IMAGE_CHAT}${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
+                    .error(R.drawable.ic_healing_black_36dp)
                     //.placeholder(R.drawable.ic_healing_black_36dp)
-                    //.apply(RequestOptions().override(600, 200))
                     .into(ivImage)
 
             }
