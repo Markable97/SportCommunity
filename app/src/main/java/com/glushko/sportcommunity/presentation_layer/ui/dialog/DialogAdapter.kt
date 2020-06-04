@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
-import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -63,7 +62,7 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
         @SuppressLint("SimpleDateFormat")
         override fun bind(item: Message.Params) {
             val sdf = SimpleDateFormat("HH:mm")
-            val date = Date(item.message_date * 1000)
+            val date = Date(item.message_date * 2000)
             tvDate.text = sdf.format(date)
             if(item.message_type == 1){
                 tvMessage.visibility = View.VISIBLE
@@ -72,10 +71,13 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
             }else{
                 tvMessage.visibility = View.GONE
                 ivImage.visibility = View.VISIBLE
-                Glide.with(itemViewMe)
-                    .load("${NetworkService.BASE_URL_IMAGE_CHAT}/${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
-                    //.placeholder(R.drawable.ic_healing_black_36dp)
-                    .into(ivImage)
+                android.os.Handler().postDelayed({
+                    Glide.with(itemViewMe)
+                        .load("${NetworkService.BASE_URL_IMAGE_CHAT}/${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
+                        //.placeholder(R.drawable.ic_healing_black_36dp)
+                        .into(ivImage)
+                }, 2000)
+
 
             }
         }
@@ -98,11 +100,14 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
             }else{
                 tvMessage.visibility = View.GONE
                 ivImage.visibility = View.VISIBLE
-                Glide.with(itemViewOther)
-                    .load("${NetworkService.BASE_URL_IMAGE_CHAT}${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
-                    .error(R.drawable.ic_healing_black_36dp)
-                    //.placeholder(R.drawable.ic_healing_black_36dp)
-                    .into(ivImage)
+                android.os.Handler().postDelayed({
+                    Glide.with(itemViewOther)
+                        .load("${NetworkService.BASE_URL_IMAGE_CHAT}${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
+                        .error(R.drawable.ic_healing_black_36dp)
+                        //.placeholder(R.drawable.ic_healing_black_36dp)
+                        .into(ivImage)
+                }, 1000)
+
 
             }
         }

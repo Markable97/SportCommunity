@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
-import com.squareup.picasso.Picasso
+
 
 
 class ProfileTeamsAdapter(private var list: MutableList<TeamsUserInfo.Params>, val callback: Callback) : RecyclerView.Adapter<ProfileTeamsAdapter.TeamViewHolder>() {
