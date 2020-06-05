@@ -76,7 +76,7 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
                         .load("${NetworkService.BASE_URL_IMAGE_CHAT}/${item.sender_id}_${item.receiver_id}/${item.message_date}.jpg")
                         //.placeholder(R.drawable.ic_healing_black_36dp)
                         .into(ivImage)
-                }, 2000)
+                }, 1500)
 
 
             }
@@ -106,7 +106,7 @@ class DialogAdapter(private var list: MutableList<Message.Params> = mutableListO
                         .error(R.drawable.ic_healing_black_36dp)
                         //.placeholder(R.drawable.ic_healing_black_36dp)
                         .into(ivImage)
-                }, 1000)
+                }, 1500)
 
 
             }

@@ -149,7 +149,8 @@ class HomeActivity :  AppCompatActivity() {
 
     private fun openChatsFragment(){
         val frgmentChats = ChatsFragment(object : ChatsFragment.Callback{
-            override fun changeFragment(contact_id: Long) {
+            override fun changeFragment(contact_id: Long, contact_name: String) {
+                toolbar.title = contact_name
                 openDialogFragment(contact_id)
             }
 
