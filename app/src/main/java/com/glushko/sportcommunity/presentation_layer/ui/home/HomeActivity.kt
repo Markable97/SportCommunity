@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.data_layer.repository.ChatsNotification
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 
 
@@ -28,6 +29,8 @@ import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
 import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.TeamFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
+import com.glushko.sportcommunity.presentation_layer.vm.ChatsViewModel
+import com.glushko.sportcommunity.presentation_layer.vm.NotificationDrawerViewModel
 import kotlinx.android.synthetic.main.home_activity.*
 import kotlinx.android.synthetic.main.navigation.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -42,6 +45,8 @@ class HomeActivity :  AppCompatActivity() {
 
     lateinit var model: AccountViewModel
     lateinit var dataLogin: LiveData<Register.Params>
+    lateinit var modelNotification: NotificationDrawerViewModel
+    //lateinit var dataNotificationChats: LiveData<List<ChatsNotification>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +84,18 @@ class HomeActivity :  AppCompatActivity() {
         toggle.syncState()
 
 
+        modelNotification = ViewModelProviders.of(this).get(NotificationDrawerViewModel::class.java)
 
+        modelNotification.chatsLiveData.observe(this, Observer {
+            println("HomeActivity Live Data Notification 1 ${it}")
+            val count = if(it.isNotEmpty()) it.first().count else 0
+            if(count > 0 ){
+                btnChats_notification.text = if(count > 9) "9+" else count.toString()
+                btnChats_notification.visibility = View.VISIBLE
+            }else{
+                btnChats_notification.visibility = View.GONE
+            }
+        })
 
 
         profileContainer.setOnClickListener {
@@ -90,6 +106,7 @@ class HomeActivity :  AppCompatActivity() {
         }
 
         btnChats.setOnClickListener {
+            modelNotification.deleteNotificationChats()
             drawerLayout.closeDrawers()
             toolbar.title = btnChatsText.text
             openChatsFragment()

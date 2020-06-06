@@ -9,6 +9,7 @@
     android:layout_gravity="start"
     android:fitsSystemWindows="true">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,8 +19,8 @@
             android:id="@+id/profileContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
             android:background="?attr/selectableItemBackground"
+            android:paddingBottom="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -51,8 +52,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/small_margin"
                     android:lines="1"
-                    tools:text="@string/name"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="@string/name" />
 
                 <TextView
                     android:id="@+id/tvUserEmail"
@@ -94,31 +95,48 @@
             android:focusable="true"
             android:padding="16dp">
 
-            <LinearLayout
-                android:id="@+id/llChats"
+
+            <ImageView
+                android:id="@+id/imgvChats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/profile"
+                android:src="@drawable/baseline_chat_black_36"
+                android:tint="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/btnChatsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
+                android:layout_toEndOf="@+id/imgvChats"
+                android:gravity="start|center_vertical"
+                android:text="@string/chats"
+                android:textSize="16sp" />
 
-                <ImageView
-                    android:id="@+id/imgvChats"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/profile"
-                    android:src="@drawable/baseline_chat_black_36"
-                    android:tint="@color/colorPrimary" />
-
-                <TextView
-                    android:id="@+id/btnChatsText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:gravity="start|center_vertical"
-                    android:text="@string/chats"
-                    android:textSize="16sp" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/btnChats_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="-10dp"
+                android:layout_marginTop="0dp"
+                android:layout_toEndOf="@+id/imgvChats"
+                android:background="@drawable/circle_notification"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="TextView"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                tools:visibility="visible"
+                tools:text="9+" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -240,7 +258,6 @@
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
-
 
     <RelativeLayout
         android:id="@+id/btnLogout"

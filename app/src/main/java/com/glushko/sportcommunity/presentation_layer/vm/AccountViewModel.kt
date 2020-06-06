@@ -138,12 +138,14 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
         pref.logout()
         val dao = MainDatabase.getDatabase(this.getApplication()).mainDao()
         val messageDao = MainDatabase.getMessageDao(this.getApplication())
-        job = viewModelScope.launch {
+        val notificationDao = MainDatabase.getNotificationDao(this.getApplication())
+        job = viewModelScope.launch(Dispatchers.IO) {
             println("Clear all table")
             dao.deleteMainPage()
             dao.deleteFriends()
             messageDao.deleteAllMessages()
             messageDao.deleteAllLastMessage()
+            notificationDao.deleteNotificationChats()
             println("Clear done" +
                     "")
         }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.glushko.sportcommunity.business_logic_layer.domain.LastMessage
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
+import com.glushko.sportcommunity.data_layer.repository.ChatsNotification
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager.Companion.ACCOUNT_TOKEN
@@ -21,6 +22,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         println(TAG + " From: ${remoteMessage.from}")
         val dao = MainDatabase.getMessageDao(this)
+        val notificationDao = MainDatabase.getNotificationDao(this)
         remoteMessage.data.isNotEmpty().let {
             println(TAG + " Message data payload: " + remoteMessage.data)
             val messageType = remoteMessage.data["type_message"]?.toInt()?:100
@@ -34,6 +36,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             if(messageType  != 100 && senderId != 0L && receiverId != 0L && messageDate!=0L){
                 println("Вставляю данные в сервисе")
+
+                notificationDao.setNotificationChats(ChatsNotification(1, notificationDao.getNotificationChats() + 1))
 
                 dao.insert(Message.Params(messageId, messageType,
                     senderId, receiverId, message, messageDate

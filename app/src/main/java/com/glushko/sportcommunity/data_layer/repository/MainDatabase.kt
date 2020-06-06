@@ -12,6 +12,7 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Friend
 import com.glushko.sportcommunity.business_logic_layer.domain.LastMessage
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
+import com.google.android.gms.common.util.DynamiteApi
 
 @Entity
 data class Person(
@@ -20,6 +21,12 @@ data class Person(
     @PrimaryKey val email: String,
     val password: String,
     val token: String
+)
+@Entity(tableName = "notification_chats")
+data class ChatsNotification(
+    @PrimaryKey
+    var id: Int = 1,
+    var count: Int = 0
 )
 /*@Entity
 data class TeamsUserInfo(
@@ -69,6 +76,24 @@ interface MainDao{
 }
 
 @Dao
+interface NotificationDao{
+    //@Query("insert into notification_chats select count + 1 from notification_chats")
+    //fun setNotificationChats()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun setNotificationChats(entity: ChatsNotification)
+
+    @Query("select * from notification_chats")
+    fun getNotificationChatsLiveData():LiveData<List<ChatsNotification>>
+
+    @Query("select sum(count) from notification_chats")
+    fun getNotificationChats():Int
+
+    @Query("delete from notification_chats")
+    fun deleteNotificationChats()
+}
+
+@Dao
 interface MessageDao{
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(entity: Message.Params)
@@ -95,15 +120,17 @@ interface MessageDao{
     suspend fun deleteAllLastMessage()
 }
 
-@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class, LastMessage.Params::class], version = 1, exportSchema = false)
+@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class, LastMessage.Params::class, ChatsNotification::class], version = 1, exportSchema = false)
 abstract class MainDatabase: RoomDatabase(){
 
      abstract fun mainDao(): MainDao
      abstract fun messageDao(): MessageDao
+     abstract fun notificationDao(): NotificationDao
 
     companion object{
         private val INSTANCE: MainDatabase? = null
         private var MESSAGE_DAO: MessageDao? = null
+        private var NOTIFICATION_DAO: NotificationDao? = null
         fun getDatabase(context: Context): MainDatabase{
             if(INSTANCE==null){
                 synchronized(this){
@@ -122,7 +149,12 @@ abstract class MainDatabase: RoomDatabase(){
             }
             return MESSAGE_DAO!!
         }
-
+        fun getNotificationDao(context: Context): NotificationDao{
+            if(NOTIFICATION_DAO ==null){
+                NOTIFICATION_DAO = getDatabase(context).notificationDao()
+            }
+            return NOTIFICATION_DAO!!
+        }
             private val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 // empty migration.
