@@ -37,7 +37,7 @@ class ChatsFragment(val callback: Callback) : Fragment() {
         modelChats = ViewModelProviders.of(this).get(ChatsViewModel::class.java)
 
         modelChats.liveDataRepository.observe(this, Observer {
-            println("Live data 1")
+            println("Live data 1 update adapter \n $it")
             adapter.setList(it as MutableList<LastMessage.Params>)
         })
 

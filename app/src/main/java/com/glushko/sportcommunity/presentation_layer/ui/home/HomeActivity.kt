@@ -106,7 +106,6 @@ class HomeActivity :  AppCompatActivity() {
         }
 
         btnChats.setOnClickListener {
-            modelNotification.deleteNotificationChats()
             drawerLayout.closeDrawers()
             toolbar.title = btnChatsText.text
             openChatsFragment()

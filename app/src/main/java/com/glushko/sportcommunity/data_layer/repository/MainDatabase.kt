@@ -113,6 +113,9 @@ interface MessageDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLastMessage(entity: List<LastMessage.Params>)
 
+    @Query("update last_messages_table  set count_notification = (select sum(count) from notification_chats  where  notification_chats.contact_id = last_messages_table.contact_id)")
+    fun updateLastMessageNotification()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLastMessage(entity: LastMessage.Params)
 

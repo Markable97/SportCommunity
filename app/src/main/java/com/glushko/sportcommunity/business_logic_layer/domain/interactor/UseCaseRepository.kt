@@ -7,6 +7,7 @@ import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.glushko.sportcommunity.data_layer.datasource.response.*
 import com.glushko.sportcommunity.data_layer.repository.MainDao
 import com.glushko.sportcommunity.data_layer.repository.MessageDao
+import com.glushko.sportcommunity.data_layer.repository.NotificationDao
 import okhttp3.MultipartBody
 import retrofit2.await
 import java.lang.Exception
@@ -136,6 +137,7 @@ class UseCaseRepository {
                 throw NetworkErrors(response.message, Exception())
             }
             dao.insertLastMessage(response.lastMessages.toList())
+            dao.updateLastMessageNotification()
             liveData.postValue(response)
         }catch (cause: Throwable){
             println("Error!!!!${cause.message}")

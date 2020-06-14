@@ -44,7 +44,7 @@ class ChatsAdapter(private var list: MutableList<LastMessage.Params> = mutableLi
             val sdf = SimpleDateFormat("HH:mm")
             val date = Date(item.message_date * 1000)
             contactDate.text = sdf.format(date)
-            if(item.count_notification > 0 ){
+            if(item.count_notification?:0 > 0 ){
                 countNotification.visibility = View.VISIBLE
                 countNotification.text = item.count_notification.toString()
             }else{
