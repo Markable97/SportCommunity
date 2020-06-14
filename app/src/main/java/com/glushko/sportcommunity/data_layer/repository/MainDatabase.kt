@@ -25,7 +25,7 @@ data class Person(
 @Entity(tableName = "notification_chats")
 data class ChatsNotification(
     @PrimaryKey
-    var id: Int = 1,
+    var contact_id: Long = 1,
     var count: Int = 0
 )
 /*@Entity
@@ -89,8 +89,14 @@ interface NotificationDao{
     @Query("select sum(count) from notification_chats")
     fun getNotificationChats():Int
 
+    @Query("select sum(count) from notification_chats where contact_id = :contact_id")
+    fun getNotificationChats(contact_id: Long):Int
+
     @Query("delete from notification_chats")
     fun deleteNotificationChats()
+
+    @Query("delete from notification_chats where contact_id = :contact_id")
+    fun deleteNotificationChats(contact_id: Long)
 }
 
 @Dao

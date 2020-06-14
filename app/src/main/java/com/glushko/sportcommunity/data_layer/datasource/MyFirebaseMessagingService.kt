@@ -37,7 +37,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             if(messageType  != 100 && senderId != 0L && receiverId != 0L && messageDate!=0L){
                 println("Вставляю данные в сервисе")
 
-                notificationDao.setNotificationChats(ChatsNotification(1, notificationDao.getNotificationChats() + 1))
+
 
                 dao.insert(Message.Params(messageId, messageType,
                     senderId, receiverId, message, messageDate
@@ -50,8 +50,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }else{
                     contactId = senderId
                 }
+                val notificationCount = notificationDao.getNotificationChats(contactId) + 1
+                notificationDao.setNotificationChats(ChatsNotification(contactId, notificationCount))
                 val _message = if(message=="") "Фотография" else message
-                dao.insertLastMessage(LastMessage.Params(messageId, contactId, messageType, contactName, senderId, receiverId, _message, messageDate))
+                dao.insertLastMessage(LastMessage.Params(messageId, contactId, messageType, contactName, senderId, receiverId, _message, messageDate,
+                    notificationCount))
 
 
             }

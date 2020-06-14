@@ -34,6 +34,7 @@ class ChatsAdapter(private var list: MutableList<LastMessage.Params> = mutableLi
         private val contactName = itemView.findViewById<TextView>(R.id.tvName)
         private val contactMessage = itemView.findViewById<TextView>(R.id.tvMessage)
         private val contactDate = itemView.findViewById<TextView>(R.id.tvDate)
+        private val countNotification = itemView.findViewById<TextView>(R.id.tvNotification)
 
 
         @SuppressLint("SimpleDateFormat")
@@ -43,6 +44,12 @@ class ChatsAdapter(private var list: MutableList<LastMessage.Params> = mutableLi
             val sdf = SimpleDateFormat("HH:mm")
             val date = Date(item.message_date * 1000)
             contactDate.text = sdf.format(date)
+            if(item.count_notification > 0 ){
+                countNotification.visibility = View.VISIBLE
+                countNotification.text = item.count_notification.toString()
+            }else{
+                countNotification.visibility = View.GONE
+            }
             itemView.setOnClickListener{
                 callback.onClickChats(list[adapterPosition])
             }

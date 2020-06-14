@@ -59,6 +59,7 @@ class ChatsFragment(val callback: Callback) : Fragment() {
         adapter = ChatsAdapter(callback = object : ChatsAdapter.Callback{
             override fun onClickChats(item: LastMessage.Params) {
                 println("ответ от recycler = ${item.contact_id}")
+
                 callback.changeFragment(item.contact_id, item.contact_name)
             }
 

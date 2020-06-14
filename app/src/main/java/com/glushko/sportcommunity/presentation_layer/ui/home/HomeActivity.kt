@@ -168,6 +168,7 @@ class HomeActivity :  AppCompatActivity() {
         val frgmentChats = ChatsFragment(object : ChatsFragment.Callback{
             override fun changeFragment(contact_id: Long, contact_name: String) {
                 toolbar.title = contact_name
+                modelNotification.deleteChooseNotificationChat(contact_id)
                 openDialogFragment(contact_id)
             }
 
