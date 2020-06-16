@@ -9,7 +9,8 @@ import androidx.fragment.app.Fragment
 import com.glushko.sportcommunity.R
 import kotlinx.android.synthetic.main.activity_team_profile.*
 
-class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, val isLeader: Boolean) : Fragment() {
+class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, private val leaderId: Long, private val leaderName: String,
+                   private val isLeader: Boolean, val callbackActivity: Callback) : Fragment() {
 
     val layoutId: Int = R.layout.activity_team_profile
     val bitmap: Bitmap = bitmap
@@ -31,5 +32,17 @@ class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, va
         if(!isLeader){
             team_profile_btn_2.text = getString(R.string.team_profile_btn_2_dop)
         }
+
+        team_profile_btn_2.setOnClickListener {
+            if(!isLeader){
+                callbackActivity.onClickUpperRightButton(leaderId, leaderName)
+            }
+        }
+
+    }
+
+    interface Callback{
+        fun onClickUpperRightButton(idLeader: Long, leaderName: String)
+
     }
 }

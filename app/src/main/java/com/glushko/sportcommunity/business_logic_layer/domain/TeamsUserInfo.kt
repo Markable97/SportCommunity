@@ -12,6 +12,7 @@ class TeamsUserInfo {
                       @PrimaryKey val team_id: Int = 0,
                       val team_desc: String = "",
                       val leader_id: Int = 0,
+                      val leader_name: String = "",
                       val games: Int = 0,
                       val goals: Int = 0,
                       val assists: Int = 0,

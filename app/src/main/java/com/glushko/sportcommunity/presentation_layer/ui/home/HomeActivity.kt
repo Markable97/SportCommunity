@@ -137,8 +137,8 @@ class HomeActivity :  AppCompatActivity() {
     private fun openProfileFragment(user_id: Int?, user_name: String?, isMe: Boolean = true){
         if(user_id!=null && user_name!=null){
             val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, isMe = isMe, callbackActivity = object : ProfileFragment.Callback{
-                override fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int) {
-                    openTeamFragment(teamName, teamDesc, bitmap, leader_id)
+                override fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String) {
+                    openTeamFragment(teamName, teamDesc, bitmap, leader_id, leader_name)
                 }
 
                 override fun onClickBtnLeft(isMe: Boolean) {
@@ -193,13 +193,20 @@ class HomeActivity :  AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(fragmentContainer, NotificationFragment()).commit()
     }
 
-    private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int){
+    private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String){
         toolbar.title = teamName
         val userId = dataLogin.value?.idUser?:0
         var isLeader = false
         if(userId == leader_id)
             isLeader = true
-        supportFragmentManager.beginTransaction().add(fragmentContainer, TeamFragment(teamName, teamDesc, bitmap, isLeader)).commit()
+        val fragmentTeamProfile = TeamFragment(teamName, teamDesc, bitmap, leader_id.toLong(), leader_name, isLeader, object : TeamFragment.Callback{
+            override fun onClickUpperRightButton(idLeeader: Long, leaderName: String) {
+                toolbar.title = leaderName
+                openDialogFragment(idLeeader)
+            }
+
+        })
+        supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).commit()
     }
 
     private fun openFriendsFragment(){

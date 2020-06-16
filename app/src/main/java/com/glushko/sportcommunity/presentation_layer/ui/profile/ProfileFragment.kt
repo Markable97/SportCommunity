@@ -73,7 +73,7 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
         adapter = ProfileTeamsAdapter(listInfoProfile, object : ProfileTeamsAdapter.Callback{
             override fun onItemClicked(item: TeamsUserInfo.Params, bitmap: Bitmap) {
                 Toast.makeText(activity, "This is team - ${item.team_name}", Toast.LENGTH_SHORT).show()
-                callbackActivity.onClickTeam(item.team_name, item.team_desc, bitmap, item.leader_id)
+                callbackActivity.onClickTeam(item.team_name, item.team_desc, bitmap, item.leader_id, item.leader_name)
             }
 
         })
@@ -112,7 +112,7 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
     }
 
     interface Callback{
-        fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int)
+        fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String)
 
         fun onClickBtnLeft(isMe: Boolean)
 
