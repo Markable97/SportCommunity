@@ -79,6 +79,7 @@ dependencies {
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
     implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
     //gson
     implementation "com.google.code.gson:gson:${gsonVersion}"
@@ -110,6 +111,10 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     //Piccasso
     //implementation 'com.squareup.picasso:picasso:2.71828'
+    //RxJava
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
     //События отображения клавиатуры
     implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC2'
     //test

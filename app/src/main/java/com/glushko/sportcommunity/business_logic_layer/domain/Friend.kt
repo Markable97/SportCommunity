@@ -19,5 +19,11 @@ class Friend {
             map[ApiService.PARAM_USER_ID] = user_id.toString()
             return map
         }
+
+        fun createMap(user_name: String):Map<String, String>{
+            val map = HashMap<String, String>()
+            map[ApiService.PARAM_USER_NAME] = user_name
+            return map
+        }
     }
 }

@@ -4,6 +4,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <SearchView
+        android:id="@+id/friends_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friends_recycler"
         android:layout_width="match_parent"

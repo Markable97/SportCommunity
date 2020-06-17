@@ -2,6 +2,7 @@ package com.glushko.sportcommunity.data_layer.datasource
 
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.response.*
+import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -17,6 +18,7 @@ interface ApiService {
         const val GET_MESSAGES = "GetMessages"
         const val SEND_MESSAGE = "SendMessage"
         const val LAST_MESSAGE_CONTACT = "GetLastContactMessage"
+        const val FIND_USER = "FindPeople"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -28,6 +30,7 @@ interface ApiService {
         const val PARAM_SENDER_ID = "sender_id"
         const val PARAM_RECEIVER_ID = "receiver_id"
         const val PARAM_MESSAGE = "message"
+        const val PARAM_USER_NAME = "user_name"
     }
 
     @FormUrlEncoded
@@ -47,9 +50,13 @@ interface ApiService {
     fun getFriends(@FieldMap params: Map<String, String>):Call<ResponseFriends>
 
     @FormUrlEncoded
+    @POST(FIND_USER)
+    fun findUser(@FieldMap params: Map<String, String>):Observable<ResponseFriends>
+
+
+    @FormUrlEncoded
     @POST(GET_MESSAGES)
     fun getMessages(@FieldMap params: Map<String, String>):Call<ResponseMessage>
-
 
     @Multipart
     @POST(SEND_MESSAGE)

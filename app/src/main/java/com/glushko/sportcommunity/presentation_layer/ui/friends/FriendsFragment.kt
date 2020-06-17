@@ -2,10 +2,14 @@ package com.glushko.sportcommunity.presentation_layer.ui.friends
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -13,9 +17,22 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Friend
+import com.glushko.sportcommunity.data_layer.datasource.ApiService
+import com.glushko.sportcommunity.data_layer.datasource.NetworkService
+import com.glushko.sportcommunity.data_layer.datasource.NetworkService.BASE_URL
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
 import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_friends.*
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class FriendsFragment(val callback: Callback) : Fragment() {
 
@@ -25,6 +42,8 @@ class FriendsFragment(val callback: Callback) : Fragment() {
 
     lateinit var modelFriend: FriendsViewModel
     lateinit var dataFriends: MutableLiveData<ResponseFriends>
+
+    private var myCompositeDisposable: CompositeDisposable? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,7 +55,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
+        myCompositeDisposable = CompositeDisposable()
 
         modelFriend = ViewModelProviders.of(this).get(FriendsViewModel::class.java)
 
@@ -66,6 +85,59 @@ class FriendsFragment(val callback: Callback) : Fragment() {
         })
         friends_recycler.adapter = adapter
         friends_recycler.layoutManager = LinearLayoutManager(activity)
+
+        Observable.create(ObservableOnSubscribe<String> {
+            friends_search.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(newText: String?): Boolean {
+                    it.onNext(newText!!)
+                    return false
+                }
+
+                override fun onQueryTextChange(query: String?): Boolean {
+                    it.onNext(query!!)
+                    return false
+                }
+
+            })
+        })
+            .map { text -> text.trim() }
+            .debounce(250, TimeUnit.MILLISECONDS)
+            .distinct()
+            .filter { text -> text.isNotBlank() }
+            .subscribe { text ->println("с клавиатуры $text")
+                            loadData(text) }
+
+    }
+
+
+    private fun loadData(text: String) {
+
+        //Add all RxJava disposables to a CompositeDisposable//
+
+        myCompositeDisposable?.add(NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text))
+
+        //Send the Observable’s notifications to the main UI thread//
+
+            .observeOn(AndroidSchedulers.mainThread())
+
+        //Subscribe to the Observer away from the main UI thread//
+
+            .subscribeOn(Schedulers.io())
+            .subscribe(this::handleResponse//, this::handleError
+            )
+        )
+
+    }
+
+    private fun handleResponse(responseServer: ResponseFriends) {
+
+        println(" Поиск вернул ${responseServer.success} ${responseServer.message} ${responseServer.friends}")
+
+
+    }
+
+    private fun handleError(err: Throwable){
+        println("ошибка поиска ${err.message}")
     }
 
     interface Callback{
