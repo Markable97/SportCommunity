@@ -26,6 +26,8 @@ class NotificationDrawerViewModel(application: Application): AndroidViewModel(ap
         }
     }
 
+
+
     fun deleteChooseNotificationChat(contactId: Long){
         viewModelScope.launch(Dispatchers.IO){
             dao.deleteNotificationChats(contactId)

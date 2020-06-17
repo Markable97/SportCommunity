@@ -28,7 +28,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 import java.io.File
 
 
-class DialogFragment(private val friendId: Long) : BaseFragment() {
+class DialogFragment(private val friendId: Long, private val count_notification: Int) : BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_dialog
     lateinit var adapter: DialogAdapter
@@ -63,7 +63,8 @@ class DialogFragment(private val friendId: Long) : BaseFragment() {
         modelDialog.liveDataRepository.observe(this, Observer {
             println("Live data 1")
             adapter.setList((it as MutableList<Message.Params>))
-            //dialog_recycle.smoothScrollToPosition(0)
+
+            dialog_recycle.smoothScrollToPosition(count_notification)
         })
 
         dataDialog = modelDialog.getData(friendId)//Передать id друга

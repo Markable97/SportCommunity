@@ -165,18 +165,18 @@ class HomeActivity :  AppCompatActivity() {
 
     private fun openChatsFragment(){
         val frgmentChats = ChatsFragment(object : ChatsFragment.Callback{
-            override fun changeFragment(contact_id: Long, contact_name: String) {
+            override fun changeFragment(contact_id: Long, contact_name: String, count_notification: Int) {
                 toolbar.title = contact_name
                 modelNotification.deleteChooseNotificationChat(contact_id)
-                openDialogFragment(contact_id)
+                openDialogFragment(contact_id, count_notification)
             }
 
         })
         supportFragmentManager.beginTransaction().replace(fragmentContainer, frgmentChats).commit()
     }
 
-    private fun openDialogFragment(id_user: Long) {
-        supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(id_user)).commit()
+    private fun openDialogFragment(id_user: Long, count_notification: Int = 0) {
+        supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(id_user, count_notification)).commit()
     }
 
     private fun openSettingFragment() {
