@@ -43,7 +43,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
     lateinit var modelFriend: FriendsViewModel
     lateinit var dataFriends: MutableLiveData<ResponseFriends>
 
-    private var myCompositeDisposable: CompositeDisposable? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,7 +55,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        myCompositeDisposable = CompositeDisposable()
+
 
         modelFriend = ViewModelProviders.of(this).get(FriendsViewModel::class.java)
 
@@ -67,8 +67,8 @@ class FriendsFragment(val callback: Callback) : Fragment() {
         dataFriends.observe(this, Observer {
             println("Live data 2")
             println("FriendFragment: \n${it.success} ${it.message}, ${it.friends}")
-            if(it.success == 1){
-                //adapter.setList(it.friends)
+            if(it.success == 2){
+                adapter.setList(it.friends)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
@@ -102,43 +102,15 @@ class FriendsFragment(val callback: Callback) : Fragment() {
         })
             .map { text -> text.trim() }
             .debounce(250, TimeUnit.MILLISECONDS)
-            .distinct()
-            .filter { text -> text.isNotBlank() }
+            //.distinct()
+            //.filter { text -> text.isNotBlank() }
             .subscribe { text ->println("с клавиатуры $text")
-                            loadData(text) }
+                            modelFriend.searchUser(text) }
 
     }
 
 
-    private fun loadData(text: String) {
 
-        //Add all RxJava disposables to a CompositeDisposable//
-
-        myCompositeDisposable?.add(NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text))
-
-        //Send the Observable’s notifications to the main UI thread//
-
-            .observeOn(AndroidSchedulers.mainThread())
-
-        //Subscribe to the Observer away from the main UI thread//
-
-            .subscribeOn(Schedulers.io())
-            .subscribe(this::handleResponse//, this::handleError
-            )
-        )
-
-    }
-
-    private fun handleResponse(responseServer: ResponseFriends) {
-
-        println(" Поиск вернул ${responseServer.success} ${responseServer.message} ${responseServer.friends}")
-
-
-    }
-
-    private fun handleError(err: Throwable){
-        println("ошибка поиска ${err.message}")
-    }
 
     interface Callback{
         fun changeFragment(friend_id: Int, friend_name: String)

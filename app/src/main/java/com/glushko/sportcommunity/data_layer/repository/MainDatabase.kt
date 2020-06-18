@@ -71,6 +71,9 @@ interface MainDao{
     @Query("select * from friends_table")
     fun getFriends():LiveData<List<Friend.Params>>
 
+    @Query("select * from friends_table")
+    fun getFriendsList():List<Friend.Params>
+
     @Query("delete from friends_table")
     suspend fun deleteFriends()
 }

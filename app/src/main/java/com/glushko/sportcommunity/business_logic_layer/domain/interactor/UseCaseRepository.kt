@@ -8,6 +8,7 @@ import com.glushko.sportcommunity.data_layer.datasource.response.*
 import com.glushko.sportcommunity.data_layer.repository.MainDao
 import com.glushko.sportcommunity.data_layer.repository.MessageDao
 import com.glushko.sportcommunity.data_layer.repository.NotificationDao
+import io.reactivex.Observable
 import okhttp3.MultipartBody
 import retrofit2.await
 import java.lang.Exception
@@ -65,6 +66,10 @@ class UseCaseRepository {
 
     fun getFriends(dao: MainDao): LiveData<List<Friend.Params>>{
         return dao.getFriends()
+    }
+
+    fun getFriendsList(dao: MainDao): List<Friend.Params>{
+        return dao.getFriendsList()
     }
 
     suspend fun getFriends(
@@ -144,5 +149,9 @@ class UseCaseRepository {
             throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)
         }
 
+    }
+
+    fun searchUser(text: String): Observable<ResponseFriends>{
+        return NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text))
     }
 }
