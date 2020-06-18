@@ -1,15 +1,11 @@
 package com.glushko.sportcommunity.presentation_layer.ui.friends
 
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -17,21 +13,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Friend
-import com.glushko.sportcommunity.data_layer.datasource.ApiService
-import com.glushko.sportcommunity.data_layer.datasource.NetworkService
-import com.glushko.sportcommunity.data_layer.datasource.NetworkService.BASE_URL
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
 import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_friends.*
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class FriendsFragment(val callback: Callback) : Fragment() {
@@ -79,7 +65,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = FriendsAdapter(callback = object : FriendsAdapter.Callback{
             override fun onClickFriend(item: Friend.Params) {
-                callback.changeFragment(item.friend_id, item.friend_name)
+                callback.changeFragment(item.friend_id, item.user_name, item.status_friend)
             }
 
         })
@@ -113,6 +99,6 @@ class FriendsFragment(val callback: Callback) : Fragment() {
 
 
     interface Callback{
-        fun changeFragment(friend_id: Int, friend_name: String)
+        fun changeFragment(friend_id: Int, friend_name: String, status_friend: String?)
     }
 }

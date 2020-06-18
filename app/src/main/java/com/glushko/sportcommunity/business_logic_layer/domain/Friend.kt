@@ -9,8 +9,9 @@ class Friend {
     data class Params(
         @PrimaryKey()
         val friend_id: Int,
-        val friend_name: String,
-        val friend_status: String
+        val user_name: String,
+        val user_status: String,
+        val status_friend: String?
     )
 
     companion object{
@@ -20,9 +21,10 @@ class Friend {
             return map
         }
 
-        fun createMap(user_name: String):Map<String, String>{
+        fun createMap(user_name: String, user_id: Long):Map<String, String>{
             val map = HashMap<String, String>()
             map[ApiService.PARAM_USER_NAME] = user_name
+            map[ApiService.PARAM_USER_ID] = user_id.toString()
             return map
         }
     }

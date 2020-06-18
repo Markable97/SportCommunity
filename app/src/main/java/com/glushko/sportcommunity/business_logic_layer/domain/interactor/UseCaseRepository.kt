@@ -8,6 +8,7 @@ import com.glushko.sportcommunity.data_layer.datasource.response.*
 import com.glushko.sportcommunity.data_layer.repository.MainDao
 import com.glushko.sportcommunity.data_layer.repository.MessageDao
 import com.glushko.sportcommunity.data_layer.repository.NotificationDao
+import com.glushko.sportcommunity.presentation_layer.ui.home.HomeActivity
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import retrofit2.await
@@ -152,6 +153,6 @@ class UseCaseRepository {
     }
 
     fun searchUser(text: String): Observable<ResponseFriends>{
-        return NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text))
+        return NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text, HomeActivity.USER_ID))
     }
 }

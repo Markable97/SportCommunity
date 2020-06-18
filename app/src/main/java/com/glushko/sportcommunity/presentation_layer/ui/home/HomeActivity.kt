@@ -43,9 +43,16 @@ class HomeActivity :  AppCompatActivity() {
 
     val navigator = Navigator()
 
+    companion object{
+        open var USER_ID: Long = 0
+    }
+
+
     lateinit var model: AccountViewModel
     lateinit var dataLogin: LiveData<Register.Params>
     lateinit var modelNotification: NotificationDrawerViewModel
+
+
     //lateinit var dataNotificationChats: LiveData<List<ChatsNotification>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +70,7 @@ class HomeActivity :  AppCompatActivity() {
         dataLogin.observe(this, Observer<Register.Params> {
             tvUserName.text = it.name
             tvUserEmail.text = it.email
+            USER_ID = it.idUser.toLong()
             openProfileFragment(it.idUser, it.name)
         })
 
@@ -134,9 +142,9 @@ class HomeActivity :  AppCompatActivity() {
         }
     }
 
-    private fun openProfileFragment(user_id: Int?, user_name: String?, isMe: Boolean = true){
+    private fun openProfileFragment(user_id: Int?, user_name: String?, status_friend: String? = null, isMe: Boolean = true){
         if(user_id!=null && user_name!=null){
-            val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, isMe = isMe, callbackActivity = object : ProfileFragment.Callback{
+            val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, isMe = isMe, status_friend = status_friend, callbackActivity = object : ProfileFragment.Callback{
                 override fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String) {
                     openTeamFragment(teamName, teamDesc, bitmap, leader_id, leader_name)
                 }
@@ -211,8 +219,8 @@ class HomeActivity :  AppCompatActivity() {
 
     private fun openFriendsFragment(){
         val fragmentFriends = FriendsFragment(object : FriendsFragment.Callback{
-            override fun changeFragment(friend_id: Int, friend_name: String) {
-                openProfileFragment(friend_id, friend_name, false)
+            override fun changeFragment(friend_id: Int, friend_name: String, status_friend: String?) {
+                openProfileFragment(friend_id, friend_name, status_friend,false)
             }
 
         })

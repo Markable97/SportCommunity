@@ -28,8 +28,8 @@ class FriendsAdapter(private var list: MutableList<Friend.Params> = mutableListO
         private val friendStatus = itemView.findViewById<TextView>(R.id.tvStatus)
 
         fun bind(item: Friend.Params){
-            friendName.text = item.friend_name
-            friendStatus.text = item.friend_status
+            friendName.text = item.user_name
+            friendStatus.text = item.user_status
             itemView.setOnClickListener{
                 callback.onClickFriend(list[adapterPosition])
             }

@@ -21,7 +21,7 @@ import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.io.File
 
-class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: Boolean = true,val callbackActivity: Callback ) : BaseFragment() {
+class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: Boolean = true, private val status_friend: String? ,val callbackActivity: Callback ) : BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_profile
     override val titleToolbar: Int = R.string.screen_profile
@@ -66,7 +66,12 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
             btn_profile_1.background = context?.getDrawable(R.drawable.ic_notifications_black_36dp)
             bt_profile_2.background = context?.getDrawable(R.drawable.ic_settings_black_36dp)
         }else{
-            btn_profile_1.background = context?.getDrawable(R.drawable.ic_check)
+            when(status_friend){
+                "friend" -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_check)
+                "request" -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_group_add_black_24dp)
+                else -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_group_add_black_24dp)
+            }
+
             bt_profile_2.background = context?.getDrawable(R.drawable.ic_chat)
         }
 
