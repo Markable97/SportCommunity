@@ -21,7 +21,7 @@ import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.io.File
 
-class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: Boolean = true, private val status_friend: String? ,val callbackActivity: Callback ) : BaseFragment() {
+class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: Boolean = true, private var status_friend: String? ,val callbackActivity: Callback ) : BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_profile
     override val titleToolbar: Int = R.string.screen_profile
@@ -53,6 +53,18 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
+        })
+
+        modelPage.liveDataFriendShip.observe(this, Observer {
+            println("Live Data 1")
+            println("ProfileFragment: FriendShip action ${it.success} ${it.message}")
+            Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+            when(it.message){
+                "request friend complete" -> status_friend = "request"
+                "request reject" -> status_friend = null
+                "delete friend" -> status_friend = null
+            }
+
         })
     }
 
@@ -86,7 +98,19 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
         profile_recycler_teams.layoutManager = LinearLayoutManager(activity)
 
         btn_profile_1.setOnClickListener {
-            callbackActivity.onClickBtnLeft(isMe)
+            if(isMe){
+                callbackActivity.onClickBtnLeft(isMe, status_friend)
+            }else{
+                modelPage.friendshipAction(friend_id = userId.toLong(),
+                    action = when(status_friend){
+                        "friend" -> "delete"
+                        "request" -> "reject_request"
+                        else -> "add"
+                    }
+                    )
+            }
+
+
         }
         bt_profile_2.setOnClickListener {
             callbackActivity.onClickBtnRight(isMe, userId, userName)
@@ -119,7 +143,7 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
     interface Callback{
         fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String)
 
-        fun onClickBtnLeft(isMe: Boolean)
+        fun onClickBtnLeft(isMe: Boolean, status_friend: String?)
 
         fun onClickBtnRight(isMe: Boolean, idUser: Int = 0, userName: String = "")
     }

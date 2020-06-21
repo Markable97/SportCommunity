@@ -69,8 +69,7 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
                     //Subscribe to the Observer away from the main UI thread//
 
                     .subscribeOn(Schedulers.io())
-                    .subscribe(this::handleResponse, this::handleError
-                    )
+                    .subscribe(this::handleResponse, this::handleError)
             )
         }else{
             liveData.postValue(ResponseFriends(2, "Empty search", useCaseRepository.getFriendsList(dao) as MutableList<Friend.Params>))

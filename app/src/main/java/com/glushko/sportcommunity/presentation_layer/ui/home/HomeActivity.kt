@@ -149,11 +149,11 @@ class HomeActivity :  AppCompatActivity() {
                     openTeamFragment(teamName, teamDesc, bitmap, leader_id, leader_name)
                 }
 
-                override fun onClickBtnLeft(isMe: Boolean) {
+                override fun onClickBtnLeft(isMe: Boolean, status_friend: String?) {
                     if(isMe){
                         openNotificationFragment()
                     }else{
-                        openAddDialogFragment()
+                        openAddDialogFragment(status_friend)
                     }
                 }
 
@@ -192,8 +192,13 @@ class HomeActivity :  AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(fragmentContainer, SettingFragment()).commit()
     }
 
-    private fun openAddDialogFragment() {
-        Toast.makeText(this, "Диалог фрагмент отправки запроса на дружбу", Toast.LENGTH_SHORT).show()
+    private fun openAddDialogFragment(status_friend: String?) {
+        //Toast.makeText(this, "Диалог фрагмент отправки запроса на дружбу", Toast.LENGTH_SHORT).show()
+        when(status_friend){
+            "friend" -> Toast.makeText(this, "Это ваш друг.", Toast.LENGTH_SHORT).show()
+            "request" -> Toast.makeText(this, "Запрос на дружбу уже отправлен", Toast.LENGTH_SHORT).show()
+            else -> Toast.makeText(this, "Запрос на дружбу", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun openNotificationFragment() {

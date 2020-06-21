@@ -1,6 +1,5 @@
 package com.glushko.sportcommunity.data_layer.datasource
 
-import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.response.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -14,11 +13,12 @@ interface ApiService {
         const val REGISTER = "Register"
         const val LOGIN = "Login"
         const val MAIN_PAGE = "UserMainPage"
-        const val FRIENDS = "GetFriends"
+        const val GET_FRIENDS = "GetFriends"
         const val GET_MESSAGES = "GetMessages"
         const val SEND_MESSAGE = "SendMessage"
         const val LAST_MESSAGE_CONTACT = "GetLastContactMessage"
         const val FIND_USER = "FindPeople"
+        const val FRIENDSHIP = "Friendship"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -27,10 +27,12 @@ interface ApiService {
         const val PARAM_MESSAGE_TYPE = "type_message"
         const val PARAM_MESSAGE_DATE = "user_date"
         const val PARAM_USER_ID = "user_id"
+        const val PARAM_FRIEND_ID = "friend_id"
         const val PARAM_SENDER_ID = "sender_id"
         const val PARAM_RECEIVER_ID = "receiver_id"
         const val PARAM_MESSAGE = "message"
         const val PARAM_USER_NAME = "user_name"
+        const val PARAM_FRIENDSHIP_ACTION = "action"
     }
 
     @FormUrlEncoded
@@ -46,8 +48,14 @@ interface ApiService {
     fun mainPage(@FieldMap params: Map<String, String>):Call<ResponseMainPage>
 
     @FormUrlEncoded
-    @POST(FRIENDS)
+    @POST(GET_FRIENDS)
     fun getFriends(@FieldMap params: Map<String, String>):Call<ResponseFriends>
+
+
+    @FormUrlEncoded
+    @POST(FRIENDSHIP)
+    fun friendshipAction(@FieldMap params: Map<String, String>): Observable<BaseResponse>
+
 
     @FormUrlEncoded
     @POST(FIND_USER)
@@ -70,6 +78,8 @@ interface ApiService {
     @FormUrlEncoded
     @POST(LAST_MESSAGE_CONTACT)
     fun getLastContactMessage(@FieldMap params: Map<String, String>):Call<ResponseLastMessage>
+
+
 
 
 
