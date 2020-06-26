@@ -16,6 +16,7 @@ import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
+import com.glushko.sportcommunity.presentation_layer.ui.dialog_alert.DialogAlertMain
 import com.glushko.sportcommunity.presentation_layer.vm.ProfileViewModel
 import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -100,14 +101,43 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
             if(isMe){
                 callbackActivity.onClickBtnLeft(isMe, status_friend)
             }else{
-                modelPage.friendshipAction(friend_id = userId.toLong(),
+                val dialog = DialogAlertMain(title = when(status_friend){
+                    "friend" -> R.string.delete_friend
+                    "request" -> R.string.request_friend
+                    "head_request" -> R.string.request_head_friend
+                    else -> R.string.add_friend
+                }, listener = object : DialogAlertMain.DialogAlertMainListener{
+                    override fun onPositiveClick() {
+                        when(status_friend){
+                            "friend" -> modelPage.friendshipAction(friend_id = userId.toLong(), action = "delete")
+                            "request" -> modelPage.friendshipAction(friend_id = userId.toLong(), action = "reject_request")
+                            "head_request" -> modelPage.friendshipAction(friend_id = userId.toLong(), action = "accept_request")
+                            else -> modelPage.friendshipAction(friend_id = userId.toLong(), action = "add")
+                        }
+                    }
+
+                    override fun onNegativeClick() {
+                        when(status_friend){
+                            "friend" -> return
+                            "request" -> return
+                            "head_request" -> modelPage.friendshipAction(friend_id = userId.toLong(), action = "reject_request")
+                            else -> return
+                        }
+                    }
+
+                })
+                activity?.let {
+                    dialog.show(it.supportFragmentManager, "DialogAlertMain")
+                }
+
+                /*modelPage.friendshipAction(friend_id = userId.toLong(),
                     action = when(status_friend){
                         "friend" -> "delete"
                         "request" -> "reject_request"
                         "head_request" ->  "accept_request"
                         else -> "add"
                     }
-                    )
+                    )*/
             }
 
 
@@ -148,6 +178,8 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
         }
     }
 
+
+
     interface Callback{
         fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String)
 
@@ -165,4 +197,6 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
         super.onDestroy()
         println("ProfileFragment: OnDestroy")
     }
+
+
 }

@@ -32,7 +32,7 @@
     <string name="login">Вход</string>
     <string name="chats">Чаты</string>
     <string name="friends">Друзья</string>
-    <string name="add_friend">Пригласить друга</string>
+    <!--<string name="add_friend">Пригласить друга</string> -->
     <string name="profile">Аккаунт</string>
     <string name="setting">Настройки</string>
     <string name="notification">Уведомления</string>
@@ -54,7 +54,9 @@
     <string name="cancelled_friend_request">отменил ваш запрос на добавление в друзья</string>
 
     <string name="delete_friend">Удалить друга?</string>
-
+    <string name="request_friend">Отозвать запрос на дружбу?</string>
+    <string name="request_head_friend">Подтвердить запрос на дружбу?</string>
+    <string name="add_friend">Добавить в друзья?</string>
     <string name="message_promt_app">Пользователь с указанным email не найден. Хотите отправить ему ссылку на
         приложение?
     </string>
