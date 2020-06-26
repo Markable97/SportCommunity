@@ -80,8 +80,11 @@ class UseCaseRepository {
     ){
         try{
             val response =  NetworkService.makeNetworkService().getFriends(Friend.createMap(param)).await()
-            dao.insertFriends(response.friends)
-            liveData.postValue(response)
+            dao.deleteFriends()
+            if(response.friends.isNotEmpty() ){
+                dao.insertFriends(response.friends)
+                liveData.postValue(response)
+            }
         }catch (cause: Throwable){
             println("Error!!!!${cause.message}")
             throw NetworkErrors(cause.message?:"Сервер не отвечает", cause)

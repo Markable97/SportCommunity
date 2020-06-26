@@ -46,7 +46,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
         modelFriend = ViewModelProviders.of(this).get(FriendsViewModel::class.java)
 
         modelFriend.liveDataRepository.observe(this, Observer {
-            println("Live data 1")
+            println("Live data 1 \n $it")
             adapter.setList((it as MutableList<Friend.Params>))
         })
         dataFriends = modelFriend.getData()

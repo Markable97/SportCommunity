@@ -59,11 +59,14 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
             println("Live Data 1")
             println("ProfileFragment: FriendShip action ${it.success} ${it.message}")
             Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
-            when(it.message){
-                "request friend complete" -> status_friend = "request"
-                "request reject" -> status_friend = null
-                "delete friend" -> status_friend = null
+            status_friend = when(it.message){
+                "request friend complete" -> "request"
+                "request reject" -> null
+                "delete friend" -> null
+                "confirm friend" -> "friend"
+                else -> null
             }
+            iconFriendship(status_friend)
 
         })
     }
@@ -78,11 +81,7 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
             btn_profile_1.background = context?.getDrawable(R.drawable.ic_notifications_black_36dp)
             bt_profile_2.background = context?.getDrawable(R.drawable.ic_settings_black_36dp)
         }else{
-            when(status_friend){
-                "friend" -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_check)
-                "request" -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_group_add_black_24dp)
-                else -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_group_add_black_24dp)
-            }
+            iconFriendship(status_friend)
 
             bt_profile_2.background = context?.getDrawable(R.drawable.ic_chat)
         }
@@ -105,6 +104,7 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
                     action = when(status_friend){
                         "friend" -> "delete"
                         "request" -> "reject_request"
+                        "head_request" ->  "accept_request"
                         else -> "add"
                     }
                     )
@@ -137,6 +137,14 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
             val photo: Uri = Uri.fromFile(file)
             ivUserImage.setImageURI(photo)
             super.saveImage(((ivUserImage.drawable) as BitmapDrawable).bitmap, "${System.currentTimeMillis()}")
+        }
+    }
+
+    private fun iconFriendship(status_friend: String?){
+        when(status_friend){
+            "friend" -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_check)
+            "request" -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_group_add_black_24dp)
+            else -> btn_profile_1.background = context?.getDrawable(R.drawable.ic_group_add_black_24dp)
         }
     }
 
