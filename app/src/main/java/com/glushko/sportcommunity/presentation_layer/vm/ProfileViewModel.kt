@@ -27,6 +27,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     val liveDataFriendShip: MutableLiveData<BaseResponse> = MutableLiveData()
     //val LiveDataRepository: LiveData<List<TeamsUserInfo.Params>>
     private val mainDao = MainDatabase.getDatabase(application).mainDao()
+
+    private val dopDao = MainDatabase.getNotificationDao(application)
     private var myCompositeDisposable: CompositeDisposable? = null
 
     private val pref = SharedPrefsManager(getApplication<Application>().
@@ -66,7 +68,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         )
         if(action == "reject_request" || action == "accept_request"){
             myCompositeDisposable?.add(
-                useCaseRepository.deleteNotificationFriend(friend_id,  mainDao)
+                useCaseRepository.deleteNotificationFriend(friend_id, dopDao)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(this::handleResponse, this::handleError))

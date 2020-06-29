@@ -146,6 +146,7 @@ class AccountViewModel(application: Application) : AndroidViewModel(application)
             messageDao.deleteAllMessages()
             messageDao.deleteAllLastMessage()
             notificationDao.deleteNotificationChats()
+            notificationDao.deleteAllFriendsNotification()
             println("Clear done" +
                     "")
         }

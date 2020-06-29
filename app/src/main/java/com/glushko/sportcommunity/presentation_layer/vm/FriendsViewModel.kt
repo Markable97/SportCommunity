@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 class FriendsViewModel(application: Application) : AndroidViewModel(application) {
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
     private val dao = MainDatabase.getDatabase(application).mainDao()
+    private val dao_dop = MainDatabase.getNotificationDao(application)
     private val liveData: MutableLiveData<ResponseFriends> = MutableLiveData()
     var liveDataRepository: LiveData<List<Friend.Params>>
 
@@ -32,7 +33,7 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
     init{
         myCompositeDisposable = CompositeDisposable()
         liveDataRepository = useCaseRepository.getFriends(dao)
-        liveDataNotification = useCaseRepository.getFriendsNotification(dao)
+        liveDataNotification = dao_dop.getFriendsNotification()
     }
 
     fun getData(): MutableLiveData<ResponseFriends>{
@@ -46,7 +47,7 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
     private fun getFriends(idUser: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                useCaseRepository.getFriends(idUser, liveData, dao)
+                useCaseRepository.getFriends(idUser, liveData, dao, dao_dop)
             }catch (err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(ResponseFriends(

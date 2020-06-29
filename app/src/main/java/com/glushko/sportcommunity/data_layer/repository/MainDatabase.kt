@@ -83,13 +83,8 @@ interface MainDao{
     @Query("delete from friends_table")
     suspend fun deleteFriends()
 
-    @Query("select * from notification_friendship")
-    fun getFriendsNotification(): LiveData<List<FriendshipNotification>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFriendsNotification(friends_request: MutableList<FriendshipNotification>)
-    @Delete
-    fun deleteFiendsNotification(item:  FriendshipNotification): Single<Int>
+
 }
 
 @Dao
@@ -100,6 +95,13 @@ interface NotificationDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun setNotificationChats(entity: ChatsNotification)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun setNotificationFriend(entity: FriendshipNotification)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun setNotificationFriend(entity: MutableList<FriendshipNotification>)
+
+
     @Query("select * from notification_chats")
     fun getNotificationChatsLiveData():LiveData<List<ChatsNotification>>
 
@@ -109,11 +111,26 @@ interface NotificationDao{
     @Query("select sum(count) from notification_chats where contact_id = :contact_id")
     fun getNotificationChats(contact_id: Long):Int
 
+    @Query("select * from notification_friendship")
+    fun getFriendsNotification(): LiveData<List<FriendshipNotification>>
+
+    @Query("select * from notification_friendship")
+    fun getFriendsNotificationList(): List<FriendshipNotification>
+
     @Query("delete from notification_chats")
     fun deleteNotificationChats()
 
     @Query("delete from notification_chats where contact_id = :contact_id")
     fun deleteNotificationChats(contact_id: Long)
+
+    @Query("delete from notification_friendship where contact_id = :contact_id ")
+    fun deleteNotificationFriend(contact_id: Long)
+
+    @Delete
+    fun deleteFiendsNotification(item:  FriendshipNotification): Single<Int>
+
+    @Query("delete from notification_friendship")
+    fun deleteAllFriendsNotification()
 }
 
 @Dao

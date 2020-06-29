@@ -148,31 +148,48 @@
             android:focusable="true"
             android:padding="16dp">
 
-            <LinearLayout
-                android:id="@+id/llFriendsList"
+
+            <ImageView
+                android:id="@+id/imgvFriendsList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/profile"
+                android:src="@drawable/baseline_group_black_36"
+                android:tint="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/btnFriendsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
+                android:layout_toEndOf = "@+id/imgvFriendsList"
+                android:gravity="start|center_vertical"
+                android:text="@string/friends"
+                android:textSize="16sp" />
 
-                <ImageView
-                    android:id="@+id/imgvFriendsList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/profile"
-                    android:src="@drawable/baseline_group_black_36"
-                    android:tint="@color/colorPrimary" />
-
-                <TextView
-                    android:id="@+id/btnFriendsText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:gravity="start|center_vertical"
-                    android:text="@string/friends"
-                    android:textSize="16sp" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/btnFriends_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="-10dp"
+                android:layout_marginTop="0dp"
+                android:layout_toEndOf= "@+id/imgvFriendsList"
+                android:background="@drawable/circle_notification"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="TextView"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                tools:visibility="visible"
+                tools:text="9+" />
         </RelativeLayout>
 
         <RelativeLayout

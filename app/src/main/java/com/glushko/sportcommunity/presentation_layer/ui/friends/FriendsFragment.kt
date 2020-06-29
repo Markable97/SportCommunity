@@ -54,7 +54,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
         dataFriends = modelFriend.getData()
         dataFriends.observe(this, Observer {
             println("Live data 2")
-            println("FriendFragment: \n${it.success} ${it.message}, ${it.friends}")
+            println("FriendFragment: \n${it.success} \n${it.message}, \n${it.friends} \n${it.friends_request}")
             if(it.success == 2){
                 adapter.setList(it.friends)
             }else{
@@ -63,6 +63,8 @@ class FriendsFragment(val callback: Callback) : Fragment() {
         })
 
         modelFriend.liveDataNotification.observe(this, Observer {
+            println("Live data 3")
+            println("Request friend: $it")
             val count = if(it.isNotEmpty()) it.count() else 0
             if(count > 0 ){
                 btnFriendRequest.visibility = View.VISIBLE

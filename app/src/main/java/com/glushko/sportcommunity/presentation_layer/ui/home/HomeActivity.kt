@@ -105,6 +105,16 @@ class HomeActivity :  AppCompatActivity() {
             }
         })
 
+        modelNotification.friendsLiveData.observe(this, Observer {
+            println("HomeActivity Live Data Notification 2 $it")
+            val count = if(it.isNotEmpty()) it.size else 0
+            if(count > 0){
+                btnFriends_notification.text = if(count > 9) "9+" else count.toString()
+                btnFriends_notification.visibility = View.VISIBLE
+            }else{
+                btnFriends_notification.visibility = View.GONE
+            }
+        })
 
         profileContainer.setOnClickListener {
             drawerLayout.closeDrawers()
