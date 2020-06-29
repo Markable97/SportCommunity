@@ -5,5 +5,6 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Friend
 class ResponseFriends(
     success: Int,
     message: String,
-    val friends: MutableList<Friend.Params> = mutableListOf()
+    val friends: MutableList<Friend.Params> = mutableListOf(),
+    val friends_request: MutableList<Friend.Params> = mutableListOf()
 ) : BaseResponse(success, message)

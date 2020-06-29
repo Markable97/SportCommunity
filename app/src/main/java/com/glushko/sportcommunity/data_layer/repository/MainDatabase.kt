@@ -2,9 +2,7 @@ package com.glushko.sportcommunity.data_layer.repository
 
 
 import android.content.Context
-import android.graphics.LightingColorFilter
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -12,7 +10,8 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Friend
 import com.glushko.sportcommunity.business_logic_layer.domain.LastMessage
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
-import com.google.android.gms.common.util.DynamiteApi
+import io.reactivex.Observable
+import io.reactivex.Single
 
 @Entity
 data class Person(
@@ -27,6 +26,13 @@ data class ChatsNotification(
     @PrimaryKey
     var contact_id: Long = 1,
     var count: Int = 0
+)
+@Entity(tableName = "notification_friendship")
+data class FriendshipNotification(
+    @PrimaryKey
+    val contact_id: Long,
+    val contact_name: String,
+    val status_friend: String
 )
 /*@Entity
 data class TeamsUserInfo(
@@ -76,6 +82,14 @@ interface MainDao{
 
     @Query("delete from friends_table")
     suspend fun deleteFriends()
+
+    @Query("select * from notification_friendship")
+    fun getFriendsNotification(): LiveData<List<FriendshipNotification>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertFriendsNotification(friends_request: MutableList<FriendshipNotification>)
+    @Delete
+    fun deleteFiendsNotification(item:  FriendshipNotification): Single<Int>
 }
 
 @Dao
@@ -132,7 +146,7 @@ interface MessageDao{
     suspend fun deleteAllLastMessage()
 }
 
-@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class, LastMessage.Params::class, ChatsNotification::class], version = 1, exportSchema = false)
+@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class, LastMessage.Params::class, ChatsNotification::class, FriendshipNotification::class], version = 1, exportSchema = false)
 abstract class MainDatabase: RoomDatabase(){
 
      abstract fun mainDao(): MainDao

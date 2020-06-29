@@ -15,6 +15,7 @@ import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Friend
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
 import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
+import com.realpacific.clickshrinkeffect.applyClickShrink
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import kotlinx.android.synthetic.main.fragment_friends.*
@@ -28,6 +29,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
 
     lateinit var modelFriend: FriendsViewModel
     lateinit var dataFriends: MutableLiveData<ResponseFriends>
+
 
 
     override fun onCreateView(
@@ -59,10 +61,21 @@ class FriendsFragment(val callback: Callback) : Fragment() {
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
         })
+
+        modelFriend.liveDataNotification.observe(this, Observer {
+            val count = if(it.isNotEmpty()) it.count() else 0
+            if(count > 0 ){
+                btnFriendRequest.visibility = View.VISIBLE
+                tvFriendRequest.text = count.toString()
+            }else{
+                btnFriendRequest.visibility = View.GONE
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        btnFriendRequest.applyClickShrink()
         adapter = FriendsAdapter(callback = object : FriendsAdapter.Callback{
             override fun onClickFriend(item: Friend.Params) {
                 callback.changeFragment(item.friend_id, item.user_name, item.status_friend)

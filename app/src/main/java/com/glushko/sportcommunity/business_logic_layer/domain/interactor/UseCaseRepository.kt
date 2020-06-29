@@ -5,11 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.glushko.sportcommunity.business_logic_layer.domain.*
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.glushko.sportcommunity.data_layer.datasource.response.*
+import com.glushko.sportcommunity.data_layer.repository.FriendshipNotification
 import com.glushko.sportcommunity.data_layer.repository.MainDao
 import com.glushko.sportcommunity.data_layer.repository.MessageDao
-import com.glushko.sportcommunity.data_layer.repository.NotificationDao
 import com.glushko.sportcommunity.presentation_layer.ui.home.HomeActivity
 import io.reactivex.Observable
+import io.reactivex.Single
 import okhttp3.MultipartBody
 import retrofit2.await
 import java.lang.Exception
@@ -81,6 +82,13 @@ class UseCaseRepository {
         try{
             val response =  NetworkService.makeNetworkService().getFriends(Friend.createMap(param)).await()
             dao.deleteFriends()
+            if (response.friends_request.isNotEmpty()){
+                val friends_request = mutableListOf<FriendshipNotification>()
+                for(friend in response.friends_request){
+                    friends_request.add(FriendshipNotification(friend.friend_id.toLong(), friend.user_name, friend.status_friend!!))
+                }
+                dao.insertFriendsNotification(friends_request)
+            }
             if(response.friends.isNotEmpty() ){
                 dao.insertFriends(response.friends)
                 liveData.postValue(response)
@@ -93,6 +101,9 @@ class UseCaseRepository {
         }
     }
 
+    fun getFriendsNotification(dao: MainDao):LiveData<List<FriendshipNotification>>{
+        return dao.getFriendsNotification()
+    }
     fun getMessages(dao: MessageDao, sender_id_id: Long, receiver_id: Long): LiveData<List<Message.Params>>{
         return dao.getMessages(sender_id_id, receiver_id)
     }
@@ -159,7 +170,14 @@ class UseCaseRepository {
         return NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text, HomeActivity.USER_ID))
     }
 
-    fun friendshipAction(user_id: Long, friend_id: Long, action: String, token: String): Observable<BaseResponse>{
-        return NetworkService.makeNetworkServiceRxJava().friendshipAction(Friend.createMap(user_id, friend_id, action, token))
+    fun deleteNotificationFriend(friend_id: Long, dao: MainDao): Single<Int> {
+
+        return dao.deleteFiendsNotification(FriendshipNotification(friend_id, "Test", "test"))
+
+    }
+
+    fun friendshipAction(user_id: Long, user_name: String, friend_id: Long, action: String, token: String): Observable<BaseResponse>{
+
+        return NetworkService.makeNetworkServiceRxJava().friendshipAction(Friend.createMap(user_id, user_name, friend_id, action, token))
     }
 }

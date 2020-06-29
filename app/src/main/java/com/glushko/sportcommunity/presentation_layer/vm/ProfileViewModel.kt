@@ -11,10 +11,13 @@ import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
+import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
+
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
@@ -47,18 +50,28 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun friendshipAction(friend_id: Long, action: String){
+
         myCompositeDisposable?.add(
-            useCaseRepository.friendshipAction(idUser.toLong(), friend_id, action, pref.getToken())
+            useCaseRepository.friendshipAction(idUser.toLong(), pref.getAccount().name,  friend_id, action, pref.getToken())
 
                 //Send the Observable’s notifications to the main UI thread//
 
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(
+                    AndroidSchedulers.mainThread())
 
                 //Subscribe to the Observer away from the main UI thread//
 
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse, this::handleError)
         )
+        if(action == "reject_request" || action == "accept_request"){
+            myCompositeDisposable?.add(
+                useCaseRepository.deleteNotificationFriend(friend_id,  mainDao)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(this::handleResponse, this::handleError))
+        }
+
     }
 
     private fun handleResponse(responseServer: BaseResponse) {
@@ -67,9 +80,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     }
 
+    private fun handleResponse(responseRoom: Int) {
+        println("Удаление из бд в кол-во $responseRoom")
+    }
     private fun handleError(err: Throwable){
         println("ошибка поиска ${err.message}")
-        liveDataFriendShip.postValue(BaseResponse(0, err.localizedMessage))
+        liveDataFriendShip.postValue(BaseResponse(0, err.localizedMessage?:"Server error"))
 
     }
 
@@ -92,7 +108,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     override fun onCleared() {
         super.onCleared()
-        myCompositeDisposable?.clear()
+        //myCompositeDisposable?.clear()
         println("Метод очистки ProfileVewModel!!")
     }
 }

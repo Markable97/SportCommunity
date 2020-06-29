@@ -9,9 +9,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-
         />
 
+    <LinearLayout
+        android:id="@+id/btnFriendRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible"
+        >
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="Заявки"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvFriendRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/white"
+            android:background="@drawable/circle_notification"
+            android:gravity="center_horizontal|center_vertical"
+            tools:text="8"
+             />
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friends_recycler"
         android:layout_width="match_parent"

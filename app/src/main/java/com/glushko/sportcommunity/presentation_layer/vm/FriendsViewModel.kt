@@ -9,8 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.glushko.sportcommunity.business_logic_layer.domain.Friend
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
-import com.glushko.sportcommunity.data_layer.datasource.NetworkService
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
+import com.glushko.sportcommunity.data_layer.repository.FriendshipNotification
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,11 +25,14 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
     private val liveData: MutableLiveData<ResponseFriends> = MutableLiveData()
     var liveDataRepository: LiveData<List<Friend.Params>>
 
+    var liveDataNotification: LiveData<List<FriendshipNotification>>
+
     private var myCompositeDisposable: CompositeDisposable? = null
 
     init{
         myCompositeDisposable = CompositeDisposable()
         liveDataRepository = useCaseRepository.getFriends(dao)
+        liveDataNotification = useCaseRepository.getFriendsNotification(dao)
     }
 
     fun getData(): MutableLiveData<ResponseFriends>{
