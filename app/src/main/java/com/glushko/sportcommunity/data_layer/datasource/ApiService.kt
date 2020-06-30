@@ -54,7 +54,7 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST(FRIENDSHIP)
-    fun friendshipAction(@FieldMap params: Map<String, String>): Observable<BaseResponse>
+    fun friendshipAction(@FieldMap params: Map<String, String>): Observable<ResponseFriendship>
 
 
     @FormUrlEncoded

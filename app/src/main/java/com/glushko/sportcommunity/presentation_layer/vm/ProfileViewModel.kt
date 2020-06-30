@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
 import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriendship
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
@@ -24,7 +25,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     //val person: LiveData<Person>
     val liveData:MutableLiveData<ResponseMainPage> = MutableLiveData()
 
-    val liveDataFriendShip: MutableLiveData<BaseResponse> = MutableLiveData()
+    val liveDataFriendShip: MutableLiveData<ResponseFriendship> = MutableLiveData()
     //val LiveDataRepository: LiveData<List<TeamsUserInfo.Params>>
     private val mainDao = MainDatabase.getDatabase(application).mainDao()
 
@@ -66,18 +67,31 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse, this::handleError)
         )
-        if(action == "reject_request" || action == "accept_request"){
+        /*if(action == "reject_request" || action == "accept_request"){
             myCompositeDisposable?.add(
                 useCaseRepository.deleteNotificationFriend(friend_id, dopDao)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(this::handleResponse, this::handleError))
-        }
+        }*/
 
     }
 
-    private fun handleResponse(responseServer: BaseResponse) {
+    private fun handleResponse(responseServer: ResponseFriendship) {
         println("Ответ сервера: ${responseServer.success} ${responseServer.message}")
+        if(responseServer.message == "request reject" || responseServer.message == "confirm friend"){
+            myCompositeDisposable?.add(
+                useCaseRepository.deleteNotificationFriend(responseServer.friend_id, dopDao)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(this::handleResponse, this::handleError))
+        }else if(responseServer.message == "delete friend"){
+            myCompositeDisposable?.add(
+                useCaseRepository.deleteFriend(responseServer.friend_id, mainDao)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(this::handleResponse, this::handleError))
+        }
         liveDataFriendShip.postValue(responseServer)
 
     }
@@ -87,7 +101,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
     private fun handleError(err: Throwable){
         println("ошибка поиска ${err.message}")
-        liveDataFriendShip.postValue(BaseResponse(0, err.localizedMessage?:"Server error"))
+        liveDataFriendShip.postValue(ResponseFriendship(0, err.localizedMessage?:"Server error", 0L))
 
     }
 

@@ -177,7 +177,11 @@ class UseCaseRepository {
 
     }
 
-    fun friendshipAction(user_id: Long, user_name: String, friend_id: Long, action: String, token: String): Observable<BaseResponse>{
+    fun deleteFriend(friend_id: Long, dao: MainDao): Single<Int>{
+        return dao.deleteFriend(Friend.Params(friend_id.toInt(), "", "", ""))
+    }
+
+    fun friendshipAction(user_id: Long, user_name: String, friend_id: Long, action: String, token: String): Observable<ResponseFriendship>{
 
         return NetworkService.makeNetworkServiceRxJava().friendshipAction(Friend.createMap(user_id, user_name, friend_id, action, token))
     }

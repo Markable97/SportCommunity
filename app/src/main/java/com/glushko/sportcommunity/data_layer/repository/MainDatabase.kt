@@ -80,6 +80,9 @@ interface MainDao{
     @Query("select * from friends_table")
     fun getFriendsList():List<Friend.Params>
 
+    @Delete
+    fun deleteFriend(friend: Friend.Params): Single<Int>
+
     @Query("delete from friends_table")
     suspend fun deleteFriends()
 

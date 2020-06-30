@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.data_layer.repository.FriendshipNotification
 import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
+import com.glushko.sportcommunity.presentation_layer.vm.ProfileViewModel
 import kotlinx.android.synthetic.main.fragment_friends_request.*
 
 class FriendsRequestFragment: Fragment() {
@@ -18,6 +19,7 @@ class FriendsRequestFragment: Fragment() {
 
     lateinit var adapter: FriendsRequestAdapter
     lateinit var modelFriend: FriendsViewModel
+    lateinit var modelPage: ProfileViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,11 +33,18 @@ class FriendsRequestFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         modelFriend = ViewModelProviders.of(this).get(FriendsViewModel::class.java)
+        modelPage = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
 
         modelFriend.liveDataNotification.observe(this, Observer {
             println("Live data 3")
             println("Request friend: $it")
             adapter.setList(it.toMutableList())
+        })
+
+        modelPage.liveDataFriendShip.observe(this, Observer {
+            println("Live Data 1")
+            println("ProfileFragment: FriendShip action ${it.success} ${it.message} {${it.friend_id}}")
+
         })
 
     }
@@ -46,10 +55,12 @@ class FriendsRequestFragment: Fragment() {
         adapter = FriendsRequestAdapter(object : FriendsRequestAdapter.Callback{
             override fun onClickConfirm(item: FriendshipNotification) {
                 println("подтверждаю друга")
+                modelPage.friendshipAction(friend_id = item.contact_id, action = "accept_request")
             }
 
             override fun onClickReject(item: FriendshipNotification) {
                 println("отклоняю друга")
+                modelPage.friendshipAction(friend_id = item.contact_id, action = "reject_request")
             }
 
         })
