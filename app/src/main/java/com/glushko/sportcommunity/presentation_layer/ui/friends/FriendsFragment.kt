@@ -108,6 +108,9 @@ class FriendsFragment(val callback: Callback) : Fragment() {
             .subscribe { text ->println("с клавиатуры $text")
                             modelFriend.searchUser(text) }
 
+        btnFriendRequest.setOnClickListener {
+            callback.onClickFriendsRequest()
+        }
     }
 
 
@@ -115,5 +118,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
 
     interface Callback{
         fun changeFragment(friend_id: Int, friend_name: String, status_friend: String?)
+
+        fun onClickFriendsRequest()
     }
 }

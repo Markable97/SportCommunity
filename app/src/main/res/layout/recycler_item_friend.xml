@@ -35,18 +35,17 @@
         />
 
     <LinearLayout
-        android:layout_centerVertical="true"
         android:id="@+id/contact_name_and_status"
-        android:layout_toRightOf="@+id/imgPhoto"
-        android:layout_toEndOf="@+id/imgPhoto"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="@dimen/small_margin"
-        android:layout_toStartOf="@+id/removeContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
+        android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/small_margin"
-        android:layout_marginEnd="@dimen/small_margin">
+        android:layout_marginLeft="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_toEndOf="@+id/imgPhoto"
+        android:layout_toRightOf="@+id/imgPhoto"
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/tvName"
@@ -64,39 +63,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-
-            android:maxLines="1"
             android:ellipsize="end"
-            tools:text="@string/status"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/removeContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true">
-
-        <FrameLayout
-            android:id="@+id/btnRemove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@drawable/rounded_button"
-                android:src="@drawable/ic_close_black_24dp"
-                android:backgroundTint="@color/darkGrey"
-                android:tint="@color/white"
-                android:padding="8dp" />
-
-        </FrameLayout>
+            android:maxLines="1"
+            android:textSize="14sp"
+            tools:text="@string/status" />
     </LinearLayout>
 
 </RelativeLayout>

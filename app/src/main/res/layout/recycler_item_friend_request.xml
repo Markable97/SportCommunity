@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:background="@color/lightGrey">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgPhotoFriendRequest"
+        android:layout_width="@dimen/account_photo_dim64"
+        android:layout_height="@dimen/account_photo_dim64"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_account_circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFriendRequestName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="#191919"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/imgPhotoFriendRequest"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Тестовое Имя" />
+
+    <LinearLayout
+        android:id="@+id/lnForButtons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgPhotoFriendRequest"
+        app:layout_constraintTop_toBottomOf="@+id/tvFriendRequestName">
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/btnConfirmFriend"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="Подтвердить"
+            tools:text="Подтвердить" />
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/btnRejectRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="2dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="Отклонить"
+            tools:text="Оклонить" />
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

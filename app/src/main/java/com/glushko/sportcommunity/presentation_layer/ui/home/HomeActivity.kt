@@ -24,6 +24,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.Navigator
 import com.glushko.sportcommunity.presentation_layer.ui.chat.ChatsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.dialog.DialogFragment
 import com.glushko.sportcommunity.presentation_layer.ui.friends.FriendsFragment
+import com.glushko.sportcommunity.presentation_layer.ui.friends_request.FriendsRequestFragment
 import com.glushko.sportcommunity.presentation_layer.ui.notification.NotificationFragment
 import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
 import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
@@ -238,10 +239,19 @@ class HomeActivity :  AppCompatActivity() {
                 openProfileFragment(friend_id, friend_name, status_friend,false)
             }
 
+            override fun onClickFriendsRequest() {
+                openFriendsRequestFragment()
+            }
+
         })
         supportFragmentManager.beginTransaction().replace(fragmentContainer, fragmentFriends).commit()
     }
 
+    private fun openFriendsRequestFragment(){
+        toolbar.title = "Заявки"
+        val fragmentFriendsRequest = FriendsRequestFragment()
+        supportFragmentManager.beginTransaction().replace(fragmentContainer, fragmentFriendsRequest).commit()
+    }
 
     fun hideSoftKeyboard() {
         if (currentFocus != null) {

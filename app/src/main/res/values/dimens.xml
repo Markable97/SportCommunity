@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="account_photo_dim52">48dp</dimen>
+    <dimen name="account_photo_dim64">64dp</dimen>
     <dimen name="account_photo_dim">48dp</dimen>
 
 
