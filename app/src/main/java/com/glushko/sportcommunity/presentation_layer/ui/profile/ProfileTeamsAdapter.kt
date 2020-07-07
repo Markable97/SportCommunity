@@ -36,12 +36,14 @@ class ProfileTeamsAdapter(private var list: MutableList<TeamsUserInfo.Params>, v
 
         private val imageTeam = itemView.findViewById<ImageView>(R.id.imageTeam)
         private val teamName = itemView.findViewById<TextView>(R.id.item_team_name)
+        private val teamDesc = itemView.findViewById<TextView>(R.id.division_info)
         private val amplua = itemView.findViewById<TextView>(R.id.iteam_amplua)
         private val statistics = itemView.findViewById<TextView>(R.id.item_statistics)
 
 
         fun bind(item: TeamsUserInfo.Params){
             teamName.text = item.team_name
+            teamDesc.text = item.team_desc
             amplua.text = item.amplua
             statistics.text = "Игры ${item.games}, Голы ${item.goals}, Передачи ${item.assists}, ЖК ${item.yellow}, КК ${item.red}"
             Glide.with(itemView.context)

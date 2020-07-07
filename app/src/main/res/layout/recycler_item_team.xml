@@ -25,16 +25,15 @@
             <View
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/colorPrimary"
+                android:layout_height="150dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/imageTeam"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
                 app:layout_constraintEnd_toEndOf="@+id/view2"
                 app:layout_constraintStart_toStartOf="@+id/view2"
                 app:layout_constraintTop_toTopOf="parent"
@@ -43,15 +42,26 @@
 
             <TextView
                 android:id="@+id/item_team_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="12dp"
+                android:layout_marginEnd="10dp"
                 android:text="Морс"
                 android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view2" />
-
+            <TextView
+                android:id="@+id/division_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Восточная лига ЛФЛ"
+                android:textSize="18dp"
+                app:layout_constraintEnd_toEndOf="@+id/item_team_name"
+                app:layout_constraintStart_toStartOf="@+id/item_team_name"
+                app:layout_constraintTop_toBottomOf="@+id/item_team_name" />
             <TextView
                 android:id="@+id/iteam_amplua"
                 android:layout_width="wrap_content"
@@ -59,18 +69,18 @@
                 android:layout_marginTop="5dp"
                 android:text="Полузащитник"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@+id/item_team_name"
-                app:layout_constraintTop_toBottomOf="@+id/item_team_name" />
+                app:layout_constraintStart_toStartOf="@+id/division_info"
+                app:layout_constraintTop_toBottomOf="@+id/division_info" />
 
             <TextView
                 android:id="@+id/item_statistics"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:text="Голы: 36 Передачи: 11 ЖК: 3 КК: 0"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/iteam_amplua"
                 app:layout_constraintTop_toBottomOf="@+id/iteam_amplua" />
         </androidx.constraintlayout.widget.ConstraintLayout>
