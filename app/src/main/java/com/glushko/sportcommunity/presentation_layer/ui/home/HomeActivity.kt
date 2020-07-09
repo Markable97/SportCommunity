@@ -14,12 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
-import com.glushko.sportcommunity.data_layer.repository.ChatsNotification
-import com.glushko.sportcommunity.data_layer.repository.MainDatabase
-
-
-import com.glushko.sportcommunity.presentation_layer.ui.BaseActivity
-import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.ui.Navigator
 import com.glushko.sportcommunity.presentation_layer.ui.chat.ChatsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.dialog.DialogFragment
@@ -30,7 +24,6 @@ import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
 import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.TeamFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
-import com.glushko.sportcommunity.presentation_layer.vm.ChatsViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.NotificationDrawerViewModel
 import kotlinx.android.synthetic.main.home_activity.*
 import kotlinx.android.synthetic.main.navigation.*
@@ -59,7 +52,7 @@ class HomeActivity :  AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(contentId)
-        setSupportActionBar(toolbar)
+        //setSupportActionBar(toolbar)
 
         setSupportActionBar(toolbar)
         toolbar.title = "Профиль"

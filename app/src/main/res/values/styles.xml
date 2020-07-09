@@ -4,7 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/darkGrey</item>
-        <item name="android:navigationBarColor" >@color/darkGrey</item>
+        <item name="android:navigationBarColor">@color/darkGrey</item>
     </style>
 
 

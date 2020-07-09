@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/create_team_grath"
+    app:startDestination="@id/typeSportFragment">
+
+    <fragment
+        android:id="@+id/typeSportFragment"
+        android:name="com.glushko.sportcommunity.presentation_layer.ui.create_team.TypeSportFragment"
+        android:label="TypeSportFragment" />
+</navigation>
