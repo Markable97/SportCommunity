@@ -1,5 +1,6 @@
 package com.glushko.sportcommunity.presentation_layer.ui.create_team
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,13 @@ class TypeSportFragment : Fragment() {
 
     val layoutId: Int = R.layout.fragment_create_team_type_sport
 
+    lateinit var callback: CallbackTypeSport
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callback = context as CallbackTypeSport
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,23 +33,27 @@ class TypeSportFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         btnFootball.applyClickShrink()
         btnFootball.setOnClickListener {
-
+            callback.onClickTypeSport("Football")
         }
         btnBasketball.applyClickShrink()
         btnBasketball.setOnClickListener {
-
+            callback.onClickTypeSport("Basketball")
         }
         btnHockey.applyClickShrink()
         btnHockey.setOnClickListener {
-
+            callback.onClickTypeSport("Hockey")
         }
         btnVolleyball.applyClickShrink()
         btnVolleyball.setOnClickListener {
-
+            callback.onClickTypeSport("Volleyball")
         }
         btnOtherTypeSport.applyClickShrink()
         btnOtherTypeSport.setOnClickListener {
-
+            callback.onClickTypeSport("Other Sport")
         }
+    }
+
+    interface CallbackTypeSport{
+        fun onClickTypeSport(typeSport: String)
     }
 }

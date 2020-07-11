@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/create_team_grath"
+    android:label="Вид спорта"
     app:startDestination="@id/typeSportFragment">
-
     <fragment
         android:id="@+id/typeSportFragment"
         android:name="com.glushko.sportcommunity.presentation_layer.ui.create_team.TypeSportFragment"
-        android:label="TypeSportFragment" />
+        android:label="TypeSportFragment"
+        tools:layout="@layout/fragment_create_team_type_sport"/>
 </navigation>
