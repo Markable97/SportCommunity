@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.toolbar.*
 
 class CreateTeamActivity : AppCompatActivity(), TypeSportFragment.CallbackTypeSport {
 
-    val contentId = R.layout.activity_create_team
-    lateinit var nav_host_fragment: NavController
+    private val contentId = R.layout.activity_create_team
+    private lateinit var nav_host_fragment: NavController
 
 
 
@@ -28,7 +28,10 @@ class CreateTeamActivity : AppCompatActivity(), TypeSportFragment.CallbackTypeSp
     }
 
     override fun onClickTypeSport(typeSport: String) {
-        Toast.makeText(this, typeSport, Toast.LENGTH_LONG).show()
+        when(typeSport){
+            "Football"-> nav_host_fragment.navigate(R.id.infoFootballTeam)
+            else ->Toast.makeText(this, typeSport, Toast.LENGTH_LONG).show()
+        }
     }
 
 }

@@ -10,4 +10,9 @@
         android:name="com.glushko.sportcommunity.presentation_layer.ui.create_team.TypeSportFragment"
         android:label="TypeSportFragment"
         tools:layout="@layout/fragment_create_team_type_sport"/>
+    <fragment
+        android:id="@+id/infoFootballTeam"
+        android:name="com.glushko.sportcommunity.presentation_layer.ui.create_team.InfoFootballTeam"
+        android:label="fragment_info_football_team"
+        tools:layout="@layout/fragment_info_football_team" />
 </navigation>

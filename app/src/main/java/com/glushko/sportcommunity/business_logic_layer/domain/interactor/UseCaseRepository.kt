@@ -185,4 +185,16 @@ class UseCaseRepository {
 
         return NetworkService.makeNetworkServiceRxJava().friendshipAction(Friend.createMap(user_id, user_name, friend_id, action, token))
     }
+
+    fun getFootballLeagues(): Observable<ResponseFootballLeagues>{
+        return NetworkService.makeNetworkServiceRxJava().getFootballLeagues()
+    }
+
+    fun getFootballDivisions(league_id: Int): Observable<ResponseFootballDivisions>{
+        return NetworkService.makeNetworkServiceRxJava().getFootballDivisions(ResponseFootballDivisions.createMap(league_id))
+    }
+
+    fun getFootballTeams(division_id: Int): Observable<ResponseFootballTeams>{
+        return NetworkService.makeNetworkServiceRxJava().getFootballTeams(ResponseFootballTeams.createMap(division_id))
+    }
 }

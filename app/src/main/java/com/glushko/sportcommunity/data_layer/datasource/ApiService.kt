@@ -19,6 +19,9 @@ interface ApiService {
         const val LAST_MESSAGE_CONTACT = "GetLastContactMessage"
         const val FIND_USER = "FindPeople"
         const val FRIENDSHIP = "Friendship"
+        const val GET_FOOTBALL_LEAGUES = "GetFootballLeague"
+        const val GET_FOOTBALL_DIVISIONS = "GetFootballDivisions"
+        const val GET_FOOTBALL_TEAMS = "GetFootballTeams"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -33,6 +36,8 @@ interface ApiService {
         const val PARAM_MESSAGE = "message"
         const val PARAM_USER_NAME = "user_name"
         const val PARAM_FRIENDSHIP_ACTION = "action"
+        const val PARAM_FOOTBALL_LEAGUE_ID = "league_id"
+        const val PARAM_FOOTBALL_DIVISION_ID = "division_id"
     }
 
     @FormUrlEncoded
@@ -79,8 +84,17 @@ interface ApiService {
     @POST(LAST_MESSAGE_CONTACT)
     fun getLastContactMessage(@FieldMap params: Map<String, String>):Call<ResponseLastMessage>
 
+    //@FormUrlEncoded
+    @POST(GET_FOOTBALL_LEAGUES)
+    fun getFootballLeagues():Observable<ResponseFootballLeagues>
 
+    @FormUrlEncoded
+    @POST(GET_FOOTBALL_DIVISIONS)
+    fun getFootballDivisions(@FieldMap params: Map<String, String>):Observable<ResponseFootballDivisions>
 
+    @FormUrlEncoded
+    @POST(GET_FOOTBALL_TEAMS)
+    fun getFootballTeams(@FieldMap params: Map<String, String>):Observable<ResponseFootballTeams>
 
 
 }

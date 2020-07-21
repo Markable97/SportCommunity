@@ -18,7 +18,11 @@ class TypeSportFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callback = context as CallbackTypeSport
+        try{
+            callback = context as CallbackTypeSport
+        }catch(ex: Exception){
+            println("Bad callback fragment")
+        }
     }
 
     override fun onCreateView(
