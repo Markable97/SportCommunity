@@ -11,8 +11,40 @@ import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootbal
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootballLeagues
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootballTeams
 
+class CustomAdapter(context: Context,
+                    var leagues: MutableList<ResponseFootballLeagues.Params>, var resource: Int): ArrayAdapter<ResponseFootballLeagues.Params>(context, resource, leagues){
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        var view = convertView
+        if(view == null){
+            view = View.inflate(context, resource, null)
+        }
+        if(flag){
+            if (view != null){
+                val tv: TextView? = view as TextView
+                tv?.text = leagues[position].league_name
+            }
 
-open class CustomLeaguesAdapter(val context: Context, var leagues: MutableList<ResponseFootballLeagues.Params>, var resource: Int) : /*ArrayAdapter<ResponseFootballLeagues.Params>(context, resource, leagues)*/BaseAdapter(), SpinnerAdapter {
+        }
+        return view!!
+    }
+     companion object{
+         var flag: Boolean = false
+     }
+
+    override fun getItem(position: Int): ResponseFootballLeagues.Params {
+        return leagues[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getCount(): Int {
+        return leagues.size
+    }
+}
+
+class CustomLeaguesAdapter(val context: Context, var leagues: MutableList<ResponseFootballLeagues.Params>, var resource: Int) : /*ArrayAdapter<ResponseFootballLeagues.Params>(context, resource, leagues)*/BaseAdapter(), SpinnerAdapter {
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         val convertView = View.inflate(context, R.layout.spinner_item_info_teams, null)
         val tv_name_league: TextView = convertView.findViewById(R.id.tv_item_spinner)
