@@ -197,4 +197,8 @@ class UseCaseRepository {
     fun getFootballTeams(division_id: Int): Observable<ResponseFootballTeams>{
         return NetworkService.makeNetworkServiceRxJava().getFootballTeams(ResponseFootballTeams.createMap(division_id))
     }
+
+    fun createTeam(user_id: Int, team_id: String): Observable<BaseResponse>{
+        return NetworkService.makeNetworkServiceRxJava().createTeam(BaseResponse.createMap(user_id, team_id))
+    }
 }

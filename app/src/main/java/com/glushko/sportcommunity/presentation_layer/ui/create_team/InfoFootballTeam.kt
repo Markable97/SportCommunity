@@ -19,6 +19,7 @@ import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootbal
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootballLeagues
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootballTeams
 import com.glushko.sportcommunity.presentation_layer.vm.InfoFootballTeamViewModel
+import com.realpacific.clickshrinkeffect.applyClickShrink
 import kotlinx.android.synthetic.main.fragment_info_football_team.*
 import kotlinx.android.synthetic.main.spinner_item_info_teams.*
 
@@ -48,6 +49,7 @@ class InfoFootballTeam : Fragment() {
 
     var action: String = "Start"
     var idTeam: Int? = null
+    var teamName: String = ""
     var leagues: MutableList<ResponseFootballLeagues.Params> = mutableListOf()
     var divisions: MutableList<ResponseFootballDivisions.Params> = mutableListOf()
     var teams: MutableList<ResponseFootballTeams.Params> = mutableListOf()
@@ -101,6 +103,18 @@ class InfoFootballTeam : Fragment() {
                 teams.clear()
             }
         })
+
+        model.liveDataCreateTeam.observe(this, Observer {
+            println("Live data 4 Create ${it.success} ${it.message}")
+            circularProgressBar.indeterminateMode = false
+            Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
+            if(it.success == 1){
+                action = "Go to team"
+                tv_info_choose.text = "Перейти к настройке команды"
+            }else{
+                tv_info_choose.text = "Попробуйте снова"
+            }
+        })
     }
 
     override fun onCreateView(
@@ -112,6 +126,7 @@ class InfoFootballTeam : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        tv_info_choose.applyClickShrink()
         tv_info_choose.setOnClickListener {
             when(action){
                 "Start" -> {
@@ -151,8 +166,28 @@ class InfoFootballTeam : Fragment() {
                     animator.duration = 5000
                     animator.start()
                     */
-                    circularProgressBar.indeterminateMode = true
+                    if(circularProgressBar.indeterminateMode){
+                        Toast.makeText(activity, "Команда уже создается!", Toast.LENGTH_SHORT).show()
+                    }else{
+                        if(idTeam == null){
+                            teamName = et_team_name.text.toString()
+                            if(teamName.isEmpty()){
+                                Toast.makeText(activity, "Введите название команды", Toast.LENGTH_LONG).show()
+                            }else{
+                                circularProgressBar.indeterminateMode = true
+                                model.createTeam("not team|$teamName")
+                            }
+                        }else{
+                            circularProgressBar.indeterminateMode = true
+                            model.createTeam(idTeam.toString())
+                        }
+                    }
 
+                    //model.createTeam()
+
+                }
+                "Go to team" ->{
+                    Toast.makeText(activity, "Перход к настрйоке команды", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -163,10 +198,21 @@ class InfoFootballTeam : Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, itemSelect: View?, selectItemPosition: Int, selectedId: Long) {
                 println("Выбрана лига в спинере- ${leagues[selectItemPosition]}")
-                circularProgressBar.setProgressWithAnimation(1f, 1000)
-                model.getFootballDivisions(leagues[selectItemPosition].league_id)
                 sp_select_divisions.visibility = View.INVISIBLE
                 sp_select_team.visibility = View.INVISIBLE
+                if(leagues[selectItemPosition].league_name == "Нет Лиги"){
+                    circularProgressBar.setProgressWithAnimation(3f, 1000)
+                    action = "Success"
+                    tv_info_choose.text = "Завершить создание!"
+                    tv_select_team.visibility = View.VISIBLE
+                    et_team_name.visibility = View.VISIBLE
+
+                }else{
+
+                    circularProgressBar.setProgressWithAnimation(1f, 1000)
+                    model.getFootballDivisions(leagues[selectItemPosition].league_id)
+                }
+
 
             }
         }
