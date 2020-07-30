@@ -39,10 +39,15 @@ class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, pr
             }
         }
 
+        btn_team_squad.setOnClickListener {
+            callbackActivity.onClickSquad()
+        }
+
     }
 
     interface Callback{
         fun onClickUpperRightButton(idLeader: Long, leaderName: String)
 
+        fun onClickSquad()
     }
 }

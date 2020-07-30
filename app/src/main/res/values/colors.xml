@@ -20,4 +20,6 @@
     <color name="toolbarTextSecondary">@color/white</color>
 
     <color name="progressBarTint">@color/white</color>
+
+    <color name="colorTransBg">#26000000</color>
 </resources>
