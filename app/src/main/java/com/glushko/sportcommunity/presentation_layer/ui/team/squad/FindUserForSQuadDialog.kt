@@ -7,7 +7,12 @@ import android.view.View
 import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import java.util.concurrent.TimeUnit
@@ -18,10 +23,20 @@ class FindUserForSQuadDialog :  DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         println("onCreateDialog")
         return activity?.let {_activity ->
+            val modelFriend = ViewModelProviders.of(this).get(FriendsViewModel::class.java)
             val builder = AlertDialog.Builder(_activity)
             val inflater = _activity.layoutInflater
             val view: View = inflater.inflate(R.layout.dialog_find_user, null)
             val sr_user = view.findViewById<SearchView>(R.id.user_search)
+            val recycler = view.findViewById<RecyclerView>(R.id.dialog_find_user_recycler)
+            val adapter = FindUserAdapter(callback = object : FindUserAdapter.Callback{
+                override fun onClickInvite(user_id: Int) {
+                    println("Отправка invite user_id = $user_id")
+                }
+
+            })
+            recycler.adapter = adapter
+            recycler.layoutManager = LinearLayoutManager(_activity)
             Observable.create(ObservableOnSubscribe<String> {
                 sr_user.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
                     override fun onQueryTextSubmit(newText: String?): Boolean {
@@ -42,7 +57,13 @@ class FindUserForSQuadDialog :  DialogFragment() {
                 //.filter { text -> text.isNotBlank() }
                 .subscribe {text ->
                     println("с клавиатуры $text")
+                    modelFriend.searchUser(text)
                 }
+            modelFriend.liveData.observe(this, Observer {
+                println("Live data 1 Find user: ${it.success} ${it.message} ${it.friends}")
+                adapter.setList(it.friends)
+                adapter.notifyDataSetChanged()
+            })
             builder.setView(view)
             builder.create()
         }?: throw IllegalStateException("Activity cannot be null")

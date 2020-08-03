@@ -23,7 +23,7 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
     private val dao = MainDatabase.getDatabase(application).mainDao()
     private val dao_dop = MainDatabase.getNotificationDao(application)
-    private val liveData: MutableLiveData<ResponseFriends> = MutableLiveData()
+    val liveData: MutableLiveData<ResponseFriends> = MutableLiveData()
     var liveDataRepository: LiveData<List<Friend.Params>>
 
     var liveDataNotification: LiveData<List<FriendshipNotification>>
