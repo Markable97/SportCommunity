@@ -22,7 +22,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.friends_request.FriendsR
 import com.glushko.sportcommunity.presentation_layer.ui.notification.NotificationFragment
 import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
 import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
-import com.glushko.sportcommunity.presentation_layer.ui.team.SquadFragment
+import com.glushko.sportcommunity.presentation_layer.ui.team.squad.SquadFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.TeamFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.NotificationDrawerViewModel
@@ -233,7 +233,9 @@ class HomeActivity :  AppCompatActivity() {
     }
 
     private fun openSquadFragment(){
-        supportFragmentManager.beginTransaction().replace(fragmentContainer, SquadFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(fragmentContainer,
+            SquadFragment()
+        ).commit()
     }
     private fun openFriendsFragment(){
         val fragmentFriends = FriendsFragment(object : FriendsFragment.Callback{

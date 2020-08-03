@@ -1,4 +1,4 @@
-package com.glushko.sportcommunity.presentation_layer.ui.team
+package com.glushko.sportcommunity.presentation_layer.ui.team.squad
 
 import android.animation.Animator
 import android.os.Bundle
@@ -40,7 +40,9 @@ class SquadFragment: Fragment() {
         }
 
         fabLayout_add_player.setOnClickListener {
-            Toast.makeText(activity, "Нажата кнопка добавления игрока", Toast.LENGTH_SHORT).show()
+            val dialogFind = FindUserForSQuadDialog()
+            val manager = childFragmentManager
+            dialogFind.show(manager, "dialogFind")
         }
     }
 
