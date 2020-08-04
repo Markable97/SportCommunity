@@ -11,7 +11,8 @@ class Friend {
         val friend_id: Int,
         val user_name: String,
         val user_status: String,
-        var status_friend: String?
+        var status_friend: String?,
+        var team_id: Int
     )
 
     companion object{
@@ -21,10 +22,20 @@ class Friend {
             return map
         }
 
-        fun createMap(user_name: String, user_id: Long):Map<String, String>{
+        fun createMap(user_name: String, user_id: Long, type_find: String):Map<String, String>{
             val map = HashMap<String, String>()
             map[ApiService.PARAM_USER_NAME] = user_name
             map[ApiService.PARAM_USER_ID] = user_id.toString()
+            map[ApiService.PARAM_TYPE_FIND_USER] = type_find
+            return map
+        }
+
+        fun createMap(user_name: String, user_id: Long, type_find: String, team_id: Int):Map<String, String>{
+            val map = HashMap<String, String>()
+            map[ApiService.PARAM_USER_NAME] = user_name
+            map[ApiService.PARAM_USER_ID] = user_id.toString()
+            map[ApiService.PARAM_TYPE_FIND_USER] = type_find
+            map[ApiService.PARAM_TEAM_ID] = team_id.toString()
             return map
         }
 

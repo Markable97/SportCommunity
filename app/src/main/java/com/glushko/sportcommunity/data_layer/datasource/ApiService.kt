@@ -40,6 +40,7 @@ interface ApiService {
         const val PARAM_FOOTBALL_LEAGUE_ID = "league_id"
         const val PARAM_FOOTBALL_DIVISION_ID = "division_id"
         const val PARAM_TEAM_ID = "team_id"
+        const val PARAM_TYPE_FIND_USER = "type_find"
     }
 
     @FormUrlEncoded

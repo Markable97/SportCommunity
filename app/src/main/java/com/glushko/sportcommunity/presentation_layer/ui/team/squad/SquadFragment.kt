@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.glushko.sportcommunity.R
 import kotlinx.android.synthetic.main.fragment_team_squad.*
 
-class SquadFragment: Fragment() {
+class SquadFragment(private val team_id: Int): Fragment() {
 
     val layoutId: Int = R.layout.fragment_team_squad
 
@@ -40,7 +40,7 @@ class SquadFragment: Fragment() {
         }
 
         fabLayout_add_player.setOnClickListener {
-            val dialogFind = FindUserForSQuadDialog()
+            val dialogFind = FindUserForSQuadDialog(team_id)
             val manager = childFragmentManager
             dialogFind.show(manager, "dialogFind")
         }

@@ -167,8 +167,13 @@ class UseCaseRepository {
 
     }
     //Методы под RxJava
-    fun searchUser(text: String): Observable<ResponseFriends>{
-        return NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text, HomeActivity.USER_ID))
+    fun searchUser(text: String, type_find: String, team_id: Int): Observable<ResponseFriends>{
+        return when(type_find){
+            "friend" -> NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text, HomeActivity.USER_ID, type_find))
+            "team" -> NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text, HomeActivity.USER_ID, type_find, team_id))
+            else -> NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text, HomeActivity.USER_ID, type_find))
+        }
+
     }
 
     fun deleteNotificationFriend(friend_id: Long, dao: NotificationDao): Single<Int> {
@@ -178,7 +183,7 @@ class UseCaseRepository {
     }
 
     fun deleteFriend(friend_id: Long, dao: MainDao): Single<Int>{
-        return dao.deleteFriend(Friend.Params(friend_id.toInt(), "", "", ""))
+        return dao.deleteFriend(Friend.Params(friend_id.toInt(), "", "", "", 0))
     }
 
     fun friendshipAction(user_id: Long, user_name: String, friend_id: Long, action: String, token: String): Observable<ResponseFriendship>{

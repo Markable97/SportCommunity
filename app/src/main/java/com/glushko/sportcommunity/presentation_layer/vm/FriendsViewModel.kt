@@ -57,14 +57,14 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun searchUser(text: String) {
+    fun searchUser(text: String, type_find: String, team_id: Int  = 0) {
 
         //Add all RxJava disposables to a CompositeDisposable//
 
         if(text.isNotEmpty()){
 
             myCompositeDisposable?.add(
-                useCaseRepository.searchUser(text)
+                useCaseRepository.searchUser(text, type_find, team_id)
 
                     //Send the Observable’s notifications to the main UI thread//
 

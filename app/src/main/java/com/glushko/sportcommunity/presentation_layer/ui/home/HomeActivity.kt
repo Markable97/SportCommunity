@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
+import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
 import com.glushko.sportcommunity.presentation_layer.ui.Navigator
 import com.glushko.sportcommunity.presentation_layer.ui.chat.ChatsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.dialog.DialogFragment
@@ -150,8 +151,8 @@ class HomeActivity :  AppCompatActivity() {
     private fun openProfileFragment(user_id: Int?, user_name: String?, status_friend: String? = null, isMe: Boolean = true){
         if(user_id!=null && user_name!=null){
             val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, isMe = isMe, status_friend = status_friend, callbackActivity = object : ProfileFragment.Callback{
-                override fun onClickTeam(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String) {
-                    openTeamFragment(teamName, teamDesc, bitmap, leader_id, leader_name)
+                override fun onClickTeam(teamItem: TeamsUserInfo.Params, bitmap: Bitmap) {
+                    openTeamFragment(teamItem.team_name, teamItem.team_desc, bitmap, teamItem.leader_id, teamItem.leader_name, teamItem.team_id)
                 }
 
                 override fun onClickBtnLeft(isMe: Boolean, status_friend: String?) {
@@ -211,7 +212,7 @@ class HomeActivity :  AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(fragmentContainer, NotificationFragment()).commit()
     }
 
-    private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String){
+    private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String, team_id: Int){
         toolbar.title = teamName
         val userId = dataLogin.value?.idUser?:0
         var isLeader = false
@@ -225,16 +226,16 @@ class HomeActivity :  AppCompatActivity() {
 
             override fun onClickSquad() {
                 toolbar.title = "Состав"
-                openSquadFragment()
+                openSquadFragment(team_id)
             }
 
         })
         supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).commit()
     }
 
-    private fun openSquadFragment(){
+    private fun openSquadFragment(team_id: Int){
         supportFragmentManager.beginTransaction().replace(fragmentContainer,
-            SquadFragment()
+            SquadFragment(team_id)
         ).commit()
     }
     private fun openFriendsFragment(){

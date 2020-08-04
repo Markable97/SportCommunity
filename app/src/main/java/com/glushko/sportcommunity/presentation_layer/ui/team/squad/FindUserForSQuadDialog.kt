@@ -20,7 +20,7 @@ import io.reactivex.ObservableOnSubscribe
 import java.util.concurrent.TimeUnit
 
 
-class FindUserForSQuadDialog :  DialogFragment() {
+class FindUserForSQuadDialog(private val team_id: Int) :  DialogFragment() {
 
     var adapter: FindUserAdapter? = null
 
@@ -70,7 +70,7 @@ class FindUserForSQuadDialog :  DialogFragment() {
                 //.filter { text -> text.isNotBlank() }
                 .subscribe {text ->
                     println("с клавиатуры $text")
-                    modelFriend.searchUser(text)
+                    modelFriend.searchUser(text, "team", team_id)
                 }
             modelFriend.liveData.observe(this, Observer {
                 println("Live data 1 Find user: ${it.success} ${it.message} ${it.friends}")

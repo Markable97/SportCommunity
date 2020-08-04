@@ -106,7 +106,7 @@ class FriendsFragment(val callback: Callback) : Fragment() {
             //.distinct()
             //.filter { text -> text.isNotBlank() }
             .subscribe { text ->println("с клавиатуры $text")
-                            modelFriend.searchUser(text) }
+                            modelFriend.searchUser(text, "friend") }
 
         btnFriendRequest.setOnClickListener {
             callback.onClickFriendsRequest()
