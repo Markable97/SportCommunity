@@ -1,14 +1,17 @@
 package com.glushko.sportcommunity.presentation_layer.ui.team.squad
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.gc.materialdesign.views.ButtonRectangle
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Friend
+import com.realpacific.clickshrinkeffect.applyClickShrink
 
 class FindUserAdapter(private var list: MutableList<Friend.Params> = mutableListOf(),val callback: Callback) : RecyclerView.Adapter<FindUserAdapter.FindUserViewHolder>(){
 
@@ -28,16 +31,25 @@ class FindUserAdapter(private var list: MutableList<Friend.Params> = mutableList
     inner class FindUserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
         private val userName = itemView.findViewById<TextView>(R.id.tvFindUserName)
-        private val btnInvite = itemView.findViewById<ButtonRectangle>(R.id.btnSendInvite)
+        private val btnInvite = itemView.findViewById<Button>(R.id.btnSendInvite)
 
         fun bind(item: Friend.Params){
+            btnInvite.applyClickShrink()
             userName.text = item.user_name
+            if(item.status_friend == "invite to send"){
+                btnInvite.text = "Пришлашен"
+            }
             btnInvite.setOnClickListener {
                 println("Нажаита кнопка invite для юзера = ${item.user_name}")
-                callback.onClickInvite(item.friend_id)
+                if(item.status_friend == "invite to send"){
+                    callback.onClickInvite(item.friend_id, adapterPosition, true)
+                }else {
+                    callback.onClickInvite(item.friend_id, adapterPosition, false)
+                }
             }
         }
     }
+
 
     internal fun setList(list: MutableList<Friend.Params>){
         this.list = list
@@ -45,6 +57,6 @@ class FindUserAdapter(private var list: MutableList<Friend.Params> = mutableList
     }
 
     interface Callback{
-        fun onClickInvite(user_id: Int)
+        fun onClickInvite(user_id: Int, position: Int, isSend: Boolean)
     }
 }

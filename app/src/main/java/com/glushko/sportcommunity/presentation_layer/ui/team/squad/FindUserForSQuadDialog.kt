@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.business_logic_layer.domain.Friend
 import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
@@ -19,6 +21,10 @@ import java.util.concurrent.TimeUnit
 
 
 class FindUserForSQuadDialog :  DialogFragment() {
+
+    var adapter: FindUserAdapter? = null
+
+    var list:  MutableList<Friend.Params> = mutableListOf()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         println("onCreateDialog")
@@ -29,12 +35,19 @@ class FindUserForSQuadDialog :  DialogFragment() {
             val view: View = inflater.inflate(R.layout.dialog_find_user, null)
             val sr_user = view.findViewById<SearchView>(R.id.user_search)
             val recycler = view.findViewById<RecyclerView>(R.id.dialog_find_user_recycler)
-            val adapter = FindUserAdapter(callback = object : FindUserAdapter.Callback{
-                override fun onClickInvite(user_id: Int) {
-                    println("Отправка invite user_id = $user_id")
-                }
+            val callback = (object : FindUserAdapter.Callback{
+                override fun onClickInvite(user_id: Int, position: Int, isSend: Boolean) {
+                    if(isSend){
+                        Toast.makeText(_activity, "Приглашение уже отправлено", Toast.LENGTH_SHORT).show()
+                    }else{
+                        println("Отправка invite user_id = $user_id")
+                        list[position].status_friend = "invite to send"
+                        adapter?.setList(list)
+                    }
 
+                }
             })
+            adapter = FindUserAdapter(callback = callback)
             recycler.adapter = adapter
             recycler.layoutManager = LinearLayoutManager(_activity)
             Observable.create(ObservableOnSubscribe<String> {
@@ -61,8 +74,8 @@ class FindUserForSQuadDialog :  DialogFragment() {
                 }
             modelFriend.liveData.observe(this, Observer {
                 println("Live data 1 Find user: ${it.success} ${it.message} ${it.friends}")
-                adapter.setList(it.friends)
-                adapter.notifyDataSetChanged()
+                list = it.friends
+                adapter?.setList(it.friends)
             })
             builder.setView(view)
             builder.create()
