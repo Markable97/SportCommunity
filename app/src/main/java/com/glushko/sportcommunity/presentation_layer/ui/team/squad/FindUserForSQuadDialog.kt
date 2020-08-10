@@ -38,10 +38,10 @@ class FindUserForSQuadDialog(private val team_id: Int) :  DialogFragment() {
             val callback = (object : FindUserAdapter.Callback{
                 override fun onClickInvite(user_id: Int, position: Int, isSend: Boolean) {
                     if(isSend){
-                        Toast.makeText(_activity, "Приглашение уже отправлено", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(_activity, "Пользователь приглашен или уже в команде", Toast.LENGTH_SHORT).show()
                     }else{
                         println("Отправка invite user_id = $user_id")
-                        list[position].status_friend = "invite to send"
+                        list[position].status_in_team = "invitation"
                         adapter?.setList(list)
                     }
 

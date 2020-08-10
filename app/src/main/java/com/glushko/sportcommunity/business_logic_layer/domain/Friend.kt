@@ -12,7 +12,8 @@ class Friend {
         val user_name: String,
         val user_status: String,
         var status_friend: String?,
-        var team_id: Int
+        var team_id: Int,
+        var status_in_team: String?
     )
 
     companion object{

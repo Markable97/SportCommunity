@@ -10,11 +10,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkService {
 
-    const val BASE_URL = "http://89.208.205.136:8080/SportCommunityServer/"
+    const val BASE_URL = "http://89.208.204.199:8080/SportCommunityServer/"
 
-    const val BASE_URL_IMAGE = "http://89.208.205.136:8080/SportCommunityServer/ImagesOfTeams/"
+    const val BASE_URL_IMAGE = "http://89.208.204.199:8080/SportCommunityServer/ImagesOfTeams/"
 
-    const val BASE_URL_IMAGE_CHAT = "http://89.208.205.136:8080/SportCommunityServer/ImagesOfChats/"
+    const val BASE_URL_IMAGE_CHAT = "http://89.208.204.199:8080/SportCommunityServer/ImagesOfChats/"
 
     //Вовзращает retrofit, из него можно слать запросы к серверу
     fun makeNetworkService(): ApiService{
