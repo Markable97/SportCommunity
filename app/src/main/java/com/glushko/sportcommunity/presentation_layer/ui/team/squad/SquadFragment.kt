@@ -7,12 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
 import kotlinx.android.synthetic.main.fragment_team_squad.*
+import kotlinx.android.synthetic.main.fragment_team_squad_content_main.*
 
 class SquadFragment(private val team_id: Int, private val team_name: String): Fragment() {
 
     val layoutId: Int = R.layout.fragment_team_squad
+
+    lateinit var modelSquad: SquadViewModel
+
+    var adapter: SquadListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,8 +31,33 @@ class SquadFragment(private val team_id: Int, private val team_name: String): Fr
         return inflater.inflate(layoutId, container, false)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        modelSquad = ViewModelProviders.of(this).get(SquadViewModel::class.java)
+
+        modelSquad.liveDataSquadList.observe(this, Observer {
+            println("Live data squad list ${it.success} ${it.message}")
+            if(it.success == 1){
+                adapter?.setList(it.squad)
+            }else{
+                Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        modelSquad.getSquadList(team_id)
+
+        adapter = SquadListAdapter(callback = object : SquadListAdapter.Callback{
+            override fun onItemPlayer(inApp: Boolean) {
+                Toast.makeText(activity, "Player in app $inApp", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+        squad_team_recycler.adapter = adapter
+        squad_team_recycler.layoutManager = LinearLayoutManager(activity)
 
         fab.setOnClickListener {
             if (View.GONE == fabBGLayout.visibility) {

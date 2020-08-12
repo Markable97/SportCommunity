@@ -12,6 +12,6 @@
         android:id="@+id/squad_team_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/recycler_item_friend"/>
+        tools:listitem="@layout/recycler_item_squad_list"/>
 
 </RelativeLayout>

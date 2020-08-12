@@ -24,6 +24,7 @@ interface ApiService {
         const val GET_FOOTBALL_TEAMS = "GetFootballTeams"
         const val CREATE_TEAM = "CreateTeam"
         const val INVITE_IN_TEAM = "InviteInTeam"
+        const val GET_SQUAD_TEAM_LIST = "SquadTeamList"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -108,5 +109,9 @@ interface ApiService {
     @FormUrlEncoded
     @POST(INVITE_IN_TEAM)
     fun inviteInTeam(@FieldMap params: Map<String, String>): Observable<BaseResponse>
+
+    @FormUrlEncoded
+    @POST(GET_SQUAD_TEAM_LIST)
+    fun getSquadTeamList(@FieldMap param: Map<String, String>): Observable<ResponseSquadTeamList>
 
 }
