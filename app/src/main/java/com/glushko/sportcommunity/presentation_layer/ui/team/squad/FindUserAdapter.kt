@@ -36,16 +36,14 @@ class FindUserAdapter(private var list: MutableList<Friend.Params> = mutableList
         fun bind(item: Friend.Params){
             btnInvite.applyClickShrink()
             userName.text = item.user_name
-            if(item.team_id != 0){
-                btnInvite.text = when(item.status_in_team){
-                    "invitation" -> "Приглашен"
-                    "in team" -> "Уже в команде"
-                    else -> "Пригласить"
-                }
+            btnInvite.text = when(item.status_in_team){
+                "invitation" -> "Приглашен"
+                "in team" -> "Уже в команде"
+                else -> "Пригласить"
             }
             btnInvite.setOnClickListener {
                 println("Нажаита кнопка invite для юзера = ${item.user_name}")
-                if(item.team_id != 0){
+                if(item.status_in_team == "invitation" || item.status_in_team == "in team"){
                     callback.onClickInvite(item.friend_id, adapterPosition, true)
                 }else {
                     callback.onClickInvite(item.friend_id, adapterPosition, false)

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.glushko.sportcommunity.business_logic_layer.domain.Friend
 import com.glushko.sportcommunity.business_logic_layer.domain.NetworkErrors
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
+import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFriends
 import com.glushko.sportcommunity.data_layer.repository.FriendshipNotification
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
@@ -24,6 +25,7 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
     private val dao = MainDatabase.getDatabase(application).mainDao()
     private val dao_dop = MainDatabase.getNotificationDao(application)
     val liveData: MutableLiveData<ResponseFriends> = MutableLiveData()
+    val liveDataInvitationInTeam: MutableLiveData<BaseResponse> = MutableLiveData()
     var liveDataRepository: LiveData<List<Friend.Params>>
 
     var liveDataNotification: LiveData<List<FriendshipNotification>>
@@ -83,6 +85,15 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
 
     }
 
+    fun inviteInTeam(user_id: Long, team_id: Int, team_name: String){
+        myCompositeDisposable?.add(
+            useCaseRepository.inviteInTeam(user_id, team_id, team_name)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponseBase, this::handleErrorInvitation)
+        )
+    }
+
     private fun handleResponse(responseServer: ResponseFriends) {
 
         println(" Поиск вернул ${responseServer.success} ${responseServer.message} ${responseServer.friends}")
@@ -91,6 +102,15 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
 
     }
 
+    private fun handleResponseBase(responseServer: BaseResponse) {
+        println("сервер вернул ${responseServer.success} ${responseServer.message}")
+        liveDataInvitationInTeam.postValue(responseServer)
+    }
+
+    private fun handleErrorInvitation(err: Throwable){
+        println("ошибка поиска ${err.message}")
+        liveDataInvitationInTeam.postValue(BaseResponse(0, err.message?:"Server Error"))
+    }
     private fun handleError(err: Throwable){
         liveData.postValue(ResponseFriends(0, err.localizedMessage))
         println("ошибка поиска ${err.message}")

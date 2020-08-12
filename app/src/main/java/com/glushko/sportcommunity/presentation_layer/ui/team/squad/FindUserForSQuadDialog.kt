@@ -20,11 +20,13 @@ import io.reactivex.ObservableOnSubscribe
 import java.util.concurrent.TimeUnit
 
 
-class FindUserForSQuadDialog(private val team_id: Int) :  DialogFragment() {
+class FindUserForSQuadDialog(private val team_id: Int, private val team_name: String) :  DialogFragment() {
 
     var adapter: FindUserAdapter? = null
 
     var list:  MutableList<Friend.Params> = mutableListOf()
+
+    var positionAdapter: Int? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         println("onCreateDialog")
@@ -41,8 +43,8 @@ class FindUserForSQuadDialog(private val team_id: Int) :  DialogFragment() {
                         Toast.makeText(_activity, "Пользователь приглашен или уже в команде", Toast.LENGTH_SHORT).show()
                     }else{
                         println("Отправка invite user_id = $user_id")
-                        list[position].status_in_team = "invitation"
-                        adapter?.setList(list)
+                        positionAdapter = position
+                        modelFriend.inviteInTeam(user_id.toLong(), team_id, team_name)
                     }
 
                 }
@@ -76,6 +78,19 @@ class FindUserForSQuadDialog(private val team_id: Int) :  DialogFragment() {
                 println("Live data 1 Find user: ${it.success} ${it.message} ${it.friends}")
                 list = it.friends
                 adapter?.setList(it.friends)
+            })
+            modelFriend.liveDataInvitationInTeam.observe(this, Observer {
+                println("Live data 2. Invitation \n ${it.success} ${it.message}")
+                if(it.success == 1){
+                    if(positionAdapter != null){
+                        println("Изменяем список позиции $positionAdapter")
+                        list[positionAdapter!!].status_in_team = "invitation"
+                        adapter?.setList(list)
+                    }
+
+                }else{
+
+                }
             })
             builder.setView(view)
             builder.create()

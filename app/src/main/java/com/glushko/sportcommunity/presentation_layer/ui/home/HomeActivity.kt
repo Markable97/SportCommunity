@@ -224,18 +224,18 @@ class HomeActivity :  AppCompatActivity() {
                 openDialogFragment(idLeeader)
             }
 
-            override fun onClickSquad() {
+            override fun onClickSquad(team_name: String) {
                 toolbar.title = "Состав"
-                openSquadFragment(team_id)
+                openSquadFragment(team_id, team_name)
             }
 
         })
         supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).commit()
     }
 
-    private fun openSquadFragment(team_id: Int){
+    private fun openSquadFragment(team_id: Int, team_name: String){
         supportFragmentManager.beginTransaction().replace(fragmentContainer,
-            SquadFragment(team_id)
+            SquadFragment(team_id, team_name)
         ).commit()
     }
     private fun openFriendsFragment(){
