@@ -6,5 +6,6 @@ class Squad {
                       val linked: Long,
                       val in_app: Int,
                       val status_invite: String?,
-                      val amplua: String?)
+                      val amplua: String?,
+                      val status_friend: String?)
 }

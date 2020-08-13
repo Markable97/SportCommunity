@@ -36,7 +36,7 @@ class SquadListAdapter(private var list: MutableList<Squad.Params> = mutableList
             imgInApp.visibility = if(item.in_app > 0) View.VISIBLE else View.GONE
             imgLink.visibility = if(item.linked > 0 && item.in_app > 0 ) View.VISIBLE else View.GONE
             itemView.setOnClickListener {
-                callback.onItemPlayer(item.in_app>0)
+                callback.onItemPlayer(item.in_app>0, item.id_user, item.user_name, item.status_friend)
             }
         }
     }
@@ -46,6 +46,6 @@ class SquadListAdapter(private var list: MutableList<Squad.Params> = mutableList
         notifyDataSetChanged()
     }
     interface Callback{
-        fun onItemPlayer(inApp: Boolean)
+        fun onItemPlayer(inApp: Boolean, user_id: Long, user_name: String, status_friend: String?)
     }
 }

@@ -150,6 +150,7 @@ class HomeActivity :  AppCompatActivity() {
 
     private fun openProfileFragment(user_id: Int?, user_name: String?, status_friend: String? = null, isMe: Boolean = true){
         if(user_id!=null && user_name!=null){
+            toolbar.title = "Профиль"
             val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, isMe = isMe, status_friend = status_friend, callbackActivity = object : ProfileFragment.Callback{
                 override fun onClickTeam(teamItem: TeamsUserInfo.Params, bitmap: Bitmap) {
                     openTeamFragment(teamItem.team_name, teamItem.team_desc, bitmap, teamItem.leader_id, teamItem.leader_name, teamItem.team_id)
@@ -234,8 +235,18 @@ class HomeActivity :  AppCompatActivity() {
     }
 
     private fun openSquadFragment(team_id: Int, team_name: String){
+        val squadFragment = SquadFragment(team_id, team_name, object : SquadFragment.Callback{
+            override fun onClickPlayerInApp(
+                user_id: Long,
+                user_name: String,
+                status_friend: String?
+            ) {
+                openProfileFragment(user_id.toInt(), user_name, status_friend, USER_ID == user_id)
+            }
+
+        })
         supportFragmentManager.beginTransaction().replace(fragmentContainer,
-            SquadFragment(team_id, team_name)
+            squadFragment
         ).commit()
     }
     private fun openFriendsFragment(){

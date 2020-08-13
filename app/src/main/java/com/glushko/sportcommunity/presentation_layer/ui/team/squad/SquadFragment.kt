@@ -15,7 +15,7 @@ import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
 import kotlinx.android.synthetic.main.fragment_team_squad.*
 import kotlinx.android.synthetic.main.fragment_team_squad_content_main.*
 
-class SquadFragment(private val team_id: Int, private val team_name: String): Fragment() {
+class SquadFragment(private val team_id: Int, private val team_name: String, val callback: Callback): Fragment() {
 
     val layoutId: Int = R.layout.fragment_team_squad
 
@@ -51,8 +51,17 @@ class SquadFragment(private val team_id: Int, private val team_name: String): Fr
         modelSquad.getSquadList(team_id)
 
         adapter = SquadListAdapter(callback = object : SquadListAdapter.Callback{
-            override fun onItemPlayer(inApp: Boolean) {
-                Toast.makeText(activity, "Player in app $inApp", Toast.LENGTH_SHORT).show()
+            override fun onItemPlayer(
+                inApp: Boolean,
+                user_id: Long,
+                user_name: String,
+                status_friend: String?
+            ) {
+                if(inApp){
+                    callback.onClickPlayerInApp(user_id, user_name, status_friend)
+                }else{
+                    Toast.makeText(activity, "Player in app $inApp", Toast.LENGTH_SHORT).show()
+                }
             }
 
         })
@@ -109,4 +118,7 @@ class SquadFragment(private val team_id: Int, private val team_name: String): Fr
 
     }
 
+    interface Callback{
+        fun onClickPlayerInApp(user_id: Long, user_name: String, status_friend: String?)
+    }
 }

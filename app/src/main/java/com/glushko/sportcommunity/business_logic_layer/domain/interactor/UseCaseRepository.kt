@@ -210,7 +210,7 @@ class UseCaseRepository {
     fun inviteInTeam(user_id: Long, team_id: Int, team_name: String): Observable<BaseResponse>{
         return NetworkService.makeNetworkServiceRxJava().inviteInTeam(BaseResponse.createMap(user_id, team_id, team_name))
     }
-    fun getSquadList(team_id: Int): Observable<ResponseSquadTeamList>{
-        return NetworkService.makeNetworkServiceRxJava().getSquadTeamList(ResponseSquadTeamList.createMap(team_id))
+    fun getSquadList(team_id: Int, user_id: Long): Observable<ResponseSquadTeamList>{
+        return NetworkService.makeNetworkServiceRxJava().getSquadTeamList(ResponseSquadTeamList.createMap(team_id, user_id))
     }
 }
