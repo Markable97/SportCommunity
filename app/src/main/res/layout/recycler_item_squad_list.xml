@@ -25,7 +25,7 @@
         android:layout_alignBottom="@+id/imgPhoto"
         android:src="@drawable/ic_smartphone_24dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/imgPhoto"
         app:layout_constraintEnd_toEndOf="@+id/imgPhoto"
         tools:visibility="visible" />
 
@@ -52,7 +52,12 @@
             android:textColor="#191919"
             android:textSize="18sp"
             tools:text="@string/name" />
-
+        <TextView
+            android:id="@+id/tvNameSquadDop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="(имя игрока)"
+            />
         <TextView
             android:id="@+id/tvAmplua"
             android:layout_width="wrap_content"

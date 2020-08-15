@@ -26,17 +26,37 @@ class SquadListAdapter(private var list: MutableList<Squad.Params> = mutableList
 
     inner class SquadListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val tvName: TextView = itemView.findViewById(R.id.tvNameSquad)
+        private val tvPlayerName: TextView = itemView.findViewById(R.id.tvNameSquadDop)
         private val tvAmplua: TextView = itemView.findViewById(R.id.tvAmplua)
         private val imgLink: ImageView = itemView.findViewById(R.id.imgLink)
         private val imgInApp: ImageView = itemView.findViewById(R.id.imgInApp)
 
         fun bind(item: Squad.Params){
-            tvName.text = item.user_name
+            if(item.user_name != null){
+                tvName.visibility = View.VISIBLE
+                tvName.text = item.user_name
+            }else{
+                tvName.visibility = View.GONE
+            }
+
+
             tvAmplua.text = item.amplua?:""
+            tvAmplua.visibility = if(item.amplua!=null) View.VISIBLE else View.GONE
+            if(item.player_name == item.user_name){
+                tvPlayerName.visibility = View.GONE
+            }else{
+                if(item.player_name != null){
+                    tvPlayerName.visibility = View.VISIBLE
+                    tvPlayerName.text = "(${item.player_name})"
+                }else{
+                    tvPlayerName.visibility = View.GONE
+                }
+
+            }
             imgInApp.visibility = if(item.in_app > 0) View.VISIBLE else View.GONE
             imgLink.visibility = if(item.linked > 0 && item.in_app > 0 ) View.VISIBLE else View.GONE
             itemView.setOnClickListener {
-                callback.onItemPlayer(item.in_app>0, item.id_user, item.user_name, item.status_friend)
+                callback.onItemPlayer(item.in_app>0, item.id_user, item.user_name!!, item.status_friend)
             }
         }
     }
