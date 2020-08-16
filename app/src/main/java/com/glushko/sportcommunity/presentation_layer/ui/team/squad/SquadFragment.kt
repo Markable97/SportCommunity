@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
+import com.glushko.sportcommunity.business_logic_layer.domain.Squad
 import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
 import kotlinx.android.synthetic.main.fragment_team_squad.*
 import kotlinx.android.synthetic.main.fragment_team_squad_content_main.*
@@ -22,6 +23,8 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
     lateinit var modelSquad: SquadViewModel
 
     var adapter: SquadListAdapter? = null
+
+    var squadList: MutableList<Squad.Params> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +41,7 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         modelSquad.liveDataSquadList.observe(this, Observer {
             println("Live data squad list ${it.success} ${it.message}")
             if(it.success == 1){
+                squadList = it.squad
                 adapter?.setList(it.squad)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
@@ -79,7 +83,9 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         fabBGLayout.setOnClickListener { closeFABMenu() }
 
         fabLayout_compare.setOnClickListener {
-            Toast.makeText(activity, "Нажата кнопка сопоставления", Toast.LENGTH_SHORT).show()
+            val dialogCompare = CompareUserDialog.newInstance(squadList)
+            val manager = childFragmentManager
+            dialogCompare.show(manager, "dialogCompare")
         }
 
         fabLayout_add_player.setOnClickListener {

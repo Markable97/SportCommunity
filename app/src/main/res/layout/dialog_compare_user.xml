@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.9"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgPhoto"
+                android:layout_width="@dimen/account_photo_dim64"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_account_circle" />
+
+            <TextView
+                android:id="@+id/tvUserNameLinked"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Выберите пользователя"
+                tools:text="Наджаров Михаил" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.6 "
+            app:srcCompat="@drawable/ic_compare_arrows_48dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvPlayerLinked"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Выберите игрока"
+                tools:text="Наджаров Михаил " />
+
+            <TextView
+                android:id="@+id/tvAmpluaLinked"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="Полузащитник" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:listitem="@layout/recycler_item_compare_user" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/player_recycler"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/recycler_item_compare_user" />
+    </LinearLayout>
+    <com.gc.materialdesign.views.ButtonRectangle
+        android:id="@+id/btnLinkedUser"
+        android:layout_weight="0.9"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:text="Сопоставить"
+        tools:text="Сопоставить" />
+</LinearLayout>
