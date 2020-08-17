@@ -42,7 +42,7 @@ class CompareAdapter(private val type_item: Int, private var list: MutableList<S
                 tvAmplua.text = item.amplua
             }
             itemView.setOnClickListener {
-                callback.onItemClick(type_item, item)
+                callback.onItemClick(item, adapterPosition)
             }
         }
     }
@@ -52,7 +52,7 @@ class CompareAdapter(private val type_item: Int, private var list: MutableList<S
         notifyDataSetChanged()
     }
     interface Callback{
-        fun onItemClick(type_item: Int, item: Squad.Params )
+        fun onItemClick(item: Squad.Params, position: Int )
     }
 
 }

@@ -38,7 +38,7 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         super.onCreate(savedInstanceState)
         modelSquad = ViewModelProviders.of(this).get(SquadViewModel::class.java)
 
-        modelSquad.liveDataSquadList.observe(this, Observer {
+        modelSquad.liveDataSquadListResponse.observe(this, Observer {
             println("Live data squad list ${it.success} ${it.message}")
             if(it.success == 1){
                 squadList = it.squad
@@ -46,6 +46,11 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
+        })
+
+        modelSquad.liveDataSquadList.observe(this, Observer {
+            squadList = it
+            adapter?.setList(squadList)
         })
     }
 

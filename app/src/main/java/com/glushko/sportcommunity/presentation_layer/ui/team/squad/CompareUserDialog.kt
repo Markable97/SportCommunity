@@ -6,22 +6,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Squad
+import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
+import kotlinx.android.synthetic.main.dialog_compare_user.*
 
-class CompareUserDialog(val squadList: MutableList<Squad.Params>) :  DialogFragment()  {
+class CompareUserDialog(var squadList: MutableList<Squad.Params>) :  DialogFragment()  {
 
     companion object{
 
         private const val KEY_SQUAD = "KEY_SQUAD"
 
         fun newInstance(squadList: MutableList<Squad.Params>): CompareUserDialog{
-            val fragment: CompareUserDialog = CompareUserDialog(squadList)
-            return fragment
+            return CompareUserDialog(squadList)
         }
+    }
+
+    lateinit var modelSquad: SquadViewModel
+    var userList: MutableList<Squad.Params> = mutableListOf()
+    var userLinked: Squad.Params? = null
+    var userPosition: Int? = null
+    var playerList: MutableList<Squad.Params> = mutableListOf()
+    var playerLinked: Squad.Params? = null
+    var playerPosition: Int? = null
+    lateinit var adapterUsers: CompareAdapter
+    lateinit var adapterPlayers: CompareAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        modelSquad = ViewModelProviders.of(this).get(SquadViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -36,12 +54,14 @@ class CompareUserDialog(val squadList: MutableList<Squad.Params>) :  DialogFragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.setTitle("Сопоставление игроков")
-        val listUsers = squadList.filter {
-            it.in_app == 1
-        }
-        val adapterUsers = CompareAdapter(type_item = 0, list = listUsers.toMutableList(), callback = object : CompareAdapter.Callback{
-            override fun onItemClick(type_item: Int, item: Squad.Params) {
-                TODO("Not yet implemented")
+        userList = squadList.filter {
+            it.in_app == 1 && it.linked == 0L
+        }.toMutableList()
+        adapterUsers = CompareAdapter(type_item = 0, list = userList, callback = object : CompareAdapter.Callback{
+            override fun onItemClick(item: Squad.Params, position: Int) {
+                tvUserNameLinked.text = item.user_name
+                userLinked = item
+                userPosition = position
             }
         })
         val recyclerUsers = view.findViewById<RecyclerView>(R.id.user_recycler)
@@ -49,17 +69,45 @@ class CompareUserDialog(val squadList: MutableList<Squad.Params>) :  DialogFragm
         recyclerUsers.layoutManager = LinearLayoutManager(activity)
 
         //players recycler
-        val listPlayers = squadList.filter {
+        playerList = squadList.filter {
             it.in_app == 0
-        }
-        val adapterPlayers = CompareAdapter(type_item = 1, list = listPlayers.toMutableList(),callback = object : CompareAdapter.Callback{
-            override fun onItemClick(type_item: Int, item: Squad.Params) {
-                TODO("Not yet implemented")
+        }.toMutableList()
+        adapterPlayers = CompareAdapter(type_item = 1, list = playerList.toMutableList(),callback = object : CompareAdapter.Callback{
+            override fun onItemClick(item: Squad.Params, position: Int) {
+                playerLinked = item
+                playerPosition = position
+                tvPlayerLinked.text = item.player_name
+                tvAmpluaLinked.visibility = View.VISIBLE
+                tvAmpluaLinked.text = item.amplua
             }
         })
         val recyclerPlayers = view.findViewById<RecyclerView>(R.id.player_recycler)
         recyclerPlayers.adapter = adapterPlayers
         recyclerPlayers.layoutManager = LinearLayoutManager(activity)
+
+        btnLinkedUser.setOnClickListener {
+            if(userLinked == null || playerLinked == null){
+                Toast.makeText(activity,"Выберите полное сопоставление", Toast.LENGTH_SHORT).show()
+            }else{
+                changeMainSquadLists()
+                userLinked = null
+                playerLinked = null
+                tvAmpluaLinked.visibility = View.GONE
+                tvUserNameLinked.text = "Выберите пользователя "
+                tvPlayerLinked.text = "Выберите игрока"
+            }
+        }
+    }
+
+    private fun changeMainSquadLists(){
+
+        userList.remove(userLinked)
+        adapterUsers.setList(userList)
+
+        playerList.remove(playerLinked)
+        adapterPlayers.setList(playerList)
+
+
     }
 
     override fun onStart() {
@@ -68,5 +116,10 @@ class CompareUserDialog(val squadList: MutableList<Squad.Params>) :  DialogFragm
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("OnDestroy")
     }
 }
