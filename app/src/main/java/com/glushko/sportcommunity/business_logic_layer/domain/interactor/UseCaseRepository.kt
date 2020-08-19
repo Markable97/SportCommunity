@@ -213,4 +213,8 @@ class UseCaseRepository {
     fun getSquadList(team_id: Int, user_id: Long): Observable<ResponseSquadTeamList>{
         return NetworkService.makeNetworkServiceRxJava().getSquadTeamList(ResponseSquadTeamList.createMap(team_id, user_id))
     }
+
+    fun compareUsers(team_id: Int, user_id: Long, player_id: Long) : Observable<BaseResponse>{
+        return NetworkService.makeNetworkServiceRxJava().compareUsers(BaseResponse.createMap(user_id, player_id, team_id) )
+    }
 }

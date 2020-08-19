@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.glushko.sportcommunity.business_logic_layer.domain.Squad
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
+import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseSquadTeamList
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,6 +20,8 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
 
     val liveDataSquadList: MutableLiveData<MutableList<Squad.Params>> = MutableLiveData()
 
+    val liveDataCompare: MutableLiveData<BaseResponse> = MutableLiveData()
+
     fun getSquadList(team_id: Int){
         val pref = SharedPrefsManager(getApplication<Application>().
             getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
@@ -31,6 +34,15 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
+    fun compareUsers(team_id: Int, user_id: Long, player_id: Long){
+        myCompositeDisposable.add(
+            useCaseRepository.compareUsers(team_id, user_id, player_id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handlerResponseCompare, this::handlerErrorCompare)
+        )
+    }
+
     private fun handlerResponseSquadList(responseServer: ResponseSquadTeamList){
         liveDataSquadListResponse.postValue(responseServer)
     }
@@ -38,5 +50,12 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
     private fun handleErrorSquadList(err: Throwable){
         liveDataSquadListResponse.postValue(ResponseSquadTeamList(0, err.localizedMessage))
         println("ошибка поиска ${err.message}")
+    }
+    private fun handlerResponseCompare(responseServer: BaseResponse){
+        liveDataCompare.postValue(responseServer)
+    }
+    private fun handlerErrorCompare(err: Throwable){
+        println("Ошибка подключения ${err.message}")
+        liveDataCompare.postValue(BaseResponse(0, err.localizedMessage))
     }
 }

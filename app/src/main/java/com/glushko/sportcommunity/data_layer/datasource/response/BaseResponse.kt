@@ -20,5 +20,12 @@ open class BaseResponse (
             map[ApiService.PARAM_TEAM_NAME] = team_name
             return map
         }
+        fun createMap(user_id: Long, player_id: Long, team_id: Int): Map<String, String>{
+            val map = HashMap<String, String>()
+            map[ApiService.PARAM_USER_ID] = user_id.toString()
+            map[ApiService.PARAM_PLAYER_ID] = player_id.toString()
+            map[ApiService.PARAM_TEAM_ID] = team_id.toString()
+            return map
+        }
     }
 }

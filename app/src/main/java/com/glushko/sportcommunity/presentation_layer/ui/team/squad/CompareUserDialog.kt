@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,14 +17,14 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Squad
 import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
 import kotlinx.android.synthetic.main.dialog_compare_user.*
 
-class CompareUserDialog(var squadList: MutableList<Squad.Params>) :  DialogFragment()  {
+class CompareUserDialog(var squadList: MutableList<Squad.Params>, val team_id: Int) :  DialogFragment()  {
 
     companion object{
 
         private const val KEY_SQUAD = "KEY_SQUAD"
 
-        fun newInstance(squadList: MutableList<Squad.Params>): CompareUserDialog{
-            return CompareUserDialog(squadList)
+        fun newInstance(squadList: MutableList<Squad.Params>, team_id: Int): CompareUserDialog{
+            return CompareUserDialog(squadList, team_id)
         }
     }
 
@@ -40,6 +41,18 @@ class CompareUserDialog(var squadList: MutableList<Squad.Params>) :  DialogFragm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         modelSquad = ViewModelProviders.of(this).get(SquadViewModel::class.java)
+        modelSquad.liveDataCompare.observe(this, Observer {
+            if(it.success == 1){
+                changeMainSquadLists()
+                userLinked = null
+                playerLinked = null
+                tvAmpluaLinked.visibility = View.GONE
+                tvUserNameLinked.text = "Выберите пользователя "
+                tvPlayerLinked.text = "Выберите игрока"
+            }else{
+                Toast.makeText(activity,"Сопоставление не получилось. Попробуйте позже :(", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onCreateView(
@@ -89,12 +102,8 @@ class CompareUserDialog(var squadList: MutableList<Squad.Params>) :  DialogFragm
             if(userLinked == null || playerLinked == null){
                 Toast.makeText(activity,"Выберите полное сопоставление", Toast.LENGTH_SHORT).show()
             }else{
-                changeMainSquadLists()
-                userLinked = null
-                playerLinked = null
-                tvAmpluaLinked.visibility = View.GONE
-                tvUserNameLinked.text = "Выберите пользователя "
-                tvPlayerLinked.text = "Выберите игрока"
+                modelSquad.compareUsers(team_id, userLinked!!.id_user, playerLinked!!.linked)
+
             }
         }
     }

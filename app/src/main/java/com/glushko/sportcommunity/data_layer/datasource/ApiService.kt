@@ -25,6 +25,7 @@ interface ApiService {
         const val CREATE_TEAM = "CreateTeam"
         const val INVITE_IN_TEAM = "InviteInTeam"
         const val GET_SQUAD_TEAM_LIST = "SquadTeamList"
+        const val COMPARE_USERS = "CompareUsers"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -33,6 +34,7 @@ interface ApiService {
         const val PARAM_MESSAGE_TYPE = "type_message"
         const val PARAM_MESSAGE_DATE = "user_date"
         const val PARAM_USER_ID = "user_id"
+        const val PARAM_PLAYER_ID = "player_id"
         const val PARAM_FRIEND_ID = "friend_id"
         const val PARAM_SENDER_ID = "sender_id"
         const val PARAM_RECEIVER_ID = "receiver_id"
@@ -113,5 +115,9 @@ interface ApiService {
     @FormUrlEncoded
     @POST(GET_SQUAD_TEAM_LIST)
     fun getSquadTeamList(@FieldMap param: Map<String, String>): Observable<ResponseSquadTeamList>
+
+    @FormUrlEncoded
+    @POST(COMPARE_USERS)
+    fun compareUsers(@FieldMap param: Map<String, String>): Observable<BaseResponse>
 
 }

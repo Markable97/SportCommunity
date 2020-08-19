@@ -88,7 +88,7 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         fabBGLayout.setOnClickListener { closeFABMenu() }
 
         fabLayout_compare.setOnClickListener {
-            val dialogCompare = CompareUserDialog.newInstance(squadList)
+            val dialogCompare = CompareUserDialog.newInstance(squadList, team_id)
             val manager = childFragmentManager
             dialogCompare.show(manager, "dialogCompare")
         }
