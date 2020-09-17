@@ -27,6 +27,8 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
 
     var squadList: MutableList<Squad.Params> = mutableListOf()
 
+    var positionDeleteCompare: Int? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,9 +52,33 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         })
 
         modelSquad.liveDataSquadList.observe(this, Observer {
+            println("Live data 2 unknown source")
             squadList = it
             adapter?.setList(squadList)
         })
+
+        modelSquad.liveDataCompare.observe(this, Observer {
+            deleteLocalCompare()
+        })
+    }
+
+    private fun deleteLocalCompare(isUpdate: Boolean = true) {
+        //Добавляем игркоа
+        squadList.add(Squad.Params(id_user = 0,
+                                   user_name = null,
+                                   player_name = squadList[positionDeleteCompare!!].player_name,
+                                   linked = squadList[positionDeleteCompare!!].linked,
+                                   in_app = 0,
+                                   status_invite = null,
+                                   amplua = squadList[positionDeleteCompare!!].amplua,
+                                   status_friend = null))
+        //для юзера удаляем атрибуты
+        squadList[positionDeleteCompare!!].player_name = null
+        squadList[positionDeleteCompare!!].linked = 0
+        squadList[positionDeleteCompare!!].amplua = null
+        if(isUpdate){
+            adapter?.setList(squadList)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,16 +105,37 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         squad_team_recycler.layoutManager = LinearLayoutManager(activity)
         squad_team_recycler.setListener(object : SwipeLeftRightCallback.Listener {
             override fun onSwipedRight(position: Int) {
-                Toast.makeText(activity, "Удалить", Toast.LENGTH_SHORT).show()
-                squadList.removeAt(position)
-                adapter?.setList(squadList)
+
+                if(squadList[position].in_app == 1){
+                    //Если игрок с app, то сначала отвезать, а потом удалить
+                    positionDeleteCompare = position
+                    if(squadList[position].linked > 0){
+                        deleteLocalCompare(false)
+                    }
+                    squadList.removeAt(position)
+                    adapter?.setList(squadList)
+                }else{
+                    Toast.makeText(activity, "Нельзя удалить игрока, можно толкьо пользователя", Toast.LENGTH_SHORT).show()
+                    adapter?.notifyDataSetChanged()
+                }
+
+
                 //adapter?.notifyDataSetChanged()
 
             }
 
             override fun onSwipedLeft(position: Int) {
-                Toast.makeText(activity, "Отвезать", Toast.LENGTH_SHORT).show()
-                adapter?.notifyDataSetChanged()
+
+                //modelSquad.compareUsers(2, team_id, squadList[position].id_user, squadList[position].linked)
+                if(squadList[position].in_app > 0 && squadList[position].linked > 0){
+                    //Можно отвязать только тех кто привязан и юзер
+                    positionDeleteCompare = position
+                    deleteLocalCompare()
+                }else{
+                    Toast.makeText(activity, "Юзер не привязан", Toast.LENGTH_SHORT).show()
+                    adapter?.notifyDataSetChanged()
+                }
+                //adapter?.notifyDataSetChanged()
             }
 
         })

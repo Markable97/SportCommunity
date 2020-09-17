@@ -34,9 +34,9 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
-    fun compareUsers(team_id: Int, user_id: Long, player_id: Long){
+    fun compareUsers(type_compare: Int, team_id: Int, user_id: Long, player_id: Long){
         myCompositeDisposable.add(
-            useCaseRepository.compareUsers(team_id, user_id, player_id)
+            useCaseRepository.compareUsers(type_compare,team_id, user_id, player_id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handlerResponseCompare, this::handlerErrorCompare)

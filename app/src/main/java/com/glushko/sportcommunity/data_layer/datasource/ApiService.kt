@@ -46,6 +46,7 @@ interface ApiService {
         const val PARAM_TEAM_ID = "team_id"
         const val PARAM_TEAM_NAME = "team_name"
         const val PARAM_TYPE_FIND_USER = "type_find"
+        const val PARAM_TYPE_COMPARE = "type_compare"
     }
 
     @FormUrlEncoded

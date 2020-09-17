@@ -102,7 +102,7 @@ class CompareUserDialog(var squadList: MutableList<Squad.Params>, val team_id: I
             if(userLinked == null || playerLinked == null){
                 Toast.makeText(activity,"Выберите полное сопоставление", Toast.LENGTH_SHORT).show()
             }else{
-                modelSquad.compareUsers(team_id, userLinked!!.id_user, playerLinked!!.linked)
+                modelSquad.compareUsers(1,team_id, userLinked!!.id_user, playerLinked!!.linked)
 
             }
         }
