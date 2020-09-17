@@ -29,6 +29,8 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
 
     var positionDeleteCompare: Int? = null
 
+    var type_compare: Int? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,7 +60,22 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         })
 
         modelSquad.liveDataCompare.observe(this, Observer {
-            deleteLocalCompare()
+            println("Live date compare ${it.message}")
+            if(it.success == 1){
+                if(type_compare == 2){
+                    deleteLocalCompare()
+                }else{
+                    if(squadList[positionDeleteCompare!!].linked > 0){
+                        deleteLocalCompare(false)
+                    }
+                    squadList.removeAt(positionDeleteCompare!!)
+                    adapter?.setList(squadList)
+                }
+            }else{
+                Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+                adapter?.notifyDataSetChanged()
+            }
+
         })
     }
 
@@ -109,11 +126,9 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
                 if(squadList[position].in_app == 1){
                     //Если игрок с app, то сначала отвезать, а потом удалить
                     positionDeleteCompare = position
-                    if(squadList[position].linked > 0){
-                        deleteLocalCompare(false)
-                    }
-                    squadList.removeAt(position)
-                    adapter?.setList(squadList)
+                    type_compare = 3
+                    modelSquad.compareUsers(type_compare!!, team_id, squadList[position].id_user, squadList[position].linked)
+
                 }else{
                     Toast.makeText(activity, "Нельзя удалить игрока, можно толкьо пользователя", Toast.LENGTH_SHORT).show()
                     adapter?.notifyDataSetChanged()
@@ -130,7 +145,8 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
                 if(squadList[position].in_app > 0 && squadList[position].linked > 0){
                     //Можно отвязать только тех кто привязан и юзер
                     positionDeleteCompare = position
-                    deleteLocalCompare()
+                    type_compare = 2
+                    modelSquad.compareUsers(type_compare!!, team_id, squadList[position].id_user, squadList[position].linked)
                 }else{
                     Toast.makeText(activity, "Юзер не привязан", Toast.LENGTH_SHORT).show()
                     adapter?.notifyDataSetChanged()
