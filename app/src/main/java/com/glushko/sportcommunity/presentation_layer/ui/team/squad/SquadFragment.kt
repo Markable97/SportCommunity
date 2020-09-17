@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Squad
 import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
+import com.tsuryo.swipeablerv.SwipeLeftRightCallback
 import kotlinx.android.synthetic.main.fragment_team_squad.*
 import kotlinx.android.synthetic.main.fragment_team_squad_content_main.*
 
@@ -63,7 +64,7 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
             override fun onItemPlayer(
                 inApp: Boolean,
                 user_id: Long,
-                user_name: String,
+                user_name: String?,
                 status_friend: String?
             ) {
                 if(inApp){
@@ -76,7 +77,21 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         })
         squad_team_recycler.adapter = adapter
         squad_team_recycler.layoutManager = LinearLayoutManager(activity)
+        squad_team_recycler.setListener(object : SwipeLeftRightCallback.Listener {
+            override fun onSwipedRight(position: Int) {
+                Toast.makeText(activity, "Удалить", Toast.LENGTH_SHORT).show()
+                squadList.removeAt(position)
+                adapter?.setList(squadList)
+                //adapter?.notifyDataSetChanged()
 
+            }
+
+            override fun onSwipedLeft(position: Int) {
+                Toast.makeText(activity, "Отвезать", Toast.LENGTH_SHORT).show()
+                adapter?.notifyDataSetChanged()
+            }
+
+        })
         fab.setOnClickListener {
             if (View.GONE == fabBGLayout.visibility) {
                 showFABMenu()
@@ -130,6 +145,6 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
     }
 
     interface Callback{
-        fun onClickPlayerInApp(user_id: Long, user_name: String, status_friend: String?)
+        fun onClickPlayerInApp(user_id: Long, user_name: String?, status_friend: String?)
     }
 }

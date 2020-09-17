@@ -147,4 +147,8 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+    //Drag & Drop n' Swipe Recyclerview
+    implementation 'androidx.recyclerview:recyclerview:+'
+    implementation 'com.github.tsuryo:Swipeable-RecyclerView:1.1'
 }
