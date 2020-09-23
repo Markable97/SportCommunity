@@ -6,10 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.glushko.sportcommunity.business_logic_layer.domain.Friend
-import com.glushko.sportcommunity.business_logic_layer.domain.LastMessage
-import com.glushko.sportcommunity.business_logic_layer.domain.Message
-import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
+import com.glushko.sportcommunity.business_logic_layer.domain.*
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -34,6 +31,7 @@ data class FriendshipNotification(
     val contact_name: String,
     val status_friend: String
 )
+
 /*@Entity
 data class TeamsUserInfo(
     @PrimaryKey val team_id: Int = 0,
@@ -134,6 +132,18 @@ interface NotificationDao{
 
     @Query("delete from notification_friendship")
     fun deleteAllFriendsNotification()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertNotification(entity: Notification.Params)
+
+    @Query("select * from notifications")
+    fun getNotifications(): LiveData<List<Notification.Params>>
+
+    @Query("delete from notifications where notification_id = :notification_id ")
+    fun deleteNotification(notification_id: Long)
+
+    @Query("delete from notifications")
+    fun deleteAllNotification()
 }
 
 @Dao
@@ -166,7 +176,9 @@ interface MessageDao{
     suspend fun deleteAllLastMessage()
 }
 
-@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class, LastMessage.Params::class, ChatsNotification::class, FriendshipNotification::class], version = 1, exportSchema = false)
+@Database(entities = [TeamsUserInfo.Params::class, Message.Params::class, Friend.Params::class, LastMessage.Params::class, ChatsNotification::class,
+    FriendshipNotification::class, Notification.Params::class],
+    version = 1, exportSchema = false)
 abstract class MainDatabase: RoomDatabase(){
 
      abstract fun mainDao(): MainDao

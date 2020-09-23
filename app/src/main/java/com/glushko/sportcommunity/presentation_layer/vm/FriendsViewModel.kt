@@ -85,9 +85,9 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
 
     }
 
-    fun inviteInTeam(user_id: Long, team_id: Int, team_name: String){
+    fun inviteInTeam(user_id: Long, team_id: Int, team_name: String, type_invitation: String){
         myCompositeDisposable?.add(
-            useCaseRepository.inviteInTeam(user_id, team_id, team_name)
+            useCaseRepository.inviteInTeam(user_id, team_id, team_name, type_invitation)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponseBase, this::handleErrorInvitation)

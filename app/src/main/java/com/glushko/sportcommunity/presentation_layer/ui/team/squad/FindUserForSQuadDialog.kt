@@ -44,7 +44,7 @@ class FindUserForSQuadDialog(private val team_id: Int, private val team_name: St
                     }else{
                         println("Отправка invite user_id = $user_id")
                         positionAdapter = position
-                        modelFriend.inviteInTeam(user_id.toLong(), team_id, team_name)
+                        modelFriend.inviteInTeam(user_id.toLong(), team_id, team_name, "invite")
                     }
 
                 }

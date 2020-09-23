@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.glushko.sportcommunity.business_logic_layer.domain.Notification
 import com.glushko.sportcommunity.data_layer.repository.ChatsNotification
 import com.glushko.sportcommunity.data_layer.repository.FriendshipNotification
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
@@ -17,10 +18,12 @@ class NotificationDrawerViewModel(application: Application): AndroidViewModel(ap
 
     val chatsLiveData: LiveData<List<ChatsNotification>>
     val friendsLiveData: LiveData<List<FriendshipNotification>>
+    val notificationsLiveData: LiveData<List<Notification.Params>>
     //private val notificationLiveData: MutableLiveData<> = MutableLiveData()
     init {
         chatsLiveData = dao.getNotificationChatsLiveData()
         friendsLiveData = dao.getFriendsNotification()
+        notificationsLiveData = dao.getNotifications()
     }
 
     fun deleteNotificationChats(){
@@ -30,6 +33,11 @@ class NotificationDrawerViewModel(application: Application): AndroidViewModel(ap
     }
 
 
+    fun deleteChooseNotification(notificationId: Long){
+        viewModelScope.launch(Dispatchers.IO){
+            dao.deleteNotification(notificationId)
+        }
+    }
 
     fun deleteChooseNotificationChat(contactId: Long){
         viewModelScope.launch(Dispatchers.IO){

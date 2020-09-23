@@ -3,6 +3,7 @@ package com.glushko.sportcommunity.business_logic_layer.domain.interactor
 import android.content.Context
 import com.glushko.sportcommunity.business_logic_layer.domain.LastMessage
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
+import com.glushko.sportcommunity.business_logic_layer.domain.Notification
 import com.glushko.sportcommunity.data_layer.repository.ChatsNotification
 import com.glushko.sportcommunity.data_layer.repository.FriendshipNotification
 import com.glushko.sportcommunity.data_layer.repository.MainDatabase
@@ -11,13 +12,14 @@ import com.google.firebase.messaging.RemoteMessage
 
 class UseCaseNotificationHelper(private val context: Context, private val remoteMessage: RemoteMessage) {
 
+    private val messageDao = MainDatabase.getMessageDao(context)
+    private val notificationDao = MainDatabase.getNotificationDao(context)
 
     private val pref = SharedPrefsManager.getSharedPrefsManager(context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE))
 
     fun addMessageInDatabase(){
 
-        val messageDao = MainDatabase.getMessageDao(context)
-        val notificationDao = MainDatabase.getNotificationDao(context)
+
 
         val messageType = remoteMessage.data["type_message"]?.toInt()?:100
         val messageId = remoteMessage.data["message_id"]?.toLong()?:0.toLong()
@@ -54,7 +56,7 @@ class UseCaseNotificationHelper(private val context: Context, private val remote
     }
 
     fun addFriendshipInDatabase(){
-        val notificationDao = MainDatabase.getNotificationDao(context)
+        //val notificationDao = MainDatabase.getNotificationDao(context)
         val action = remoteMessage.data["action_friendship"]?:""
         val contactId = remoteMessage.data["contact_id"]?.toLong()?:0L
         val contactName = remoteMessage.data["contact_name"]?:""
@@ -72,6 +74,17 @@ class UseCaseNotificationHelper(private val context: Context, private val remote
             println("NEW: ${notificationDao.getFriendsNotificationList()}")
         }catch (ex: Exception){
             println("Ошмбка вставки заявкив  друзья ${ex.message}")
+        }
+    }
+
+    fun addNotification(){
+        val notification_id = remoteMessage.data["notification_id"]?.toLong()?:0L
+        val type_invitation = remoteMessage.data["type_invitation"]?:""
+        val team_id = remoteMessage.data["team_id"]?.toInt()?:0
+        val team_name = remoteMessage.data["team_name"]?:""
+        val notification = Notification.Params(notification_id, type_invitation, team_id, team_name)
+        when(type_invitation){
+            "request" -> notificationDao.insertNotification(notification)
         }
     }
 }

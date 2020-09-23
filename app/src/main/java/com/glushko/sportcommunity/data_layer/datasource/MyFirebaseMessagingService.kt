@@ -31,6 +31,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             when(messageTypeApp){
                 "message" -> notificationHelper.addMessageInDatabase()
                 "friendship" -> notificationHelper.addFriendshipInDatabase()
+                "invitation in team" -> notificationHelper.addNotification()
                 else -> println("Необработанное уведомление")
             }
 

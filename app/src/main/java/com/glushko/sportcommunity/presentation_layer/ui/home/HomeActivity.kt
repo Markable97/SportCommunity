@@ -112,6 +112,17 @@ class HomeActivity :  AppCompatActivity() {
             }
         })
 
+        modelNotification.notificationsLiveData.observe(this, Observer {
+            println("HomeActivity Live Data Notification 3 $it")
+            val count = if(it.isNotEmpty()) it.size else 0
+            if(count > 0){
+                btnNotification_notification.text = if(count > 9) "9+" else count.toString()
+                btnNotification_notification.visibility = View.VISIBLE
+            }else{
+                btnNotification_notification.visibility = View.GONE
+            }
+        })
+
         profileContainer.setOnClickListener {
             drawerLayout.closeDrawers()
             toolbar.title = "Профиль"
@@ -210,6 +221,7 @@ class HomeActivity :  AppCompatActivity() {
 
     private fun openNotificationFragment() {
         toolbar.title = btnNotificationText.text
+        btnNotification_notification.visibility = View.GONE
         supportFragmentManager.beginTransaction().replace(fragmentContainer, NotificationFragment()).commit()
     }
 
@@ -238,7 +250,7 @@ class HomeActivity :  AppCompatActivity() {
         val squadFragment = SquadFragment(team_id, team_name, object : SquadFragment.Callback{
             override fun onClickPlayerInApp(
                 user_id: Long,
-                user_name: String,
+                user_name: String?,
                 status_friend: String?
             ) {
                 openProfileFragment(user_id.toInt(), user_name, status_friend, USER_ID == user_id)
