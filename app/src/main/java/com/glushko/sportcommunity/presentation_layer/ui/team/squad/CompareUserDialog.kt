@@ -1,6 +1,7 @@
 package com.glushko.sportcommunity.presentation_layer.ui.team.squad
 
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -64,6 +65,17 @@ class CompareUserDialog(var squadList: MutableList<Squad.Params>, val team_id: I
         return view
     }
 
+    //Делает диалоговое окна на весь экран
+    override fun onResume() {
+        if(dialog != null ){
+            if(dialog!!.window != null){
+                val window = dialog!!.window
+                window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT,  WindowManager.LayoutParams.MATCH_PARENT)
+            }
+        }
+        super.onResume()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.setTitle("Сопоставление игроков")
@@ -119,13 +131,6 @@ class CompareUserDialog(var squadList: MutableList<Squad.Params>, val team_id: I
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        dialog?.window?.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
-    }
 
     override fun onDestroy() {
         super.onDestroy()
