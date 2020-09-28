@@ -10,7 +10,7 @@ class Friend {
         @PrimaryKey()
         val friend_id: Int,
         val user_name: String,
-        val user_status: String,
+        val user_status: String?,
         var status_friend: String?,
         var team_id: Int,
         var status_in_team: String?
