@@ -60,7 +60,7 @@ class DialogFragment(private val friendId: Long, private val count_notification:
         manager.reverseLayout = true
         dialog_recycle.layoutManager = manager
 
-        modelDialog.liveDataRepository.observe(this, Observer {
+        modelDialog.liveDataRepository.observe(viewLifecycleOwner, Observer {
             println("Live data 1")
             adapter.setList((it as MutableList<Message.Params>))
 
@@ -68,7 +68,7 @@ class DialogFragment(private val friendId: Long, private val count_notification:
         })
 
         dataDialog = modelDialog.getData(friendId)//Передать id друга
-        dataDialog.observe(this, Observer {
+        dataDialog.observe(viewLifecycleOwner, Observer {
             println("Live data 2")
             println("DialogFragment: \n${it.success} ${it.message}, ${it.messages}")
             if(it.success==1){
@@ -93,7 +93,7 @@ class DialogFragment(private val friendId: Long, private val count_notification:
              super.takePhotoIntent(photoUri)
         }
         setEventListener(
-            activity!!,
+            requireActivity(),
             viewLifecycleOwner,
             object : KeyboardVisibilityEventListener {
                 override fun onVisibilityChanged(isOpen: Boolean) {

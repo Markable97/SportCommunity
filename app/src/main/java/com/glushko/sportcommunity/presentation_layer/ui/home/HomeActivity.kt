@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Register
 import com.glushko.sportcommunity.business_logic_layer.domain.TeamsUserInfo
+import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseNotificationHelper
+import com.glushko.sportcommunity.data_layer.datasource.ApiService
 import com.glushko.sportcommunity.presentation_layer.ui.Navigator
 import com.glushko.sportcommunity.presentation_layer.ui.chat.ChatsFragment
 import com.glushko.sportcommunity.presentation_layer.ui.dialog.DialogFragment
@@ -40,14 +42,16 @@ class HomeActivity :  AppCompatActivity() {
     val navigator = Navigator()
 
     companion object{
-        open var USER_ID: Long = 0
+        var USER_ID: Long? = null
+        var USER_NAME: String? = null
     }
 
 
     lateinit var model: AccountViewModel
-    lateinit var dataLogin: LiveData<Register.Params>
+    //lateinit var dataLogin: LiveData<Register.Params>
     lateinit var modelNotification: NotificationDrawerViewModel
 
+    var isStart: Boolean = false
 
     //lateinit var dataNotificationChats: LiveData<List<ChatsNotification>>
 
@@ -59,15 +63,34 @@ class HomeActivity :  AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.title = "Профиль"
 
-
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
+        model.getLoginData()
+        val typeOpenFragment: String? = intent.getStringExtra(UseCaseNotificationHelper.TYPE_OPEN)
+        when(typeOpenFragment){
+            UseCaseNotificationHelper.OPEN_NOTIFICATIONS ->openNotificationFragment()
+            UseCaseNotificationHelper.OPEN_FRIENDS -> openFriendsFragment()
+            UseCaseNotificationHelper.OPEN_DIALOG -> {
+                val userId: Long = intent.getLongExtra(ApiService.PARAM_USER_ID, 0)
+                openDialogFragment(userId)
+            }
+            else ->{
+                model.getLoginData()
+                isStart = true
+            }
+        }
 
-        dataLogin = model.getLoginData()
-        dataLogin.observe(this, Observer<Register.Params> {
+
+
+
+
+
+        model.liveDataLogin.observe(this, Observer<Register.Params> {
             tvUserName.text = it.name
             tvUserEmail.text = it.email
             USER_ID = it.idUser.toLong()
-            openProfileFragment(it.idUser, it.name)
+            USER_NAME = it.name
+            if (isStart) openProfileFragment(it.idUser, it.name)
+            //openProfileFragment(it.idUser, it.name)
         })
 
 
@@ -89,6 +112,7 @@ class HomeActivity :  AppCompatActivity() {
 
 
         modelNotification = ViewModelProviders.of(this).get(NotificationDrawerViewModel::class.java)
+
 
         modelNotification.chatsLiveData.observe(this, Observer {
             println("HomeActivity Live Data Notification 1 ${it}")
@@ -126,7 +150,7 @@ class HomeActivity :  AppCompatActivity() {
         profileContainer.setOnClickListener {
             drawerLayout.closeDrawers()
             toolbar.title = "Профиль"
-            openProfileFragment(dataLogin.value?.idUser, dataLogin.value?.name)
+            openProfileFragment(USER_ID?.toInt(), USER_NAME)
 
         }
 
@@ -227,7 +251,7 @@ class HomeActivity :  AppCompatActivity() {
 
     private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String, team_id: Int){
         toolbar.title = teamName
-        val userId = dataLogin.value?.idUser?:0
+        val userId = model.liveDataLogin.value?.idUser?:0
         var isLeader = false
         if(userId == leader_id)
             isLeader = true

@@ -35,9 +35,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 else -> println("Необработанное уведомление")
             }
 
-
-
-
         }
 
 
