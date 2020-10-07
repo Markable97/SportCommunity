@@ -40,7 +40,7 @@ class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, pr
         }
 
         btn_team_squad.setOnClickListener {
-            callbackActivity.onClickSquad(teamName)
+            callbackActivity.onClickSquad(teamName, isLeader)
         }
 
     }
@@ -48,6 +48,6 @@ class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, pr
     interface Callback{
         fun onClickUpperRightButton(idLeader: Long, leaderName: String)
 
-        fun onClickSquad(team_name: String)
+        fun onClickSquad(team_name: String, isLeader: Boolean)
     }
 }

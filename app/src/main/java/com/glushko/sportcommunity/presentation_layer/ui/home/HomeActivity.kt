@@ -261,17 +261,17 @@ class HomeActivity :  AppCompatActivity() {
                 openDialogFragment(idLeeader)
             }
 
-            override fun onClickSquad(team_name: String) {
+            override fun onClickSquad(team_name: String, isLeader: Boolean) {
                 toolbar.title = "Состав"
-                openSquadFragment(team_id, team_name)
+                openSquadFragment(team_id, team_name, isLeader)
             }
 
         })
         supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).commit()
     }
 
-    private fun openSquadFragment(team_id: Int, team_name: String){
-        val squadFragment = SquadFragment(team_id, team_name, object : SquadFragment.Callback{
+    private fun openSquadFragment(team_id: Int, team_name: String, isLeader: Boolean){
+        val squadFragment = SquadFragment(team_id, team_name, isLeader, object : SquadFragment.Callback{
             override fun onClickPlayerInApp(
                 user_id: Long,
                 user_name: String?,

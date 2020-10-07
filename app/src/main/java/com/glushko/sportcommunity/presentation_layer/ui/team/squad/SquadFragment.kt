@@ -17,7 +17,7 @@ import com.tsuryo.swipeablerv.SwipeLeftRightCallback
 import kotlinx.android.synthetic.main.fragment_team_squad.*
 import kotlinx.android.synthetic.main.fragment_team_squad_content_main.*
 
-class SquadFragment(private val team_id: Int, private val team_name: String, val callback: Callback): Fragment() {
+class SquadFragment(private val team_id: Int, private val team_name: String, private val isLeader: Boolean, val callback: Callback): Fragment() {
 
     val layoutId: Int = R.layout.fragment_team_squad
 
@@ -120,61 +120,74 @@ class SquadFragment(private val team_id: Int, private val team_name: String, val
         })
         squad_team_recycler.adapter = adapter
         squad_team_recycler.layoutManager = LinearLayoutManager(activity)
+
         squad_team_recycler.setListener(object : SwipeLeftRightCallback.Listener {
             override fun onSwipedRight(position: Int) {
+                if(isLeader){
+                    if(squadList[position].in_app == 1){
+                        //Если игрок с app, то сначала отвезать, а потом удалить
+                        positionDeleteCompare = position
+                        type_compare = 3
+                        modelSquad.compareUsers(type_compare!!, team_id, squadList[position].id_user, squadList[position].linked)
 
-                if(squadList[position].in_app == 1){
-                    //Если игрок с app, то сначала отвезать, а потом удалить
-                    positionDeleteCompare = position
-                    type_compare = 3
-                    modelSquad.compareUsers(type_compare!!, team_id, squadList[position].id_user, squadList[position].linked)
+                    }else{
+                        Toast.makeText(activity, "Нельзя удалить игрока, можно толкьо пользователя", Toast.LENGTH_SHORT).show()
+                        adapter?.notifyDataSetChanged()
+                    }
 
+
+                    //adapter?.notifyDataSetChanged()
                 }else{
-                    Toast.makeText(activity, "Нельзя удалить игрока, можно толкьо пользователя", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "У Вас недостаточно прав", Toast.LENGTH_SHORT).show()
                     adapter?.notifyDataSetChanged()
                 }
-
-
-                //adapter?.notifyDataSetChanged()
 
             }
 
             override fun onSwipedLeft(position: Int) {
-
-                //modelSquad.compareUsers(2, team_id, squadList[position].id_user, squadList[position].linked)
-                if(squadList[position].in_app > 0 && squadList[position].linked > 0){
-                    //Можно отвязать только тех кто привязан и юзер
-                    positionDeleteCompare = position
-                    type_compare = 2
-                    modelSquad.compareUsers(type_compare!!, team_id, squadList[position].id_user, squadList[position].linked)
+                if(isLeader){
+                    //modelSquad.compareUsers(2, team_id, squadList[position].id_user, squadList[position].linked)
+                    if(squadList[position].in_app > 0 && squadList[position].linked > 0){
+                        //Можно отвязать только тех кто привязан и юзер
+                        positionDeleteCompare = position
+                        type_compare = 2
+                        modelSquad.compareUsers(type_compare!!, team_id, squadList[position].id_user, squadList[position].linked)
+                    }else{
+                        Toast.makeText(activity, "Юзер не привязан", Toast.LENGTH_SHORT).show()
+                        adapter?.notifyDataSetChanged()
+                    }
+                    //adapter?.notifyDataSetChanged()
                 }else{
-                    Toast.makeText(activity, "Юзер не привязан", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "У Вас недостаточно прав", Toast.LENGTH_SHORT).show()
                     adapter?.notifyDataSetChanged()
                 }
-                //adapter?.notifyDataSetChanged()
             }
 
         })
-        fab.setOnClickListener {
-            if (View.GONE == fabBGLayout.visibility) {
-                showFABMenu()
-            } else {
-                closeFABMenu()
+        if(isLeader){
+            fab.setOnClickListener {
+                if (View.GONE == fabBGLayout.visibility) {
+                    showFABMenu()
+                } else {
+                    closeFABMenu()
+                }
             }
-        }
 
-        fabBGLayout.setOnClickListener { closeFABMenu() }
+            fabBGLayout.setOnClickListener { closeFABMenu() }
 
-        fabLayout_compare.setOnClickListener {
-            val dialogCompare = CompareUserDialog.newInstance(squadList, team_id)
-            val manager = childFragmentManager
-            dialogCompare.show(manager, "dialogCompare")
-        }
+            fabLayout_compare.setOnClickListener {
+                val dialogCompare = CompareUserDialog.newInstance(squadList, team_id)
+                val manager = childFragmentManager
+                dialogCompare.show(manager, "dialogCompare")
+            }
 
-        fabLayout_add_player.setOnClickListener {
-            val dialogFind = FindUserForSQuadDialog(team_id, team_name)
-            val manager = childFragmentManager
-            dialogFind.show(manager, "dialogFind")
+            fabLayout_add_player.setOnClickListener {
+                val dialogFind = FindUserForSQuadDialog(team_id, team_name)
+                val manager = childFragmentManager
+                dialogFind.show(manager, "dialogFind")
+            }
+        }else{
+            fab.visibility = View.GONE
         }
     }
 
