@@ -157,6 +157,9 @@ interface MessageDao{
     @Query("select * from messages_table where sender_id in (:user_id, :friend_id) and receiver_id in (:user_id, :friend_id)order by message_date desc")
     fun getMessages(user_id: Long, friend_id: Long):LiveData<List<Message.Params>>
 
+    @Query("select * from messages_table where receiver_id = :team_id order by message_date desc")
+    fun getMessages(team_id: Int):LiveData<List<Message.Params>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLastMessage(entity: List<LastMessage.Params>)
 

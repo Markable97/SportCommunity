@@ -2,6 +2,7 @@ package com.glushko.sportcommunity.presentation_layer.ui.dialog
 
 import android.app.Activity.RESULT_OK
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Message
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMessage
+import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import com.glushko.sportcommunity.presentation_layer.ui.BaseFragment
 import com.glushko.sportcommunity.presentation_layer.vm.DialogViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.ModelFactoryForDialog
@@ -28,7 +30,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 import java.io.File
 
 
-class DialogFragment(private val friendId: Long, private val count_notification: Int) : BaseFragment() {
+class DialogFragment(private val friendId: Long, private val count_notification: Int, private val type_dialog: Int) : BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_dialog
     lateinit var adapter: DialogAdapter
@@ -51,23 +53,25 @@ class DialogFragment(private val friendId: Long, private val count_notification:
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        modelDialogFactory = ModelFactoryForDialog(context?.applicationContext as Application, friendId)
+        val user_id: Long? = activity?.getSharedPreferences(activity?.packageName, Context.MODE_PRIVATE)?.let {
+            SharedPrefsManager(it).getAccount().idUser.toLong()
+        }
+        modelDialogFactory = ModelFactoryForDialog(context?.applicationContext as Application, friendId, type_dialog)
         modelDialog = ViewModelProviders.of(this, modelDialogFactory).get(DialogViewModel::class.java)
-        adapter = DialogAdapter(friend_id = friendId.toLong())
+        adapter = DialogAdapter(friend_id = friendId.toLong(), user_id = user_id?:0)
         dialog_recycle.adapter = adapter
         val manager = LinearLayoutManager(activity)
         manager.reverseLayout = true
         dialog_recycle.layoutManager = manager
 
         modelDialog.liveDataRepository.observe(viewLifecycleOwner, Observer {
-            println("Live data 1")
+            println("Live data 1\n $it")
             adapter.setList((it as MutableList<Message.Params>))
 
             dialog_recycle.smoothScrollToPosition(count_notification)
         })
 
-        dataDialog = modelDialog.getData(friendId)//Передать id друга
+        dataDialog = modelDialog.getData(friendId, type_dialog)//Передать id друга
         dataDialog.observe(viewLifecycleOwner, Observer {
             println("Live data 2")
             println("DialogFragment: \n${it.success} ${it.message}, ${it.messages}")

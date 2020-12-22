@@ -17,16 +17,26 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class DialogAdapter(private var list: MutableList<Message.Params> = mutableListOf(), val friend_id: Long):
+class DialogAdapter(private var list: MutableList<Message.Params> = mutableListOf(), val friend_id: Long, val user_id: Long):
     RecyclerView.Adapter<DialogAdapter.BaseViewHolder>() {
 
     fun setList(list: MutableList<Message.Params>){
         this.list = list
+        println("Обновляем адаптер")
         notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (list[position].sender_id == friend_id) 1 else 0
+        return if (list[position].sender_id == friend_id) {
+            1
+        } else{
+            if(list[position].sender_id == user_id){
+                0
+            }else{
+                1
+            }
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {

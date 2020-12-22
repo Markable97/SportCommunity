@@ -28,7 +28,7 @@ import okhttp3.RequestBody
 import java.io.File
 import java.net.URLDecoder
 
-class DialogViewModel(application: Application, val friend_id: Long) : AndroidViewModel(application) {
+class DialogViewModel(application: Application, val friend_id: Long, type_dialog: Int) : AndroidViewModel(application) {
 
     companion object{
         const val TAG = "DialogViewModel"
@@ -47,14 +47,14 @@ class DialogViewModel(application: Application, val friend_id: Long) : AndroidVi
     private lateinit var broadCoast: BroadcastReceiver
 
     init {
-        liveDataRepository = useCaseRepository.getMessages(dao, idUser.toLong(), friend_id)
+        liveDataRepository = useCaseRepository.getMessages(dao, idUser.toLong(), friend_id, type_dialog)
     }
 
 
-    fun getData(friendId: Long): MutableLiveData<ResponseMessage>{
+    fun getData(friendId: Long, type_dialog: Int): MutableLiveData<ResponseMessage>{
         //whileGetMessages(friendId.toLong())
 
-        getMessages(idUser, friend_id, token)
+        getMessages(idUser, friend_id, token, type_dialog)
         return liveData
     }
 
@@ -64,11 +64,11 @@ class DialogViewModel(application: Application, val friend_id: Long) : AndroidVi
         return LiveDataRepository
     }*/
 
-    private fun getMessages(userId: Int, friendId: Long, token: String){
+    private fun getMessages(userId: Int, friendId: Long, token: String, type_dialog: Int){
         viewModelScope.launch {
             try{
                 val params = Message.Params(message_id = 0,message_type = 1, sender_id = userId.toLong(),receiver_id = friendId)
-                useCaseRepository.getMessages(params, token, liveData,dao)
+                useCaseRepository.getMessages(params, token, liveData,dao, type_dialog)
             }catch (err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(

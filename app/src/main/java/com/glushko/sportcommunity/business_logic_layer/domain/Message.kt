@@ -16,6 +16,9 @@ class Message {
         var message_date: Long = 0
     )
 
+    //Params(message_id=74, message_type=1, sender_id=42, receiver_id=45, message=��, message_date=1602002564)
+    //[Params(message_id=3, message_type=1, sender_id=45, receiver_id=16, message=bla bla, message_date=20201218121424)
+
     companion object{
         fun createMap(sender_id: Long, receiver_id: Long, token: String):Map<String, String>{
             val map = HashMap<String, String>()
@@ -23,6 +26,12 @@ class Message {
             map[ApiService.PARAM_RECEIVER_ID] = receiver_id.toString()
             map[ApiService.PARAM_TOKEN] = token
 
+            return map
+        }
+        fun createMap(team_id: Long, token: String): Map<String, String>{
+            val map = HashMap<String, String>()
+            map[ApiService.PARAM_TEAM_ID] = team_id.toString()
+            map[ApiService.PARAM_TOKEN] = token
             return map
         }
         /*@Target(AnnotationTarget.TYPE, AnnotationTarget.EXPRESSION, AnnotationTarget.FUNCTION)

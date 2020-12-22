@@ -16,7 +16,8 @@ class LastMessage {
         var receiver_id: Long,
         var message: String = "",
         var message_date: Long = 0,
-        var count_notification: Int?
+        var count_notification: Int?,
+        var type_dialog: Int
     )
 
     companion object {

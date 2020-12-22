@@ -71,7 +71,8 @@ class HomeActivity :  AppCompatActivity() {
             UseCaseNotificationHelper.OPEN_FRIENDS -> openFriendsFragment()
             UseCaseNotificationHelper.OPEN_DIALOG -> {
                 val userId: Long = intent.getLongExtra(ApiService.PARAM_USER_ID, 0)
-                openDialogFragment(userId)
+                val typeDialog = intent.getIntExtra(UseCaseNotificationHelper.TYPE_DIALOG, 0)
+                openDialogFragment(userId, type_dialog = typeDialog)
             }
             else ->{
                 model.getLoginData()
@@ -204,7 +205,7 @@ class HomeActivity :  AppCompatActivity() {
                         openSettingFragment()
                     }else{
                         toolbar.title = user_name
-                        openDialogFragment(idUser.toLong())
+                        openDialogFragment(idUser.toLong(),  type_dialog = 0)
                     }
                 }
 
@@ -215,18 +216,18 @@ class HomeActivity :  AppCompatActivity() {
 
     private fun openChatsFragment(){
         val frgmentChats = ChatsFragment(object : ChatsFragment.Callback{
-            override fun changeFragment(contact_id: Long, contact_name: String, count_notification: Int) {
+            override fun changeFragment(contact_id: Long, contact_name: String, count_notification: Int, type_dialog:Int) {
                 toolbar.title = contact_name
                 modelNotification.deleteChooseNotificationChat(contact_id)
-                openDialogFragment(contact_id, count_notification)
+                openDialogFragment(contact_id, count_notification, type_dialog)
             }
 
         })
         supportFragmentManager.beginTransaction().replace(fragmentContainer, frgmentChats).commit()
     }
 
-    private fun openDialogFragment(id_user: Long, count_notification: Int = 0) {
-        supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(id_user, count_notification)).commit()
+    private fun openDialogFragment(id_user: Long, count_notification: Int = 0, type_dialog:Int) {
+        supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(id_user, count_notification, type_dialog)).commit()
     }
 
     private fun openSettingFragment() {
@@ -258,7 +259,7 @@ class HomeActivity :  AppCompatActivity() {
         val fragmentTeamProfile = TeamFragment(teamName, teamDesc, bitmap, leader_id.toLong(), leader_name, isLeader, object : TeamFragment.Callback{
             override fun onClickUpperRightButton(idLeeader: Long, leaderName: String) {
                 toolbar.title = leaderName
-                openDialogFragment(idLeeader)
+                openDialogFragment(idLeeader, type_dialog = 0)
             }
 
             override fun onClickSquad(team_name: String, isLeader: Boolean) {

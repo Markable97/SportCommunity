@@ -60,7 +60,7 @@ class ChatsFragment(val callback: Callback) : Fragment() {
             override fun onClickChats(item: LastMessage.Params) {
                 println("ответ от recycler = ${item.contact_id}")
 
-                callback.changeFragment(item.contact_id, item.contact_name, item.count_notification?:0)
+                callback.changeFragment(item.contact_id, item.contact_name, item.count_notification?:0, item.type_dialog)
             }
 
         })
@@ -71,6 +71,6 @@ class ChatsFragment(val callback: Callback) : Fragment() {
 
 
     interface Callback{
-        fun changeFragment(contact_id: Long, contact_name: String, count_notification: Int = 0)
+        fun changeFragment(contact_id: Long, contact_name: String, count_notification: Int = 0, type_dialog: Int)
     }
 }

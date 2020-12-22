@@ -26,6 +26,7 @@ class UseCaseNotificationHelper(private val context: Context, private val remote
 
     companion object{
         const val TYPE_OPEN = "type_open_fragment"
+        const val TYPE_DIALOG = "type_dialog"
         const val OPEN_NOTIFICATIONS = "notifications"
         const val OPEN_FRIENDS = "friends"
         const val OPEN_DIALOG = "message"
@@ -49,6 +50,7 @@ class UseCaseNotificationHelper(private val context: Context, private val remote
         val messageDate = remoteMessage.data["message_date"]?.toLong()?:0.toLong()
         val message = remoteMessage.data["message"]?:""
         val contactName = remoteMessage.data["contact_name"]?:""
+        val typeDialog = remoteMessage.data["type_dialog"]?.toInt()?:0
         //val image = remoteMessage.data["image"]?:""
 
         if(messageType  != 100 && senderId != 0L && receiverId != 0L && messageDate!=0L){
@@ -72,9 +74,10 @@ class UseCaseNotificationHelper(private val context: Context, private val remote
             val _message = if(message=="") "Фотография" else message
             messageDao.insertLastMessage(
                 LastMessage.Params(messageId, contactId, messageType, contactName, senderId, receiverId, _message, messageDate,
-                    notificationCount))
+                    notificationCount, typeDialog))
             val intent = Intent(context, HomeActivity::class.java)
             intent.putExtra(TYPE_OPEN, OPEN_DIALOG)
+            intent.putExtra(TYPE_DIALOG, typeDialog)
             intent.putExtra(ApiService.PARAM_USER_ID, contactId)
             createNotification("Сообщение от $contactName", message, intent)
         }

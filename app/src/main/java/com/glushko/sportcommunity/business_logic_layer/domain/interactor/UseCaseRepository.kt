@@ -105,16 +105,27 @@ class UseCaseRepository {
         }
     }
 
-    fun getMessages(dao: MessageDao, sender_id_id: Long, receiver_id: Long): LiveData<List<Message.Params>>{
-        return dao.getMessages(sender_id_id, receiver_id)
+    fun getMessages(dao: MessageDao, sender_id_id: Long, receiver_id: Long, type_dialog: Int): LiveData<List<Message.Params>>{
+        return if(type_dialog == 0){
+            dao.getMessages(sender_id_id, receiver_id)
+        }else{
+            dao.getMessages(receiver_id.toInt())
+        }
     }
 
-    suspend fun getMessages(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>,dao: MessageDao){
+    suspend fun getMessages(params: Message.Params, token: String, livData: MutableLiveData<ResponseMessage>,dao: MessageDao, type_dialog: Int){
         try{
             println("$params")
-            val response = NetworkService.makeNetworkService().getMessages(Message.createMap(params.sender_id, params.receiver_id, token)).await()
+            val response = if(type_dialog == 0) {
+                NetworkService.makeNetworkService().getMessages(Message.createMap(params.sender_id, params.receiver_id, token)).await()
+            }else{
+                NetworkService.makeNetworkService().getMessagesTeam(Message.createMap(params.receiver_id, token)).await()
+            }
+
             println("UseCase: getMessages() ${response.success} ${response.message} ${response.messages}")
+            //println("before insert ${dao.getCntMessage(params.receiver_id.toInt())}")
             dao.insert(response.messages)
+            //println("after insert ${dao.getCntMessage(params.receiver_id.toInt())}")
             livData.postValue(response)
         }catch (cause: Throwable){
             println("Error!!!!${cause.message}")

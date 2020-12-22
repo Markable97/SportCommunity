@@ -15,7 +15,9 @@ interface ApiService {
         const val MAIN_PAGE = "UserMainPage"
         const val GET_FRIENDS = "GetFriends"
         const val GET_MESSAGES = "GetMessages"
+        const val GET_MESSAGES_TEAM = "GetMessagesTeam"
         const val SEND_MESSAGE = "SendMessage"
+        const val SEND_MESSAGE_TEAM = "SendMessageTeam"
         const val LAST_MESSAGE_CONTACT = "GetLastContactMessage"
         const val FIND_USER = "FindPeople"
         const val FRIENDSHIP = "Friendship"
@@ -82,11 +84,17 @@ interface ApiService {
     @POST(GET_MESSAGES)
     fun getMessages(@FieldMap params: Map<String, String>):Call<ResponseMessage>
 
+    @FormUrlEncoded
+    @POST(GET_MESSAGES_TEAM)
+    fun getMessagesTeam(@FieldMap params: Map<String, String>):Call<ResponseMessage>
+
     @Multipart
     @POST(SEND_MESSAGE)
     fun sendMessage(@PartMap params: MutableMap<String, RequestBody>, @Part file: MultipartBody.Part? ):Call<ResponseMessage>
 
-
+    @Multipart
+    @POST(SEND_MESSAGE_TEAM)
+    fun sendMessageTeam(@PartMap params: MutableMap<String, RequestBody>, @Part file: MultipartBody.Part? ):Call<ResponseMessage>
 
     @FormUrlEncoded
     @POST(SEND_MESSAGE)
