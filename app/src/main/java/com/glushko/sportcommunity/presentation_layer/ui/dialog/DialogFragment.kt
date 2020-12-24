@@ -86,7 +86,7 @@ class DialogFragment(private val friendId: Long, private val count_notification:
         btnSend.setOnClickListener {
             val message = etText.text.toString()
             if(message.isNotEmpty()){
-                modelDialog.sendMessage(friendId, message, photoFile, photoUri)
+                modelDialog.sendMessage(friendId, message, photoFile, photoUri, type_dialog = type_dialog)
             }else{
                 Toast.makeText(activity, "Введите сообщение", Toast.LENGTH_SHORT).show()
             }
@@ -110,7 +110,7 @@ class DialogFragment(private val friendId: Long, private val count_notification:
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode==TAKE_PICTURE_REQUEST && resultCode == RESULT_OK){
-            modelDialog.sendMessage(friendId, "Фотография", photoFile, photoUri, 0)
+            modelDialog.sendMessage(friendId, "Фотография", photoFile, photoUri, 0, type_dialog)
             //val file = File(currentPhotoPath)
             //val photo: Uri = Uri.fromFile(file)
             //super.saveImage(((ivUserImage.drawable) as BitmapDrawable).bitmap, "${System.currentTimeMillis()}")

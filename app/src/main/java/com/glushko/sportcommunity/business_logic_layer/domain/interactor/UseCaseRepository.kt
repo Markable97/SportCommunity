@@ -136,12 +136,20 @@ class UseCaseRepository {
         }
     }
 
-    suspend fun sendMessage(params: Message.Params, token: String, file: MultipartBody.Part?, livData: MutableLiveData<ResponseMessage>, dao: MessageDao){
+    suspend fun sendMessage(params: Message.Params, token: String, file: MultipartBody.Part?, livData: MutableLiveData<ResponseMessage>, dao: MessageDao, type_dialog: Int){
          try{
              val response =  if(file != null) {
-                 NetworkService.makeNetworkService().sendMessage(Message.createMapFile(params.sender_id, params.receiver_id, token, params.message, params.message_type), file).await()
+                 if(type_dialog == 0){
+                     NetworkService.makeNetworkService().sendMessage(Message.createMapFile(params.sender_id, params.receiver_id, token, params.message, params.message_type), file).await()
+                 }else{
+                     NetworkService.makeNetworkService().sendMessageTeam(Message.createMapFile(params.sender_id, params.receiver_id, token, params.message, params.message_type), file).await()
+                 }
              }else{
-                 NetworkService.makeNetworkService().sendMessage(Message.createMap(params.sender_id, params.receiver_id, token, params.message, params.message_type)).await()
+                 if(type_dialog == 0){
+                     NetworkService.makeNetworkService().sendMessage(Message.createMap(params.sender_id, params.receiver_id, token, params.message, params.message_type)).await()
+                 }else{
+                     NetworkService.makeNetworkService().sendMessageTeam(Message.createMap(params.sender_id, params.receiver_id, token, params.message, params.message_type)).await()
+                 }
              }
              if(response.messages.isEmpty()){
                  throw NetworkErrors(response.message, Exception())

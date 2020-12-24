@@ -100,6 +100,9 @@ interface ApiService {
     @POST(SEND_MESSAGE)
     fun sendMessage(@FieldMap params: Map<String, String>):Call<ResponseMessage>
     @FormUrlEncoded
+    @POST(SEND_MESSAGE_TEAM)
+    fun sendMessageTeam(@FieldMap params: Map<String, String>):Call<ResponseMessage>
+    @FormUrlEncoded
     @POST(LAST_MESSAGE_CONTACT)
     fun getLastContactMessage(@FieldMap params: Map<String, String>):Call<ResponseLastMessage>
 

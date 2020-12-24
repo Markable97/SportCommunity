@@ -80,14 +80,14 @@ class DialogViewModel(application: Application, val friend_id: Long, type_dialog
         }
     }
 
-    fun sendMessage(friendId: Long, message: String, photoFile: File?, photoUri: Uri?,messageType: Int = 1 ){
+    fun sendMessage(friendId: Long, message: String, photoFile: File?, photoUri: Uri?,messageType: Int = 1, type_dialog: Int){
         viewModelScope.launch(Dispatchers.IO) {
             try{
 
                 val params = Message.Params(message_id = 0,sender_id = idUser.toLong(),message_type = messageType, receiver_id = friendId, message = URLDecoder.decode(message, "UTF-8"))
                 println("Send message to server $params")
                 val body: MultipartBody.Part? = prepareFilePart(photoFile, photoUri)
-                useCaseRepository.sendMessage(params, token, body, liveData, dao)
+                useCaseRepository.sendMessage(params, token, body, liveData, dao, type_dialog)
             }catch (err: NetworkErrors){
                 println(err.message)
                 liveData.postValue(
