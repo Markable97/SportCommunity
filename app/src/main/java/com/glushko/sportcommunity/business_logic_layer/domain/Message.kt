@@ -6,9 +6,9 @@ import com.glushko.sportcommunity.data_layer.datasource.ApiService
 import okhttp3.RequestBody
 
 class Message {
-    @Entity(tableName = "messages_table")
+    @Entity(tableName = "messages_table", primaryKeys = ["message_date","sender_id","receiver_id"])
     data class Params(
-        @PrimaryKey(autoGenerate = true) var message_id: Long,
+        var message_id: Long,
         var message_type: Int,
         var sender_id: Long,
         var receiver_id: Long,
