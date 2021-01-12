@@ -64,10 +64,14 @@ class UseCaseNotificationHelper(private val context: Context, private val remote
                 ))
             val userId = pref.getAccount().idUser.toLong()
             //var contactId = 0L
-            val contactId = if(userId == senderId){
+            val contactId = if(typeDialog == 100){
                 receiverId
-            }else{
-                senderId
+            }else {
+                if (userId == senderId) {
+                    receiverId
+                } else {
+                    senderId
+                }
             }
             val notificationCount = notificationDao.getNotificationChats(contactId) + 1
             notificationDao.setNotificationChats(ChatsNotification(contactId, notificationCount))
