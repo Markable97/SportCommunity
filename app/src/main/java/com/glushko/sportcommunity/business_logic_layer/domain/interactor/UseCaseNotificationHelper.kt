@@ -83,6 +83,7 @@ class UseCaseNotificationHelper(private val context: Context, private val remote
             intent.putExtra(TYPE_OPEN, OPEN_DIALOG)
             intent.putExtra(TYPE_DIALOG, typeDialog)
             intent.putExtra(ApiService.PARAM_USER_ID, contactId)
+            intent.putExtra(ApiService.PARAM_NAME, contactName)
             createNotification("Сообщение от $contactName", message, intent)
         }
     }

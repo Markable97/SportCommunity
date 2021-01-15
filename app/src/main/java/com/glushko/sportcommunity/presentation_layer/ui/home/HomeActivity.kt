@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -31,7 +32,7 @@ import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.NotificationDrawerViewModel
 import kotlinx.android.synthetic.main.home_activity.*
 import kotlinx.android.synthetic.main.navigation.*
-import kotlinx.android.synthetic.main.toolbar.*
+//import kotlinx.android.synthetic.main.toolbar.*
 
 
 class HomeActivity :  AppCompatActivity() {
@@ -47,6 +48,8 @@ class HomeActivity :  AppCompatActivity() {
     }
 
 
+    lateinit var toolbar: Toolbar
+
     lateinit var model: AccountViewModel
     //lateinit var dataLogin: LiveData<Register.Params>
     lateinit var modelNotification: NotificationDrawerViewModel
@@ -59,20 +62,32 @@ class HomeActivity :  AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(contentId)
         //setSupportActionBar(toolbar)
-
+        toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.title = "Профиль"
+
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         model.getLoginData()
         val typeOpenFragment: String? = intent.getStringExtra(UseCaseNotificationHelper.TYPE_OPEN)
         when(typeOpenFragment){
-            UseCaseNotificationHelper.OPEN_NOTIFICATIONS ->openNotificationFragment()
-            UseCaseNotificationHelper.OPEN_FRIENDS -> openFriendsFragment()
+            UseCaseNotificationHelper.OPEN_NOTIFICATIONS ->{
+                supportActionBar?.title = btnNotificationText.text
+                openNotificationFragment()
+            }
+            UseCaseNotificationHelper.OPEN_FRIENDS -> {
+                supportActionBar?.title = btnFriendsText.text
+                openFriendsFragment()
+            }
             UseCaseNotificationHelper.OPEN_DIALOG -> {
                 val userId: Long = intent.getLongExtra(ApiService.PARAM_USER_ID, 0)
                 val typeDialog = intent.getIntExtra(UseCaseNotificationHelper.TYPE_DIALOG, 0)
-                openDialogFragment(userId, type_dialog = typeDialog)
+                val contactName = intent.getStringExtra(ApiService.PARAM_NAME)
+                supportActionBar?.title = contactName
+                openDialogFragment(userId, type_dialog = typeDialog, contact_name = contactName)
             }
             else ->{
                 model.getLoginData()
@@ -96,8 +111,7 @@ class HomeActivity :  AppCompatActivity() {
 
 
 
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
 
         val toggle = object : ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
@@ -226,7 +240,7 @@ class HomeActivity :  AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(fragmentContainer, frgmentChats).commit()
     }
 
-    private fun openDialogFragment(id_user: Long, count_notification: Int = 0, type_dialog:Int) {
+    private fun openDialogFragment(id_user: Long, count_notification: Int = 0, type_dialog:Int, contact_name: String = "") {
         supportFragmentManager.beginTransaction().add(fragmentContainer,DialogFragment(id_user, count_notification, type_dialog)).commit()
     }
 
