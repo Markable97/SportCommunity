@@ -10,7 +10,7 @@ import com.glushko.sportcommunity.R
 import kotlinx.android.synthetic.main.activity_team_profile.*
 
 class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, private val leaderId: Long, private val leaderName: String,
-                   private val isLeader: Boolean, val callbackActivity: Callback) : Fragment() {
+                   private val isLeader: Boolean, private val teamId: Int, val callbackActivity: Callback) : Fragment() {
 
     val layoutId: Int = R.layout.activity_team_profile
     val bitmap: Bitmap = bitmap
@@ -39,6 +39,10 @@ class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, pr
             }
         }
 
+        team_profile_btn_chat.setOnClickListener {
+            callbackActivity.onClickUpperLeftButton(teamName, teamId)
+        }
+
         btn_team_squad.setOnClickListener {
             callbackActivity.onClickSquad(teamName, isLeader)
         }
@@ -47,7 +51,7 @@ class TeamFragment(teamName: String, teamDescription: String, bitmap: Bitmap, pr
 
     interface Callback{
         fun onClickUpperRightButton(idLeader: Long, leaderName: String)
-
         fun onClickSquad(team_name: String, isLeader: Boolean)
+        fun onClickUpperLeftButton(teamName: String, teamId: Int)
     }
 }

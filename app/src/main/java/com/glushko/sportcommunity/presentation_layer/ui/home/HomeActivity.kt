@@ -270,7 +270,7 @@ class HomeActivity :  AppCompatActivity() {
         var isLeader = false
         if(userId == leader_id)
             isLeader = true
-        val fragmentTeamProfile = TeamFragment(teamName, teamDesc, bitmap, leader_id.toLong(), leader_name, isLeader, object : TeamFragment.Callback{
+        val fragmentTeamProfile = TeamFragment(teamName, teamDesc, bitmap, leader_id.toLong(), leader_name, isLeader, team_id, object : TeamFragment.Callback{
             override fun onClickUpperRightButton(idLeeader: Long, leaderName: String) {
                 toolbar.title = leaderName
                 openDialogFragment(idLeeader, type_dialog = 0)
@@ -279,6 +279,10 @@ class HomeActivity :  AppCompatActivity() {
             override fun onClickSquad(team_name: String, isLeader: Boolean) {
                 toolbar.title = "Состав"
                 openSquadFragment(team_id, team_name, isLeader)
+            }
+
+            override fun onClickUpperLeftButton(teamName: String, teamId: Int) {
+                openDialogFragment(teamId.toLong(), type_dialog = 1, contact_name = teamName )
             }
 
         })
