@@ -240,4 +240,17 @@ class UseCaseRepository {
     fun getNotification(user_id: Long, token: String) : Observable<ResponseNotifications>{
         return NetworkService.makeNetworkServiceRxJava().getNotifications(Notification.createMap(user_id, token))
     }
+
+    fun getEventsTeam(user_id: Long, team_id: Long, token: String): Observable<ResponseEventsTeam>{
+        return NetworkService.makeNetworkServiceRxJava().getEventsTeam(Event.createMap(user_id, team_id, token))
+    }
+
+    fun deleteEvent(user_id: Long, event_id: Long, token: String): Observable<BaseResponse>{
+        return NetworkService.makeNetworkServiceRxJava().deleteEvent(Event.createMap(token, user_id, event_id))
+    }
+
+    fun createEventTeam(user_id: Long, token: String, team_id: Long, team_name: String, event_name: String, event_date: String?, event_location: String?,
+                        positive_name: String?, negative_name: String?, neutral_name: String?): Observable<BaseResponse>{
+        return NetworkService.makeNetworkServiceRxJava().createEvent(Event.createMap(user_id, token, team_id, team_name, event_name, event_date, event_location, positive_name, negative_name, neutral_name))
+    }
 }

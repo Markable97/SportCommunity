@@ -29,6 +29,9 @@ interface ApiService {
         const val GET_SQUAD_TEAM_LIST = "SquadTeamList"
         const val COMPARE_USERS = "CompareUsers"
         const val GET_NOTIFICATIONS = "GetNotifications"
+        const val GET_EVENTS_TEAM = "GetEventsTeam"
+        const val CREATE_EVENT = "CreateEvent"
+        const val DELETE_EVENT = "DeleteEvent"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -51,6 +54,13 @@ interface ApiService {
         const val PARAM_TYPE_FIND_USER = "type_find"
         const val PARAM_TYPE_COMPARE = "type_compare"
         const val PARAM_TYPE_INVITATION = "type_invitation"
+        const val PARAM_EVENT_ID = "event_id"
+        const val PARAM_EVENT_NAME = "event_name"
+        const val PARAM_EVENT_DATE = "event_date"
+        const val PARAM_EVENT_LOCATION = "event_location"
+        const val PARAM_EVENT_POSITIVE_NAME = "positive_name"
+        const val PARAM_EVENT_NEGATIVE_NAME = "negative_name"
+        const val PARAM_EVENT_NEUTRAL_NAME = "neutral_name"
     }
 
     @FormUrlEncoded
@@ -137,4 +147,16 @@ interface ApiService {
     @FormUrlEncoded
     @POST(GET_NOTIFICATIONS)
     fun getNotifications(@FieldMap param: Map<String, String>): Observable<ResponseNotifications>
+
+    @FormUrlEncoded
+    @POST(GET_EVENTS_TEAM)
+    fun getEventsTeam(@FieldMap param: Map<String, String>): Observable<ResponseEventsTeam>
+
+    @FormUrlEncoded
+    @POST(CREATE_EVENT)
+    fun createEvent(@FieldMap param: Map<String, String>): Observable<BaseResponse>
+
+    @FormUrlEncoded
+    @POST(DELETE_EVENT)
+    fun deleteEvent(@FieldMap param: Map<String, String>): Observable<BaseResponse>
 }
