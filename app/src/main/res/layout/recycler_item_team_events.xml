@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/lightGrey"
+    android:padding="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="5dp"
+        app:cardMaxElevation="5dp"
+        app:cardPreventCornerOverlap="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/tv_event_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="5dp"
+                android:text="TextView"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/btn_delete_event"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="ФК Восход - Лицей" />
+
+            <ImageButton
+                android:id="@+id/btn_delete_event"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="7dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_close_black_24dp" />
+
+            <TextView
+                android:id="@+id/tv_event_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="@+id/tv_event_name"
+                app:layout_constraintStart_toStartOf="@+id/tv_event_name"
+                app:layout_constraintTop_toBottomOf="@+id/tv_event_name"
+                tools:text="28.01.2021 22:00" />
+
+            <TextView
+                android:id="@+id/tv_event_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="@+id/tv_event_date"
+                app:layout_constraintStart_toStartOf="@+id/tv_event_date"
+                app:layout_constraintTop_toBottomOf="@+id/tv_event_date"
+                tools:text="Спартак-1" />
+
+            <ProgressBar
+                android:id="@+id/pb_positive"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/rb_positive_choice"
+                app:layout_constraintEnd_toEndOf="@+id/tv_event_location"
+                app:layout_constraintStart_toEndOf="@+id/rb_positive_choice"
+                app:layout_constraintTop_toBottomOf="@+id/tv_positive_name" />
+
+            <TextView
+                android:id="@+id/tv_positive_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/rb_positive_choice"
+                app:layout_constraintTop_toTopOf="@+id/rb_positive_choice"
+                tools:text="Да" />
+
+            <TextView
+                android:id="@+id/tv_cnt_positive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="TextView"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="@+id/pb_positive"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/pb_positive"
+                app:layout_constraintTop_toTopOf="@+id/pb_positive"
+                tools:text="10" />
+
+            <RadioButton
+                android:id="@+id/rb_positive_choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintStart_toStartOf="@+id/tv_event_location"
+                app:layout_constraintTop_toBottomOf="@+id/tv_event_location"
+                tools:text=" " />
+
+            <TextView
+                android:id="@+id/tv_negative_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/rb_negative_choice"
+                app:layout_constraintTop_toTopOf="@+id/rb_negative_choice"
+                tools:text="Нет" />
+
+            <RadioButton
+                android:id="@+id/rb_negative_choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintStart_toStartOf="@+id/rb_positive_choice"
+                app:layout_constraintTop_toBottomOf="@+id/pb_positive"
+                tools:text=" " />
+
+            <ProgressBar
+                android:id="@+id/pb_negative"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/rb_negative_choice"
+                app:layout_constraintEnd_toEndOf="@+id/pb_positive"
+                app:layout_constraintStart_toEndOf="@+id/rb_negative_choice"
+                app:layout_constraintTop_toBottomOf="@+id/tv_negative_name" />
+
+            <TextView
+                android:id="@+id/tv_cnt_negative"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="@+id/pb_negative"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/pb_negative"
+                app:layout_constraintTop_toTopOf="@+id/pb_negative"
+                tools:text="5" />
+
+            <TextView
+                android:id="@+id/tv_neutral_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/rb_neutral_choice"
+                app:layout_constraintTop_toTopOf="@+id/rb_neutral_choice"
+                tools:text="Под вопросом" />
+
+            <RadioButton
+                android:id="@+id/rb_neutral_choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintStart_toStartOf="@+id/rb_negative_choice"
+                app:layout_constraintTop_toBottomOf="@+id/pb_negative"
+                tools:text=" " />
+
+            <ProgressBar
+                android:id="@+id/pb_neutral"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/rb_neutral_choice"
+                app:layout_constraintEnd_toEndOf="@+id/pb_negative"
+                app:layout_constraintStart_toEndOf="@+id/rb_neutral_choice"
+                app:layout_constraintTop_toBottomOf="@+id/tv_neutral_name" />
+
+            <TextView
+                android:id="@+id/tv_cnt_neutral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="@+id/pb_neutral"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/pb_neutral"
+                app:layout_constraintTop_toTopOf="@+id/pb_neutral"
+                tools:text="2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

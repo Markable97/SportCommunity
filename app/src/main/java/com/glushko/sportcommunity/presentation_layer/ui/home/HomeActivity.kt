@@ -28,6 +28,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.profile.ProfileFragment
 import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.squad.SquadFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.TeamFragment
+import com.glushko.sportcommunity.presentation_layer.ui.team.events.EventsFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.NotificationDrawerViewModel
 import kotlinx.android.synthetic.main.home_activity.*
@@ -285,8 +286,19 @@ class HomeActivity :  AppCompatActivity() {
                 openDialogFragment(teamId.toLong(), type_dialog = 1, contact_name = teamName )
             }
 
+            override fun onClickEvents(team_id: Long, team_name: String) {
+                openSquadEvents(team_id, team_name)
+            }
+
         })
         supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).commit()
+    }
+
+    private fun openSquadEvents(team_id: Long, team_name: String){
+        val squadEventsFragment = EventsFragment(team_id, team_name)
+        supportFragmentManager.beginTransaction().replace(fragmentContainer,
+            squadEventsFragment
+        ).commit()
     }
 
     private fun openSquadFragment(team_id: Int, team_name: String, isLeader: Boolean){
