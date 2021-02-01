@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.glushko.sportcommunity.business_logic_layer.domain.Squad
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
 import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseEventsTeam
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseSquadTeamList
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,6 +22,8 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
     val liveDataSquadList: MutableLiveData<MutableList<Squad.Params>> = MutableLiveData()
 
     val liveDataCompare: MutableLiveData<BaseResponse> = MutableLiveData()
+
+    val liveDataEventsList: MutableLiveData<ResponseEventsTeam> = MutableLiveData()
 
     fun getSquadList(team_id: Int){
         val pref = SharedPrefsManager(getApplication<Application>().
@@ -58,4 +61,25 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
         println("Ошибка подключения ${err.message}")
         liveDataCompare.postValue(BaseResponse(0, err.localizedMessage))
     }
+
+    fun getEventsList(id_team: Long){
+        val pref = SharedPrefsManager(getApplication<Application>().getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
+        val idUser = pref.getAccount().idUser.toLong()
+        val token = pref.getToken()
+        myCompositeDisposable.add(
+            useCaseRepository.getEventsTeam(team_id = id_team, token = token, user_id = idUser)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handlerResponseEventsList, this::handlerErrorEvents)
+        )
+    }
+
+    private fun handlerResponseEventsList(responseServer: ResponseEventsTeam){
+        liveDataEventsList.postValue(responseServer)
+    }
+
+    private fun handlerErrorEvents(err: Throwable){
+        liveDataEventsList.postValue(ResponseEventsTeam(0, err.localizedMessage))
+    }
+
 }

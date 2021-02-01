@@ -295,6 +295,7 @@ class HomeActivity :  AppCompatActivity() {
     }
 
     private fun openSquadEvents(team_id: Long, team_name: String){
+        toolbar.title = "События"
         val squadEventsFragment = EventsFragment(team_id, team_name)
         supportFragmentManager.beginTransaction().replace(fragmentContainer,
             squadEventsFragment
