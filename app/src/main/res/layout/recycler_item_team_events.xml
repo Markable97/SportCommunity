@@ -50,7 +50,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="TextView"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="@+id/tv_event_name"
                 app:layout_constraintStart_toStartOf="@+id/tv_event_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_event_name"
@@ -60,30 +60,35 @@
                 android:id="@+id/tv_event_location"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="@+id/tv_event_date"
                 app:layout_constraintStart_toStartOf="@+id/tv_event_date"
                 app:layout_constraintTop_toBottomOf="@+id/tv_event_date"
-                tools:text="Спартак-1" />
+                tools:text="Спартак-1"
+                tools:visibility="visible" />
 
             <ProgressBar
                 android:id="@+id/pb_positive"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/rb_positive_choice"
                 app:layout_constraintEnd_toEndOf="@+id/tv_event_location"
                 app:layout_constraintStart_toEndOf="@+id/rb_positive_choice"
-                app:layout_constraintTop_toBottomOf="@+id/tv_positive_name" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_positive_name"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_positive_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/rb_positive_choice"
                 app:layout_constraintTop_toTopOf="@+id/rb_positive_choice"
-                tools:text="Да" />
+                tools:text="Да"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_cnt_positive"
@@ -92,38 +97,46 @@
                 android:layout_marginEnd="15dp"
                 android:text="TextView"
                 android:textAlignment="center"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/pb_positive"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/pb_positive"
                 app:layout_constraintTop_toTopOf="@+id/pb_positive"
-                tools:text="10" />
+                tools:text="10"
+                tools:visibility="visible" />
 
             <RadioButton
                 android:id="@+id/rb_positive_choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/tv_event_location"
                 app:layout_constraintTop_toBottomOf="@+id/tv_event_location"
-                tools:text=" " />
+                tools:text=" "
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_negative_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/rb_negative_choice"
                 app:layout_constraintTop_toTopOf="@+id/rb_negative_choice"
-                tools:text="Нет" />
+                tools:text="Нет"
+                tools:visibility="visible" />
 
             <RadioButton
                 android:id="@+id/rb_negative_choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/rb_positive_choice"
                 app:layout_constraintTop_toBottomOf="@+id/pb_positive"
-                tools:text=" " />
+                tools:text=" "
+                tools:visibility="visible" />
 
             <ProgressBar
                 android:id="@+id/pb_negative"
@@ -133,7 +146,9 @@
                 app:layout_constraintBottom_toBottomOf="@+id/rb_negative_choice"
                 app:layout_constraintEnd_toEndOf="@+id/pb_positive"
                 app:layout_constraintStart_toEndOf="@+id/rb_negative_choice"
-                app:layout_constraintTop_toBottomOf="@+id/tv_negative_name" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_negative_name"
+                tools:visibility="visible"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_cnt_negative"
@@ -141,39 +156,47 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
                 android:text="TextView"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/pb_negative"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/pb_negative"
                 app:layout_constraintTop_toTopOf="@+id/pb_negative"
-                tools:text="5" />
+                tools:text="5"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_neutral_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/rb_neutral_choice"
                 app:layout_constraintTop_toTopOf="@+id/rb_neutral_choice"
-                tools:text="Под вопросом" />
+                tools:text="Под вопросом"
+                tools:visibility="visible" />
 
             <RadioButton
                 android:id="@+id/rb_neutral_choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/rb_negative_choice"
                 app:layout_constraintTop_toBottomOf="@+id/pb_negative"
-                tools:text=" " />
+                tools:text=" "
+                tools:visibility="visible" />
 
             <ProgressBar
                 android:id="@+id/pb_neutral"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/rb_neutral_choice"
                 app:layout_constraintEnd_toEndOf="@+id/pb_negative"
                 app:layout_constraintStart_toEndOf="@+id/rb_neutral_choice"
-                app:layout_constraintTop_toBottomOf="@+id/tv_neutral_name" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_neutral_name"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_cnt_neutral"
@@ -181,11 +204,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
                 android:text="TextView"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/pb_neutral"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/pb_neutral"
                 app:layout_constraintTop_toTopOf="@+id/pb_neutral"
-                tools:text="2" />
+                tools:text="2"
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

@@ -11,7 +11,7 @@ class Event {
         val event_date: String?,
         val event_location: String?,
         val positive_name: String?,
-        val pisitive_count: Int,
+        val positive_count: Int,
         val negative_name: String?,
         val negative_count: Int,
         val neutral_name: String?,

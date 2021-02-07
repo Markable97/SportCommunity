@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Event
 import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
+import kotlinx.android.synthetic.main.fragment_team_events_content_main.*
 
 class EventsFragment(private val team_id: Long, private val team_name: String): Fragment() {
 
@@ -19,6 +22,8 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
     lateinit var modelSquad: SquadViewModel
 
     var eventsList: MutableList<Event.Params> = mutableListOf()
+
+    var adapter: EventsListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +41,7 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
             println("Live data squad list ${it.success} ${it.message}")
             if(it.success == 1){
                 eventsList = it.events
+                adapter?.setList(eventsList)
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
@@ -46,6 +52,12 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
         super.onViewCreated(view, savedInstanceState)
 
         modelSquad.getEventsList(team_id)
+
+        adapter = EventsListAdapter()
+
+        events_team_recycler.adapter = adapter
+        events_team_recycler.layoutManager = LinearLayoutManager(activity)
+
     }
 
 }
