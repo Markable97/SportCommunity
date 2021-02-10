@@ -59,7 +59,7 @@ class SquadFragment(private val team_id: Int, private val team_name: String, pri
             adapter?.setList(squadList)
         })
 
-        modelSquad.liveDataCompare.observe(this, Observer {
+        modelSquad.liveDataBaseResponse.observe(this, Observer {
             println("Live date compare ${it.message}")
             if(it.success == 1){
                 if(type_compare == 2){

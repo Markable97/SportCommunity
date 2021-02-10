@@ -19,18 +19,19 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
     private var myCompositeDisposable: CompositeDisposable = CompositeDisposable()
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
 
+    private val pref = SharedPrefsManager(getApplication<Application>().getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
+    private val idUser = pref.getAccount().idUser.toLong()
+    private val token = pref.getToken()
+
     val liveDataSquadList: MutableLiveData<MutableList<Squad.Params>> = MutableLiveData()
 
-    val liveDataCompare: MutableLiveData<BaseResponse> = MutableLiveData()
+    val liveDataBaseResponse: MutableLiveData<BaseResponse> = MutableLiveData()
 
     val liveDataEventsList: MutableLiveData<ResponseEventsTeam> = MutableLiveData()
 
     fun getSquadList(team_id: Int){
-        val pref = SharedPrefsManager(getApplication<Application>().
-            getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
-        val idUser = pref.getAccount().idUser
         myCompositeDisposable.add(
-            useCaseRepository.getSquadList( team_id, idUser.toLong())
+            useCaseRepository.getSquadList( team_id, idUser)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handlerResponseSquadList, this::handleErrorSquadList)
@@ -42,7 +43,7 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
             useCaseRepository.compareUsers(type_compare,team_id, user_id, player_id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handlerResponseCompare, this::handlerErrorCompare)
+                .subscribe(this::handlerResponseBaseResponse, this::handlerErrorBaseResponse)
         )
     }
 
@@ -54,18 +55,15 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
         liveDataSquadListResponse.postValue(ResponseSquadTeamList(0, err.localizedMessage))
         println("ошибка поиска ${err.message}")
     }
-    private fun handlerResponseCompare(responseServer: BaseResponse){
-        liveDataCompare.postValue(responseServer)
+    private fun handlerResponseBaseResponse(responseServer: BaseResponse){
+        liveDataBaseResponse.postValue(responseServer)
     }
-    private fun handlerErrorCompare(err: Throwable){
+    private fun handlerErrorBaseResponse(err: Throwable){
         println("Ошибка подключения ${err.message}")
-        liveDataCompare.postValue(BaseResponse(0, err.localizedMessage))
+        liveDataBaseResponse.postValue(BaseResponse(0, err.localizedMessage))
     }
 
     fun getEventsList(id_team: Long){
-        val pref = SharedPrefsManager(getApplication<Application>().getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
-        val idUser = pref.getAccount().idUser.toLong()
-        val token = pref.getToken()
         myCompositeDisposable.add(
             useCaseRepository.getEventsTeam(team_id = id_team, token = token, user_id = idUser)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -81,5 +79,15 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
     private fun handlerErrorEvents(err: Throwable){
         liveDataEventsList.postValue(ResponseEventsTeam(0, err.localizedMessage))
     }
+
+    fun deleteEvent(id_event: Long){
+        myCompositeDisposable.add(
+            useCaseRepository.deleteEvent(idUser, id_event, token)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handlerResponseBaseResponse, this::handlerErrorBaseResponse)
+        )
+    }
+
 
 }

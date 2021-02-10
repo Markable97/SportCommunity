@@ -25,6 +25,8 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
 
     var adapter: EventsListAdapter? = null
 
+    var positionDeleteEvent: Int? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,6 +48,17 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
             }
         })
+
+        modelSquad.liveDataBaseResponse.observe(this, Observer {
+            println("Live date delete ${it.message}")
+            if(it.success == 1){
+                Toast.makeText(activity, "delete event", Toast.LENGTH_SHORT).show()
+                eventsList.removeAt(positionDeleteEvent!!)
+                adapter?.deleteEvent(positionDeleteEvent!!, eventsList)
+            }else{
+                Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +66,13 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
 
         modelSquad.getEventsList(team_id)
 
-        adapter = EventsListAdapter()
+        adapter = EventsListAdapter(callback = object :EventsListAdapter.Callback{
+            override fun deleteEvent(idEvent: Long, position: Int) {
+                modelSquad.deleteEvent(idEvent)
+                positionDeleteEvent = position
+            }
+
+        })
 
         events_team_recycler.adapter = adapter
         events_team_recycler.layoutManager = LinearLayoutManager(activity)

@@ -1,7 +1,6 @@
 package com.glushko.sportcommunity.presentation_layer.ui.team.squad
 
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +41,7 @@ class CompareUserDialog(var squadList: MutableList<Squad.Params>, val team_id: I
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         modelSquad = ViewModelProviders.of(this).get(SquadViewModel::class.java)
-        modelSquad.liveDataCompare.observe(this, Observer {
+        modelSquad.liveDataBaseResponse.observe(this, Observer {
             if(it.success == 1){
                 changeMainSquadLists()
                 userLinked = null

@@ -3,16 +3,14 @@ package com.glushko.sportcommunity.presentation_layer.ui.team.events
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.RadioButton
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Event
-import org.w3c.dom.Text
+import com.realpacific.clickshrinkeffect.applyClickShrink
 
-class EventsListAdapter(private var list: MutableList<Event.Params> = mutableListOf()) : RecyclerView.Adapter<EventsListAdapter.EventsListViewHolder>() {
+
+class EventsListAdapter(private var list: MutableList<Event.Params> = mutableListOf(), val callback: Callback) : RecyclerView.Adapter<EventsListAdapter.EventsListViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsListViewHolder {
@@ -29,6 +27,8 @@ class EventsListAdapter(private var list: MutableList<Event.Params> = mutableLis
 
 
     inner class EventsListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+
+        private val btnDeleteEvent: ImageButton = itemView.findViewById(R.id.btn_delete_event)
 
         private val tvEventName: TextView = itemView.findViewById(R.id.tv_event_name)
         private val tvEventDate: TextView = itemView.findViewById(R.id.tv_event_date)
@@ -51,9 +51,14 @@ class EventsListAdapter(private var list: MutableList<Event.Params> = mutableLis
 
 
         fun bind(item: Event.Params){
+            btnDeleteEvent.applyClickShrink()
             tvEventName.text = item.event_name
             analysisEvent(item)
             analysisUserChoice(item)
+
+            btnDeleteEvent.setOnClickListener {
+                callback.deleteEvent(item.event_id, absoluteAdapterPosition)
+            }
         }
 
         private fun analysisUserChoice(event: Event.Params){
@@ -104,9 +109,18 @@ class EventsListAdapter(private var list: MutableList<Event.Params> = mutableLis
         }
     }
 
+    internal fun deleteEvent(position: Int, list: MutableList<Event.Params>){
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, list.size)
+    }
+
     internal fun setList(list: MutableList<Event.Params>){
         this.list = list
         notifyDataSetChanged()
+    }
+
+    interface Callback{
+        fun deleteEvent(idEvent: Long, position: Int)
     }
 }
 
