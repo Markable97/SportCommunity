@@ -16,7 +16,8 @@ class Event {
         val negative_count: Int,
         val neutral_name: String?,
         val neutral_count: Int,
-        val event_id: Long
+        val event_id: Long,
+        val user_choice: String
     )
 
     companion object{

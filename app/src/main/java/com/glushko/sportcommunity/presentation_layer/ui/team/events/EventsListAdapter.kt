@@ -53,6 +53,15 @@ class EventsListAdapter(private var list: MutableList<Event.Params> = mutableLis
         fun bind(item: Event.Params){
             tvEventName.text = item.event_name
             analysisEvent(item)
+            analysisUserChoice(item)
+        }
+
+        private fun analysisUserChoice(event: Event.Params){
+            when(event.user_choice){
+                "positive" -> rbPositiveChoice.isChecked = true
+                "negative" -> rbNegativeChoice.isChecked = true
+                "neutral" -> rbNeutralChoice.isChecked = true
+            }
         }
 
         private fun analysisEvent(event: Event.Params){
