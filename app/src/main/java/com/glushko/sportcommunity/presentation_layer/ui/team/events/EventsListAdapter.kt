@@ -56,6 +56,9 @@ class EventsListAdapter(private var list: MutableList<Event.Params> = mutableLis
             analysisEvent(item)
             analysisUserChoice(item)
 
+            if(item.is_leader == 0){
+                btnDeleteEvent.visibility = View.INVISIBLE
+            }
             btnDeleteEvent.setOnClickListener {
                 callback.deleteEvent(item.event_id, absoluteAdapterPosition)
             }
