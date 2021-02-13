@@ -72,6 +72,15 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
+    fun modifyChoice(event_id: Long, choice_mode: String, choice:String){
+        myCompositeDisposable.add(
+            useCaseRepository.modifyChoiceEvent(idUser, token, event_id, choice_mode, choice)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handlerResponseBaseResponse, this::handlerErrorBaseResponse)
+        )
+    }
+
     private fun handlerResponseEventsList(responseServer: ResponseEventsTeam){
         liveDataEventsList.postValue(responseServer)
     }

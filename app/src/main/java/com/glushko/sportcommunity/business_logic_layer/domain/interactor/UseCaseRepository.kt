@@ -253,4 +253,8 @@ class UseCaseRepository {
                         positive_name: String?, negative_name: String?, neutral_name: String?): Observable<BaseResponse>{
         return NetworkService.makeNetworkServiceRxJava().createEvent(Event.createMap(user_id, token, team_id, team_name, event_name, event_date, event_location, positive_name, negative_name, neutral_name))
     }
+
+    fun modifyChoiceEvent(user_id: Long, token: String, event_id: Long, choice_mode: String, choice: String): Observable<BaseResponse>{
+        return NetworkService.makeNetworkServiceRxJava().modifyChoiceEvent(Event.createMap(user_id, token, event_id, choice_mode, choice))
+    }
 }

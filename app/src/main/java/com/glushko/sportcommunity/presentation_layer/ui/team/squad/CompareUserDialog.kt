@@ -21,7 +21,7 @@ class CompareUserDialog(var squadList: MutableList<Squad.Params>, val team_id: I
 
     companion object{
 
-        private const val KEY_SQUAD = "KEY_SQUAD"
+        const val TAG = "KEY_SQUAD"
 
         fun newInstance(squadList: MutableList<Squad.Params>, team_id: Int): CompareUserDialog{
             return CompareUserDialog(squadList, team_id)

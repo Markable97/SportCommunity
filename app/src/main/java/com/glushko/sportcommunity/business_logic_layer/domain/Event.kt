@@ -11,13 +11,13 @@ class Event {
         val event_date: String?,
         val event_location: String?,
         val positive_name: String?,
-        val positive_count: Int,
+        var positive_count: Int,
         val negative_name: String?,
-        val negative_count: Int,
+        var negative_count: Int,
         val neutral_name: String?,
-        val neutral_count: Int,
+        var neutral_count: Int,
         val event_id: Long,
-        val user_choice: String,
+        var user_choice: String,
         val is_leader: Int
     )
 
@@ -50,6 +50,16 @@ class Event {
             positive_name?.let { map[ApiService.PARAM_EVENT_POSITIVE_NAME] = it }
             negative_name?.let { map[ApiService.PARAM_EVENT_NEGATIVE_NAME] = it }
             neutral_name?.let { map[ApiService.PARAM_EVENT_NEUTRAL_NAME] = it }
+            return map
+        }
+
+        fun createMap(user_id: Long, token: String, event_id: Long, mode_choice:String, choice:String): Map<String, String>{
+            val map = HashMap<String, String>()
+            map[ApiService.PARAM_USER_ID] = user_id.toString()
+            map[ApiService.PARAM_TOKEN] = token
+            map[ApiService.PARAM_EVENT_ID] = event_id.toString()
+            map[ApiService.PARAM_CHOICE_MODE_EVENT] = mode_choice
+            map[ApiService.PARAM_EVENT_CHOICE] = choice
             return map
         }
     }

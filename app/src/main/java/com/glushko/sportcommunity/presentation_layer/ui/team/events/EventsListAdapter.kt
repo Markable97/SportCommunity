@@ -55,16 +55,72 @@ class EventsListAdapter(private var list: MutableList<Event.Params> = mutableLis
             tvEventName.text = item.event_name
             analysisEvent(item)
             analysisUserChoice(item)
-
+            val choice = analysisRadioButton()
             if(item.is_leader == 0){
                 btnDeleteEvent.visibility = View.INVISIBLE
             }
             btnDeleteEvent.setOnClickListener {
-                callback.deleteEvent(item.event_id, absoluteAdapterPosition)
+                callback.onClickDeleteEvent(item.event_id, absoluteAdapterPosition)
+            }
+            rbPositiveChoice.setOnClickListener {
+                eventActions(item, "positive",choice)
+            }
+            rbNegativeChoice.setOnClickListener {
+                eventActions(item, "negative",choice)
+            }
+            rbNeutralChoice.setOnClickListener {
+                eventActions(item, "neutral", choice)
             }
         }
 
+        private fun eventActions(event: Event.Params, choiceButton: String, choice: String){
+
+            if(choice == "none"){
+                callback.onClickChoice(event/*.also {
+                    it.user_choice = choiceButton
+                    when(choiceButton){
+                        "positive" -> it.positive_count = it.positive_count + 1
+                        "negative" -> it.negative_count = it.negative_count + 1
+                        "neutral" -> it.neutral_count = it.neutral_count + 1
+                    }
+                }*/, absoluteAdapterPosition, "insert", choiceButton)
+            }else{
+                /*rbPositiveChoice.isChecked = false
+                rbNegativeChoice.isChecked = false
+                rbNeutralChoice.isChecked = false*/
+                /*val eventDop = event
+                eventDop.also {
+                    it.user_choice = "none"
+                    when(choice){
+                        "positive" -> it.positive_count = it.positive_count - 1
+                        "negative" -> it.negative_count = it.negative_count - 1
+                        "neutral" -> it.neutral_count = it.neutral_count- 1
+                    }
+                }*/
+                callback.onClickChoice(event, absoluteAdapterPosition, "delete", choice)
+
+            }
+        }
+
+        private fun analysisRadioButton():String{
+
+            if (rbPositiveChoice.isChecked){
+                return "positive"
+            }
+            if(rbNegativeChoice.isChecked){
+                return "negative"
+            }
+            if(rbNeutralChoice.isChecked){
+                return "negative"
+            }
+
+            return "none"
+        }
+
         private fun analysisUserChoice(event: Event.Params){
+            rbPositiveChoice.isChecked = false
+            rbNegativeChoice.isChecked = false
+            rbNeutralChoice.isChecked = false
             when(event.user_choice){
                 "positive" -> rbPositiveChoice.isChecked = true
                 "negative" -> rbNegativeChoice.isChecked = true
@@ -123,7 +179,8 @@ class EventsListAdapter(private var list: MutableList<Event.Params> = mutableLis
     }
 
     interface Callback{
-        fun deleteEvent(idEvent: Long, position: Int)
+        fun onClickDeleteEvent(idEvent: Long, position: Int)
+        fun onClickChoice(event: Event.Params, position: Int, choiceMode: String, choice: String)
     }
 }
 

@@ -32,6 +32,7 @@ interface ApiService {
         const val GET_EVENTS_TEAM = "GetEventsTeam"
         const val CREATE_EVENT = "CreateEvent"
         const val DELETE_EVENT = "DeleteEvent"
+        const val MODIFY_CHOICE_EVENT = "ModifyChoiceEvent"
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -61,6 +62,8 @@ interface ApiService {
         const val PARAM_EVENT_POSITIVE_NAME = "positive_name"
         const val PARAM_EVENT_NEGATIVE_NAME = "negative_name"
         const val PARAM_EVENT_NEUTRAL_NAME = "neutral_name"
+        const val PARAM_CHOICE_MODE_EVENT = "choice_mode_event"
+        const val PARAM_EVENT_CHOICE = "choice"
     }
 
     @FormUrlEncoded
@@ -159,4 +162,8 @@ interface ApiService {
     @FormUrlEncoded
     @POST(DELETE_EVENT)
     fun deleteEvent(@FieldMap param: Map<String, String>): Observable<BaseResponse>
+
+    @FormUrlEncoded
+    @POST(MODIFY_CHOICE_EVENT)
+    fun modifyChoiceEvent(@FieldMap param: Map<String, String>): Observable<BaseResponse>
 }

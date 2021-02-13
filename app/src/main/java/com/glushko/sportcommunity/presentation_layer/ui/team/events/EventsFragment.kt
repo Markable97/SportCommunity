@@ -1,10 +1,11 @@
 package com.glushko.sportcommunity.presentation_layer.ui.team.events
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -26,6 +27,9 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
     var adapter: EventsListAdapter? = null
 
     var positionDeleteEvent: Int? = null
+
+    var adapterPosition: Int? = null
+    var changeChoice: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,11 +56,47 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
         modelSquad.liveDataBaseResponse.observe(this, Observer {
             println("Live date delete ${it.message}")
             if(it.success == 1){
-                Toast.makeText(activity, "delete event", Toast.LENGTH_SHORT).show()
-                eventsList.removeAt(positionDeleteEvent!!)
-                adapter?.deleteEvent(positionDeleteEvent!!, eventsList)
+                when(it.message){
+                    "Event deleted" -> {
+                        Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+                        eventsList.removeAt(positionDeleteEvent!!)
+                        adapter?.deleteEvent(positionDeleteEvent!!, eventsList)
+                    }
+                    "Choice deleted" ->{
+                        adapterPosition?.let {position ->
+                            eventsList[position].also {event ->
+                                event.user_choice = "none"
+                                when(changeChoice!!){
+                                    "positive" -> event.positive_count = event.positive_count - 1
+                                    "negative" -> event.negative_count = event.negative_count - 1
+                                    "neutral" -> event.neutral_count = event.neutral_count - 1
+                                }
+                            }
+                            adapter?.setList(eventsList)
+                        }
+
+                        Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    "Choice inserted"->{
+                        Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+                        adapterPosition?.let {position ->
+                            eventsList[position].also {event ->
+                                  event.user_choice = changeChoice!!
+                                  when(changeChoice!!){
+                                      "positive" -> event.positive_count = event.positive_count + 1
+                                      "negative" -> event.negative_count = event.negative_count + 1
+                                      "neutral" -> event.neutral_count = event.neutral_count + 1
+                                  }
+                            }
+                            adapter?.setList(eventsList)
+                        }
+                    }
+
+                }
+
             }else{
                 Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+                adapter?.setList(eventsList)
             }
         })
     }
@@ -67,10 +107,30 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
         modelSquad.getEventsList(team_id)
 
         adapter = EventsListAdapter(callback = object :EventsListAdapter.Callback{
-            override fun deleteEvent(idEvent: Long, position: Int) {
+            override fun onClickDeleteEvent(idEvent: Long, position: Int) {
                 modelSquad.deleteEvent(idEvent)
                 positionDeleteEvent = position
             }
+
+            override fun onClickChoice(
+                event: Event.Params,
+                position: Int,
+                choiceMode: String,
+                choice: String
+            ) {
+                adapterPosition = position
+                changeChoice = choice
+                if(choiceMode == "insert"){
+                    modelSquad.modifyChoice(event.event_id, choiceMode, choice)
+                }else{
+                    val dialogReset = ResetChoiceDialog.newInstance(event.event_id, choice)
+                    dialogReset.setTargetFragment(this@EventsFragment, ResetChoiceDialog.TAG_INT)
+                    dialogReset.isCancelable = false
+                    val manager = parentFragmentManager
+                    dialogReset.show(manager, ResetChoiceDialog.TAG)
+                }
+            }
+
 
         })
 
@@ -78,5 +138,24 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
         events_team_recycler.layoutManager = LinearLayoutManager(activity)
 
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if(requestCode == 1){
+                if(requestCode == ResetChoiceDialog.TAG_INT){
+                    val result = data?.getStringExtra(ResetChoiceDialog.TAG)
+                    if(result == "OK"){
+                        val eventId = data.getLongExtra(ResetChoiceDialog.KEY1, 0)
+                        val choice = data.getStringExtra(ResetChoiceDialog.KEY2)
+                        modelSquad.modifyChoice(eventId, "delete",choice)
+                    }else{
+                        adapter?.setList(eventsList)
+                    }
+                }
+            }
+        }
+    }
+
 
 }
