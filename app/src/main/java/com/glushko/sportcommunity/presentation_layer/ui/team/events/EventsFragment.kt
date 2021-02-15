@@ -14,9 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Event
 import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
+import kotlinx.android.synthetic.main.fragment_team_events.*
 import kotlinx.android.synthetic.main.fragment_team_events_content_main.*
 
-class EventsFragment(private val team_id: Long, private val team_name: String): Fragment() {
+class EventsFragment(private val team_id: Long, private val team_name: String,  private val isLeader: Boolean): Fragment() {
 
     val layoutId: Int = R.layout.fragment_team_events
 
@@ -136,6 +137,16 @@ class EventsFragment(private val team_id: Long, private val team_name: String): 
 
         events_team_recycler.adapter = adapter
         events_team_recycler.layoutManager = LinearLayoutManager(activity)
+
+        if(isLeader){
+            fab_add_event.setOnClickListener {
+                val dialogCreateEvent = CreateEventDialog.newInstance()
+                val manager = childFragmentManager
+                dialogCreateEvent.show(manager, CreateEventDialog.TAG)
+            }
+        }else{
+            fab_add_event.visibility = View.GONE
+        }
 
     }
 

@@ -286,17 +286,17 @@ class HomeActivity :  AppCompatActivity() {
                 openDialogFragment(teamId.toLong(), type_dialog = 1, contact_name = teamName )
             }
 
-            override fun onClickEvents(team_id: Long, team_name: String) {
-                openSquadEvents(team_id, team_name)
+            override fun onClickEvents(team_id: Long, team_name: String, isLeader: Boolean) {
+                openSquadEvents(team_id, team_name, isLeader)
             }
 
         })
         supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).commit()
     }
 
-    private fun openSquadEvents(team_id: Long, team_name: String){
+    private fun openSquadEvents(team_id: Long, team_name: String, isLeader: Boolean){
         toolbar.title = "События"
-        val squadEventsFragment = EventsFragment(team_id, team_name)
+        val squadEventsFragment = EventsFragment(team_id, team_name, isLeader)
         supportFragmentManager.beginTransaction().replace(fragmentContainer,
             squadEventsFragment
         ).commit()
