@@ -23,6 +23,8 @@ class EventsFragment(private val team_id: Long, private val team_name: String,  
 
     lateinit var modelSquad: SquadViewModel
 
+    //private var dialogCreateEvent: CreateEventDialog? = null
+
     var eventsList: MutableList<Event.Params> = mutableListOf()
 
     var adapter: EventsListAdapter? = null
@@ -140,8 +142,9 @@ class EventsFragment(private val team_id: Long, private val team_name: String,  
 
         if(isLeader){
             fab_add_event.setOnClickListener {
-                val dialogCreateEvent = CreateEventDialog.newInstance()
-                val manager = childFragmentManager
+                val dialogCreateEvent = CreateEventDialog.newInstance(team_id, modelSquad.idUser, team_name)
+                dialogCreateEvent.setTargetFragment(this@EventsFragment, CreateEventDialog.TAG_INT)
+                val manager = parentFragmentManager
                 dialogCreateEvent.show(manager, CreateEventDialog.TAG)
             }
         }else{
@@ -152,9 +155,10 @@ class EventsFragment(private val team_id: Long, private val team_name: String,  
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        println("Events Fragment: onActivityResult")
         if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == 1){
-                if(requestCode == ResetChoiceDialog.TAG_INT){
+            when(requestCode){
+                ResetChoiceDialog.TAG_INT ->{
                     val result = data?.getStringExtra(ResetChoiceDialog.TAG)
                     if(result == "OK"){
                         val eventId = data.getLongExtra(ResetChoiceDialog.KEY1, 0)
@@ -162,6 +166,12 @@ class EventsFragment(private val team_id: Long, private val team_name: String,  
                         modelSquad.modifyChoice(eventId, "delete",choice)
                     }else{
                         adapter?.setList(eventsList)
+                    }
+                }
+                CreateEventDialog.TAG_INT ->{
+                    val result = data?.getStringExtra(CreateEventDialog.TAG)
+                    if (result == "UPDATE"){
+                        modelSquad.getEventsList(team_id)
                     }
                 }
             }

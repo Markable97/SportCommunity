@@ -4,22 +4,50 @@ import com.glushko.sportcommunity.data_layer.datasource.ApiService
 
 class Event {
     data class Params(
-        val user_id: Long,
-        val team_id: Long,
-        val team_name: String,
-        val event_name: String,
-        val event_date: String?,
-        val event_location: String?,
-        val positive_name: String?,
+        var user_id: Long,
+        var team_id: Long,
+        var team_name: String,
+        var event_name: String,
+        var event_date: String?,
+        var event_location: String?,
+        var positive_name: String?,
         var positive_count: Int,
         val negative_name: String?,
         var negative_count: Int,
-        val neutral_name: String?,
+        var neutral_name: String?,
         var neutral_count: Int,
-        val event_id: Long,
+        var event_id: Long,
         var user_choice: String,
-        val is_leader: Int
-    )
+        var is_leader: Int
+    ) {
+        constructor(
+            team_id: Long,
+            user_id: Long,
+            team_name: String,
+            event_name: String,
+            event_location: String?,
+            event_date: String?,
+            positive_name: String?,
+            negative_name: String?,
+            neutral_name: String?
+        ) : this(
+            user_id,
+            team_id,
+            team_name,
+            event_name,
+            event_date,
+            event_location,
+            positive_name,
+            0,
+            negative_name,
+            0,
+            neutral_name,
+            0,
+            0,
+            "",
+            0
+        )
+    }
 
     companion object{
         fun createMap(user_id: Long, team_id: Long, token: String): Map<String, String>{

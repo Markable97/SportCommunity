@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.glushko.sportcommunity.business_logic_layer.domain.Event
 import com.glushko.sportcommunity.business_logic_layer.domain.Squad
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
 import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
@@ -20,7 +21,7 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
     private val useCaseRepository: UseCaseRepository = UseCaseRepository()
 
     private val pref = SharedPrefsManager(getApplication<Application>().getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
-    private val idUser = pref.getAccount().idUser.toLong()
+    val idUser = pref.getAccount().idUser.toLong()
     private val token = pref.getToken()
 
     val liveDataSquadList: MutableLiveData<MutableList<Squad.Params>> = MutableLiveData()
@@ -92,6 +93,15 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteEvent(id_event: Long){
         myCompositeDisposable.add(
             useCaseRepository.deleteEvent(idUser, id_event, token)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handlerResponseBaseResponse, this::handlerErrorBaseResponse)
+        )
+    }
+
+    fun createEvent(event: Event.Params){
+        myCompositeDisposable.add(
+            useCaseRepository.createEventTeam(event.user_id, token, event.team_id, event.team_name, event.event_name, event.event_date, event.event_location, event.positive_name, event.negative_name, event.neutral_name )
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handlerResponseBaseResponse, this::handlerErrorBaseResponse)
