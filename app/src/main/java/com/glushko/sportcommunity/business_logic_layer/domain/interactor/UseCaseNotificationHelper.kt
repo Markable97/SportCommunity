@@ -127,13 +127,22 @@ class UseCaseNotificationHelper(private val context: Context, private val remote
         val type_invitation = remoteMessage.data["type_invitation"]?:""
         val team_id = remoteMessage.data["team_id"]?.toInt()?:0
         val team_name = remoteMessage.data["team_name"]?:""
-        val notification = Notification.Params(notification_id, type_invitation, team_id, team_name)
+        val event_name = remoteMessage.data["event_name"]?:""
+        val notification = Notification.Params(notification_id, type_invitation, team_id, team_name, event_name)
         when(type_invitation){
             "request" -> notificationDao.insertNotification(notification)
         }
+        var tittle = "Пришлащение в команду"
+        var message = "Команда $team_name хочет видеть Вас в своих рядах"
+        if (event_name != ""){
+            notificationDao.insertNotification(notification)
+            tittle = "Новое событие"
+            message = "У команды $team_name повяилось новое событие \"$event_name\""
+        }
+
         val intent = Intent(context, HomeActivity::class.java)
         intent.putExtra(TYPE_OPEN, OPEN_NOTIFICATIONS)
-        createNotification("Пришлащение в команду", "Команда $team_name хочет видеть Вас в своих рядах", intent)
+        createNotification(tittle, message, intent)
     }
 
 

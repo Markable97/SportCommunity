@@ -40,10 +40,19 @@ class NotificationsAdapter(private var list: MutableList<Notification.Params> = 
 
         fun bind(item: Notification.Params){
             itemView.context?.apply {
-                val rsStr = getString(R.string.message_invite_team)
-                val fsStr = String.format(rsStr, item.team_name)
-                val styleStr = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)  Html.fromHtml(fsStr, Html.FROM_HTML_MODE_LEGACY) else Html.fromHtml(fsStr)
-                tvTextNotification.text = styleStr
+                if(item.notification_type != "event"){
+                    val rsStr = getString(R.string.message_invite_team)
+                    val fsStr = String.format(rsStr, item.team_name)
+                    val styleStr = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)  Html.fromHtml(fsStr, Html.FROM_HTML_MODE_LEGACY) else Html.fromHtml(fsStr)
+                    tvTextNotification.text = styleStr
+                }else{
+                    val rsStr = getString(R.string.message_event_team)
+                    val fsStr = String.format(rsStr, item.team_name, item.event_name)
+                    val styleStr = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)  Html.fromHtml(fsStr, Html.FROM_HTML_MODE_LEGACY) else Html.fromHtml(fsStr)
+                    tvTextNotification.text = styleStr
+                    btnJoin.visibility = View.GONE
+                    btnReject.visibility = View.GONE
+                }
             }
             Glide.with(itemView.context)
                 .load(NetworkService.BASE_URL_IMAGE+item.team_name+".png")
@@ -55,6 +64,7 @@ class NotificationsAdapter(private var list: MutableList<Notification.Params> = 
             btnReject.setOnClickListener {
                 callback.onClickBtn(false, bindingAdapterPosition, item.team_id, item.team_name, item.notification_id)
             }
+
         }
     }
 

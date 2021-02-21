@@ -32,6 +32,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 "message" -> notificationHelper.addMessageInDatabase()
                 "friendship" -> notificationHelper.addFriendshipInDatabase()
                 "invitation in team" -> notificationHelper.addNotification()
+                "event" ->  notificationHelper.addNotification()
                 else -> println("Необработанное уведомление")
             }
 

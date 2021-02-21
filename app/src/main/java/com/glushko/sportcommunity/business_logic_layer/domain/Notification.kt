@@ -11,7 +11,8 @@ class Notification {
         val notification_id: Long,
         val notification_type: String, /*invitation in team or event*/
         val team_id: Int,
-        val team_name: String
+        val team_name: String,
+        val event_name: String?
     )
 
     companion object{

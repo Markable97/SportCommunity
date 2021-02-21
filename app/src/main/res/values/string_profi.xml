@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="message_invite_team">Команда &lt;b>%1$s&lt;/b> приглашает вступить в свои ряды</string>
+    <string name="message_event_team">У команды &lt;b>%1$s&lt;/b> появилось событиe &lt;b>%2$s&lt;/b> </string>
 </resources>
