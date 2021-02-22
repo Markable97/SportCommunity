@@ -36,7 +36,7 @@ import kotlinx.android.synthetic.main.navigation.*
 //import kotlinx.android.synthetic.main.toolbar.*
 
 
-class HomeActivity :  AppCompatActivity() {
+class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotificationFragment {
 
     val contentId = R.layout.home_activity
     val fragmentContainer = R.id.fragmentContainer
@@ -261,8 +261,13 @@ class HomeActivity :  AppCompatActivity() {
 
     private fun openNotificationFragment() {
         toolbar.title = btnNotificationText.text
-        btnNotification_notification.visibility = View.GONE
+        //btnNotification_notification.visibility = View.GONE
         supportFragmentManager.beginTransaction().replace(fragmentContainer, NotificationFragment()).commit()
+    }
+
+    private fun openTeamFragment(teamName: String, teamId: Long){
+        toolbar.title = teamName
+
     }
 
     private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String, team_id: Int){
@@ -341,6 +346,16 @@ class HomeActivity :  AppCompatActivity() {
         if (currentFocus != null) {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+    }
+
+    override fun onClickEvent(type_notification: String, team_id: Long, team_name: String, notification_id: Long) {
+        if(type_notification != "event"){
+            //открытие окна команды
+
+        }else{
+            //открытие окна события команды
+            openSquadEvents(team_id, team_name, false)
         }
     }
 }

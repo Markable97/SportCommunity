@@ -4,5 +4,5 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Notification
 
 class ResponseNotifications(success: Int,
                             message: String,
-                            val notifications: MutableList<Notification> = mutableListOf()
+                            val notifications: MutableList<Notification.Params> = mutableListOf()
 ): BaseResponse(success, message)

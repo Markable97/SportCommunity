@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Notification
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
+import com.tsuryo.swipeablerv.SwipeLeftRightCallback
 
 class NotificationsAdapter(private var list: MutableList<Notification.Params> = mutableListOf(), val callback: Callback): RecyclerView.Adapter<NotificationsAdapter.NotificationsViewHolder>(){
 
@@ -58,6 +59,9 @@ class NotificationsAdapter(private var list: MutableList<Notification.Params> = 
                 .load(NetworkService.BASE_URL_IMAGE+item.team_name+".png")
                 .placeholder(R.drawable.chatplaceholder)
                 .into(imageTeam)
+            itemView.setOnClickListener {
+                callback.onClickNotification(item.notification_type, item.team_id, item.team_name, item.notification_id)
+            }
             btnJoin.setOnClickListener {
                 callback.onClickBtn(true, bindingAdapterPosition, item.team_id, item.team_name, item.notification_id)
             }
@@ -80,6 +84,7 @@ class NotificationsAdapter(private var list: MutableList<Notification.Params> = 
 
     interface Callback{
         fun onClickBtn(join: Boolean, position: Int, team_id: Int, team_name: String, notification_id: Long)
+        fun onClickNotification(type_notification: String, team_id: Int, team_name: String, notification_id: Long)
     }
 
 }

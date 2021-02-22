@@ -136,6 +136,9 @@ interface NotificationDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNotification(entity: Notification.Params)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertNotification(entity: MutableList<Notification.Params>)
+
     @Query("select * from notifications")
     fun getNotifications(): LiveData<List<Notification.Params>>
 
