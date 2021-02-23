@@ -13,6 +13,7 @@ interface ApiService {
         const val REGISTER = "Register"
         const val LOGIN = "Login"
         const val MAIN_PAGE = "UserMainPage"
+        const val GET_TEAM_INFO = "GetTeamInformation"
         const val GET_FRIENDS = "GetFriends"
         const val GET_MESSAGES = "GetMessages"
         const val GET_MESSAGES_TEAM = "GetMessagesTeam"
@@ -77,6 +78,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST(MAIN_PAGE)
     fun mainPage(@FieldMap params: Map<String, String>):Call<ResponseMainPage>
+
+    @FormUrlEncoded
+    @POST(GET_TEAM_INFO)
+    fun getTeamInfo(@FieldMap params: Map<String, String>): Observable<ResponseMainPage>
 
     @FormUrlEncoded
     @POST(GET_FRIENDS)

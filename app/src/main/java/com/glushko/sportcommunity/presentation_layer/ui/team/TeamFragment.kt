@@ -1,13 +1,20 @@
 package com.glushko.sportcommunity.presentation_layer.ui.team
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import com.glushko.sportcommunity.R
-import com.glushko.sportcommunity.presentation_layer.ui.team.events.CreateEventDialog
+import com.glushko.sportcommunity.data_layer.datasource.NetworkService
+import com.glushko.sportcommunity.presentation_layer.ui.notification.NotificationFragment
+import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
 import kotlinx.android.synthetic.main.activity_team_profile.*
 
 class TeamFragment() : Fragment() {
@@ -16,9 +23,10 @@ class TeamFragment() : Fragment() {
     private var leaderId: Long? = null
     private var isLeader: Boolean? = null
     private var teamId: Int? = null
-    var callbackActivity: Callback? = null
+    private lateinit var callback: CallbackTeamFragment
+    private var user_id: Long? = null
     constructor(teamName: String, teamDescription: String, bitmap: Bitmap, leaderId: Long, leaderName: String,
-                isLeader: Boolean, teamId: Int, callbackActivity: Callback) : this() {
+                isLeader: Boolean, teamId: Int) : this() {
         this.leaderName = leaderName
         this.leaderId = leaderId
         this.teamName = teamName
@@ -26,25 +34,84 @@ class TeamFragment() : Fragment() {
         this.bitmap = bitmap
         this.isLeader = isLeader
         this.teamId = teamId
-        this.callbackActivity = callbackActivity
 
     }
+
+    private var typeOpen: String? = null
 
     val layoutId: Int = R.layout.activity_team_profile
     private var bitmap: Bitmap? = null
     var teamName: String? = null
     private var teamDescription: String? = null
 
+    lateinit var modelSquad: SquadViewModel
+
     companion object{
         const val TAG = "KEY_TEAM"
+        const val TYPE_OPEN = "type_open"
         const val KEY1 = "team_id"
-        fun newInstance(team_id: Long): TeamFragment{
+        const val KEY2 = "team_name"
+        const val KEY3 = "user_id"
+        const val KEY4 = "team_desc"
+        const val KEY5 = "leader_name"
+        const val KEY6 = "leader_id"
+        const val KEY7 = "bitmap"
+        fun newInstance(type_open: String, team_id: Long, team_name: String, user_id: Long, team_desc: String, leader_name: String, leader_id: Long, bitmap: Bitmap): TeamFragment{
             return TeamFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(CreateEventDialog.KEY1, team_id)
+                    putLong(KEY1, team_id)
+                    putString(KEY2, team_name)
+                    putLong(KEY3, user_id)
+                    putString(KEY4, team_desc)
+                    putString(KEY5, leader_name)
+                    putLong(KEY6, leader_id)
+                    putString(TYPE_OPEN, type_open)
+                    putParcelable(KEY7, bitmap)
                 }
             }
         }
+        fun newInstance(type_open: String, team_id: Long, team_name: String, user_id: Long): TeamFragment{
+            return TeamFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(KEY1, team_id)
+                    putString(KEY2, team_name)
+                    putLong(KEY3, user_id)
+                    putString(TYPE_OPEN, type_open)
+                }
+            }
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try{
+            callback = context as CallbackTeamFragment
+        }catch(ex: Exception){
+            println("Bad callback fragment")
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        modelSquad = ViewModelProviders.of(this).get(SquadViewModel::class.java)
+
+        modelSquad.liveDataTeamInfo.observe(this, Observer {
+            println("TeamFragment live data 1 ${it.message}")
+            if(it.success == 1){
+                val teamInfo = it.teamsUserinfo.first()
+                isLeader = user_id?:0 == teamInfo.leader_id.toLong()
+                if(isLeader!!){
+                    team_profile_btn_2.text = getString(R.string.team_profile_btn_2)
+                }else{
+                    team_profile_btn_2.text = getString(R.string.team_profile_btn_2_dop)
+                }
+                teamDescription = teamInfo.team_desc
+                team_description.text = teamDescription
+            }else{
+                Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
     override fun onCreateView(
@@ -53,16 +120,51 @@ class TeamFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         arguments?.let {
-            this.teamId = it.getLong(KEY1).toInt()
+            this.typeOpen = it.getString(TYPE_OPEN)
+            if(this.typeOpen == "from notification") {
+                this.teamId = it.getLong(KEY1).toInt()
+                this.teamName = it.getString(KEY2)
+                this.user_id = it.getLong(KEY3)
+            }else{
+                this.teamId = it.getLong(KEY1).toInt()
+                this.teamName = it.getString(KEY2)
+                this.user_id = it.getLong(KEY3)
+                this.teamDescription = it.getString(KEY4)
+                this.leaderName = it.getString(KEY5)
+                this.leaderId = it.getLong(KEY6)
+                this.bitmap = it.getParcelable(KEY7)
+                isLeader = leaderId == user_id
+            }
         }
         return inflater.inflate(layoutId, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        team_image_profile.setImageBitmap(bitmap)
-        team_name.text = teamName
-        team_description.text = teamDescription
+        if(typeOpen != null){
+            if(typeOpen == "from notification"){
+                if(teamId != null) {
+                    modelSquad.getTeamInfo(teamId!!.toLong())
+                }
+            }
+        }
+        /*typeOpen?.let {
+            if(it == "from notification"){
+                teamId?.let {
+                    modelSquad.getTeamInfo(it.toLong())
+                }
+            }
+        }*/
+        if(this.bitmap != null){
+            team_image_profile.setImageBitmap(bitmap)
+        }else{
+            Glide.with(requireContext())
+                .load(NetworkService.BASE_URL_IMAGE+this.team_name+".png")
+                .placeholder(R.drawable.chatplaceholder)
+                .into(team_image_profile)
+        }
+        team_name.text = teamName?:""
+        team_description.text = teamDescription?:""
         isLeader?.let {
             if(!it){
                 team_profile_btn_2.text = getString(R.string.team_profile_btn_2_dop)
@@ -73,28 +175,31 @@ class TeamFragment() : Fragment() {
         team_profile_btn_2.setOnClickListener {
             isLeader?.let {
                 if(!it){
-                    callbackActivity?.onClickUpperRightButton(leaderId!!, leaderName!!)
+                    callback.onClickUpperRightButton(leaderId!!, leaderName!!)
                 }
             }
         }
 
         team_profile_btn_chat.setOnClickListener {
-            callbackActivity?.onClickUpperLeftButton(teamName!!, teamId!!)
+            val teamId = teamId?:0
+            callback.onClickUpperLeftButton(teamName!!, teamId)
         }
 
         btn_team_squad.setOnClickListener {
-            callbackActivity?.onClickSquad(teamName!!, isLeader!!)
+            val teamId = teamId?:0
+            callback.onClickSquad(teamId.toLong(),teamName!!, isLeader!!)
         }
 
         btn_squad_events.setOnClickListener {
-            callbackActivity?.onClickEvents(teamId?.toLong()!!, teamName!!, isLeader!!)
+            val teamId = teamId?:0
+            callback.onClickEvents(teamId.toLong(), teamName!!, isLeader!!)
         }
 
     }
 
-    interface Callback{
+    interface CallbackTeamFragment{
         fun onClickUpperRightButton(idLeader: Long, leaderName: String)
-        fun onClickSquad(team_name: String, isLeader: Boolean)
+        fun onClickSquad(team_id: Long, team_name: String, isLeader: Boolean)
         fun onClickUpperLeftButton(teamName: String, teamId: Int)
         fun onClickEvents(team_id: Long, team_name: String, isLeader: Boolean)
     }

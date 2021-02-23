@@ -10,7 +10,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.glushko.sportcommunity.R
@@ -36,7 +35,7 @@ import kotlinx.android.synthetic.main.navigation.*
 //import kotlinx.android.synthetic.main.toolbar.*
 
 
-class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotificationFragment {
+class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotificationFragment, TeamFragment.CallbackTeamFragment {
 
     val contentId = R.layout.home_activity
     val fragmentContainer = R.id.fragmentContainer
@@ -267,35 +266,17 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
 
     private fun openTeamFragment(teamName: String, teamId: Long){
         toolbar.title = teamName
-
+        val fragmentTeam = TeamFragment.newInstance("from notification",teamId, teamName, USER_ID?:0.toLong())
+        supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeam).commit()
     }
 
     private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String, team_id: Int){
         toolbar.title = teamName
         val userId = model.liveDataLogin.value?.idUser?:0
-        var isLeader = false
+        /*var isLeader = false
         if(userId == leader_id)
-            isLeader = true
-        val fragmentTeamProfile = TeamFragment(teamName, teamDesc, bitmap, leader_id.toLong(), leader_name, isLeader, team_id, object : TeamFragment.Callback{
-            override fun onClickUpperRightButton(idLeeader: Long, leaderName: String) {
-                toolbar.title = leaderName
-                openDialogFragment(idLeeader, type_dialog = 0)
-            }
-
-            override fun onClickSquad(team_name: String, isLeader: Boolean) {
-                toolbar.title = "Состав"
-                openSquadFragment(team_id, team_name, isLeader)
-            }
-
-            override fun onClickUpperLeftButton(teamName: String, teamId: Int) {
-                openDialogFragment(teamId.toLong(), type_dialog = 1, contact_name = teamName )
-            }
-
-            override fun onClickEvents(team_id: Long, team_name: String, isLeader: Boolean) {
-                openSquadEvents(team_id, team_name, isLeader)
-            }
-
-        })
+            isLeader = true*/
+        val fragmentTeamProfile = TeamFragment.newInstance("from profile", team_id.toLong(), teamName, userId.toLong(), teamDesc, leader_name, leader_id.toLong(), bitmap) //(teamName, teamDesc, bitmap, leader_id.toLong(), leader_name, isLeader, team_id)
         supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).commit()
     }
 
@@ -352,11 +333,29 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
     override fun onClickEvent(type_notification: String, team_id: Long, team_name: String, notification_id: Long) {
         if(type_notification != "event"){
             //открытие окна команды
-
+            openTeamFragment(team_name, team_id)
         }else{
             //открытие окна события команды
             openSquadEvents(team_id, team_name, false)
         }
+    }
+
+    override fun onClickUpperRightButton(idLeader: Long, leaderName: String) {
+        toolbar.title = leaderName
+        openDialogFragment(idLeader, type_dialog = 0)
+    }
+
+    override fun onClickSquad(team_id: Long, team_name: String, isLeader: Boolean) {
+        toolbar.title = "Состав"
+        openSquadFragment(team_id.toInt(), team_name, isLeader)
+    }
+
+    override fun onClickUpperLeftButton(teamName: String, teamId: Int) {
+        openDialogFragment(teamId.toLong(), type_dialog = 1, contact_name = teamName )
+    }
+
+    override fun onClickEvents(team_id: Long, team_name: String, isLeader: Boolean) {
+        openSquadEvents(team_id, team_name, isLeader)
     }
 }
 

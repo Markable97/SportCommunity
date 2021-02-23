@@ -9,6 +9,7 @@ import com.glushko.sportcommunity.business_logic_layer.domain.Squad
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
 import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseEventsTeam
+import com.glushko.sportcommunity.data_layer.datasource.response.ResponseMainPage
 import com.glushko.sportcommunity.data_layer.datasource.response.ResponseSquadTeamList
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,6 +30,8 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
     val liveDataBaseResponse: MutableLiveData<BaseResponse> = MutableLiveData()
 
     val liveDataEventsList: MutableLiveData<ResponseEventsTeam> = MutableLiveData()
+
+    val liveDataTeamInfo: MutableLiveData<ResponseMainPage> = MutableLiveData()
 
     fun getSquadList(team_id: Int){
         myCompositeDisposable.add(
@@ -107,6 +110,25 @@ class SquadViewModel(application: Application) : AndroidViewModel(application) {
                 .subscribe(this::handlerResponseBaseResponse, this::handlerErrorBaseResponse)
         )
     }
+    private fun handlerResponseTeamInfo(responseServer: ResponseMainPage){
+        liveDataTeamInfo.postValue(responseServer)
+    }
+    private fun handlerErrorTeamInfo(err: Throwable){
+        println("Ошибка подключения ${err.message}")
+        liveDataTeamInfo.postValue(ResponseMainPage(0, err.localizedMessage))
+    }
+    fun getTeamInfo(team_id: Long){
+        myCompositeDisposable.add(
+            useCaseRepository.getTeamInfo(idUser, team_id, token)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handlerResponseTeamInfo, this::handlerErrorTeamInfo)
+        )
+    }
 
-
+    override fun onCleared() {
+        super.onCleared()
+        myCompositeDisposable.clear()
+        println("Метод очистки ProfileVewModel!!")
+    }
 }

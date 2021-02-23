@@ -186,6 +186,11 @@ class UseCaseRepository {
 
     }
     //Методы под RxJava
+
+    fun getTeamInfo(user_id: Long, team_id: Long, token: String): Observable<ResponseMainPage>{
+        return NetworkService.makeNetworkServiceRxJava().getTeamInfo(TeamsUserInfo.createMap(user_id, team_id, token))
+    }
+
     fun searchUser(text: String, type_find: String, team_id: Int): Observable<ResponseFriends>{
         return when(type_find){
             "friend" -> NetworkService.makeNetworkServiceRxJava().findUser(Friend.createMap(text, HomeActivity.USER_ID!!, type_find))

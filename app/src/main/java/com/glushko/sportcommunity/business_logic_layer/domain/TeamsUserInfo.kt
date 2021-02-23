@@ -26,5 +26,13 @@ class TeamsUserInfo {
             map[ApiService.PARAM_USER_ID] = user_id.toString()
             return map
         }
+
+        fun createMap(user_id: Long, team_id: Long, token: String): Map<String, String>{
+            val map = HashMap<String, String>()
+            map[ApiService.PARAM_USER_ID] = user_id.toString()
+            map[ApiService.PARAM_TEAM_ID] = team_id.toString()
+            map[ApiService.PARAM_TOKEN] = token
+            return map
+        }
     }
 }
