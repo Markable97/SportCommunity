@@ -36,6 +36,9 @@ class ProfileFragment(val userId: Int = 0, val userName: String = "" ,val isMe: 
 
     var listInfoProfile: MutableList<TeamsUserInfo.Params> = mutableListOf()
 
+    companion object{
+        const val TAG = "KEY_PROFILE"
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

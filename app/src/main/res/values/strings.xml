@@ -92,6 +92,10 @@
     <string name="success_select">Вперед к победам!</string>
     <string name="start_select">Начать выбор</string>
     <string name="title_activity_main2">MainActivity</string>
+
+    <!-- String for ment -->
+    <string name="action_leave_team">Выйти из команды</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

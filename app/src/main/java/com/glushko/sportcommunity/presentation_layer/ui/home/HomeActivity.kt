@@ -3,6 +3,8 @@ package com.glushko.sportcommunity.presentation_layer.ui.home
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -29,6 +31,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.team.squad.SquadFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.TeamFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.events.EventsFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
+import com.glushko.sportcommunity.presentation_layer.vm.ActionMenuToolbarViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.NotificationDrawerViewModel
 import kotlinx.android.synthetic.main.home_activity.*
 import kotlinx.android.synthetic.main.navigation.*
@@ -45,10 +48,14 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
     companion object{
         var USER_ID: Long? = null
         var USER_NAME: String? = null
+
+        var whichFragmentOpen: String? = null //Какой фрмагмент открыт в данный момент
     }
 
 
     lateinit var toolbar: Toolbar
+
+    lateinit var modelActionMenu: ActionMenuToolbarViewModel
 
     lateinit var model: AccountViewModel
     //lateinit var dataLogin: LiveData<Register.Params>
@@ -56,7 +63,25 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
 
     var isStart: Boolean = false
 
+    var teamId: Long? = null
+
     //lateinit var dataNotificationChats: LiveData<List<ChatsNotification>>
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        whichFragmentOpen?.let {
+            when (it){
+                TeamFragment.TAG -> menuInflater.inflate(R.menu.team_menu, menu)
+            }
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.action_leave_team -> if(teamId != null && USER_ID != null) modelActionMenu.leaveTeam(teamId!!, USER_ID!!)
+        }
+        return true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +94,7 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         supportActionBar?.setHomeAsUpIndicator(R.drawable.menu)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        modelActionMenu = ViewModelProviders.of(this).get(ActionMenuToolbarViewModel::class.java)
 
         model = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         model.getLoginData()
@@ -196,9 +222,27 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
             model.logout()
             navigator.showLogin(this)
         }
+
+        modelActionMenu.liveDataBaseResponse.observe(this, Observer {
+            println("Live data Action Menu ${it.message}")
+            if(it.success == 1){
+                when(whichFragmentOpen){
+                    TeamFragment.TAG -> {
+                        this.supportFragmentManager.popBackStack()
+                        toolbar.title = "Профиль"
+                        Toast.makeText(this, "Вы покинули команду!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }else{
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
     private fun openProfileFragment(user_id: Int?, user_name: String?, status_friend: String? = null, isMe: Boolean = true){
+        whichFragmentOpen = ProfileFragment.TAG
+        invalidateOptionsMenu()
         if(user_id!=null && user_name!=null){
             toolbar.title = "Профиль"
             val fragmentProfile =  ProfileFragment(userId = user_id, userName = user_name, isMe = isMe, status_friend = status_friend, callbackActivity = object : ProfileFragment.Callback{
@@ -265,19 +309,27 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
     }
 
     private fun openTeamFragment(teamName: String, teamId: Long){
+        //Открытие по приглашению
         toolbar.title = teamName
+        this.teamId = teamId
+        invalidateOptionsMenu()
+        whichFragmentOpen = null
         val fragmentTeam = TeamFragment.newInstance("from notification",teamId, teamName, USER_ID?:0.toLong())
         supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeam).commit()
     }
 
     private fun openTeamFragment(teamName: String, teamDesc: String, bitmap: Bitmap, leader_id: Int, leader_name: String, team_id: Int){
+        //Открытие со страницы пользователя
         toolbar.title = teamName
         val userId = model.liveDataLogin.value?.idUser?:0
+        teamId = team_id.toLong()
+        whichFragmentOpen = TeamFragment.TAG
+        invalidateOptionsMenu()
         /*var isLeader = false
         if(userId == leader_id)
             isLeader = true*/
-        val fragmentTeamProfile = TeamFragment.newInstance("from profile", team_id.toLong(), teamName, userId.toLong(), teamDesc, leader_name, leader_id.toLong(), bitmap) //(teamName, teamDesc, bitmap, leader_id.toLong(), leader_name, isLeader, team_id)
-        supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).commit()
+        val fragmentTeamProfile = TeamFragment.newInstance("from profile", team_id.toLong(), teamName, userId.toLong(), teamDesc, leader_name, leader_id.toLong(), bitmap)
+        supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).addToBackStack(null).commit()
     }
 
     private fun openSquadEvents(team_id: Long, team_name: String, isLeader: Boolean){

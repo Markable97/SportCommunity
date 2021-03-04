@@ -43,7 +43,7 @@ class TeamFragment() : Fragment() {
     private var bitmap: Bitmap? = null
     var teamName: String? = null
     private var teamDescription: String? = null
-
+    private var inTeam: Int = 0
     lateinit var modelSquad: SquadViewModel
 
     companion object{
@@ -56,6 +56,7 @@ class TeamFragment() : Fragment() {
         const val KEY5 = "leader_name"
         const val KEY6 = "leader_id"
         const val KEY7 = "bitmap"
+
         fun newInstance(type_open: String, team_id: Long, team_name: String, user_id: Long, team_desc: String, leader_name: String, leader_id: Long, bitmap: Bitmap): TeamFragment{
             return TeamFragment().apply {
                 arguments = Bundle().apply {
@@ -67,6 +68,7 @@ class TeamFragment() : Fragment() {
                     putLong(KEY6, leader_id)
                     putString(TYPE_OPEN, type_open)
                     putParcelable(KEY7, bitmap)
+
                 }
             }
         }
@@ -77,6 +79,7 @@ class TeamFragment() : Fragment() {
                     putString(KEY2, team_name)
                     putLong(KEY3, user_id)
                     putString(TYPE_OPEN, type_open)
+
                 }
             }
         }
@@ -100,6 +103,8 @@ class TeamFragment() : Fragment() {
             if(it.success == 1){
                 val teamInfo = it.teamsUserinfo.first()
                 isLeader = user_id?:0 == teamInfo.leader_id.toLong()
+                this.leaderId = teamInfo.leader_id.toLong()
+                this.leaderName = teamInfo.leader_name
                 if(isLeader!!){
                     team_profile_btn_2.text = getString(R.string.team_profile_btn_2)
                 }else{
@@ -122,10 +127,12 @@ class TeamFragment() : Fragment() {
         arguments?.let {
             this.typeOpen = it.getString(TYPE_OPEN)
             if(this.typeOpen == "from notification") {
+                this.inTeam = 0
                 this.teamId = it.getLong(KEY1).toInt()
                 this.teamName = it.getString(KEY2)
                 this.user_id = it.getLong(KEY3)
             }else{
+                this.inTeam = 1
                 this.teamId = it.getLong(KEY1).toInt()
                 this.teamName = it.getString(KEY2)
                 this.user_id = it.getLong(KEY3)
@@ -159,7 +166,7 @@ class TeamFragment() : Fragment() {
             team_image_profile.setImageBitmap(bitmap)
         }else{
             Glide.with(requireContext())
-                .load(NetworkService.BASE_URL_IMAGE+this.team_name+".png")
+                .load(NetworkService.BASE_URL_IMAGE+this.teamName+".png")
                 .placeholder(R.drawable.chatplaceholder)
                 .into(team_image_profile)
         }
@@ -175,14 +182,21 @@ class TeamFragment() : Fragment() {
         team_profile_btn_2.setOnClickListener {
             isLeader?.let {
                 if(!it){
-                    callback.onClickUpperRightButton(leaderId!!, leaderName!!)
+                    if(leaderId != null && leaderName != null){
+                        callback.onClickUpperRightButton(leaderId!!, leaderName!!)
+                    }
+
                 }
             }
         }
 
         team_profile_btn_chat.setOnClickListener {
             val teamId = teamId?:0
-            callback.onClickUpperLeftButton(teamName!!, teamId)
+            if(inTeam == 1){
+                callback.onClickUpperLeftButton(teamName!!, teamId)
+            }else{
+                Toast.makeText(requireContext(), "Вы не в команде. Чат недоступен", Toast.LENGTH_SHORT).show()
+            }
         }
 
         btn_team_squad.setOnClickListener {
@@ -192,7 +206,11 @@ class TeamFragment() : Fragment() {
 
         btn_squad_events.setOnClickListener {
             val teamId = teamId?:0
-            callback.onClickEvents(teamId.toLong(), teamName!!, isLeader!!)
+            if(inTeam == 1){
+                callback.onClickEvents(teamId.toLong(), teamName!!, isLeader!!)
+            }else{
+                Toast.makeText(requireContext(), "Вы не в команде. События недоступны", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
