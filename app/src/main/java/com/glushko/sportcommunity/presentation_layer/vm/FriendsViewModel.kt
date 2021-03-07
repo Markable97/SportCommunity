@@ -29,7 +29,8 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
     var liveDataRepository: LiveData<List<Friend.Params>>
 
     var liveDataNotification: LiveData<List<FriendshipNotification>>
-
+    val pref = SharedPrefsManager(getApplication<Application>().
+    getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
     private var myCompositeDisposable: CompositeDisposable? = null
 
     init{
@@ -39,8 +40,6 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getData(): MutableLiveData<ResponseFriends>{
-        val pref = SharedPrefsManager(getApplication<Application>().
-            getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
         val idUser = pref.getAccount().idUser
         getFriends(idUser)
         return liveData
@@ -87,7 +86,7 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
 
     fun inviteInTeam(user_id: Long, team_id: Int, team_name: String, type_invitation: String){
         myCompositeDisposable?.add(
-            useCaseRepository.inviteInTeam(user_id, team_id, team_name, type_invitation)
+            useCaseRepository.inviteInTeam(user_id, team_id, team_name, type_invitation, pref.getToken())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponseBase, this::handleErrorInvitation)

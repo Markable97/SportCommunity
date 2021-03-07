@@ -6,12 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Squad
+import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
 import kotlinx.android.synthetic.main.dialog_set_admin.*
 
 class SetAdminDialog : DialogFragment()  {
@@ -44,9 +48,14 @@ class SetAdminDialog : DialogFragment()  {
             }*/
         }
     }
-
+    private lateinit var modelFriend: FriendsViewModel
     lateinit var adapter: SquadListAdapter
     private val usersForAdmin: MutableList<Squad.Params> = mutableListOf()
+    private var teamName: String? = null
+    private var teamId: Long? = null
+    private var userAdmin: Long? = null
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,12 +67,28 @@ class SetAdminDialog : DialogFragment()  {
         return view
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        modelFriend = ViewModelProviders.of(this).get(FriendsViewModel::class.java)
+        modelFriend.liveDataInvitationInTeam.observe(this, Observer {
+            println("SetAdminDialog Live Data invitation $it")
+            if(it.success == 1){
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                dismiss()
+            }else{
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.setTitle("Назначить админа")
         val bundle = arguments
         if (bundle != null){
             usersForAdmin.addAll(bundle.getParcelableArray(KEY3) as Array<Squad.Params>)
+            teamId = bundle.getLong(KEY1)
+            teamName = bundle.getString(KEY2, null)
         }
 
         adapter = SquadListAdapter(list = usersForAdmin, callback = object : SquadListAdapter.Callback{
@@ -74,6 +99,7 @@ class SetAdminDialog : DialogFragment()  {
                 status_friend: String?
             ) {
                 tvUserAdmin.text = user_name
+                userAdmin = user_id
             }
 
         })
@@ -81,6 +107,14 @@ class SetAdminDialog : DialogFragment()  {
         val recyclerUsers = view.findViewById<RecyclerView>(R.id.users_admin_recycler)
         recyclerUsers.adapter = adapter
         recyclerUsers.layoutManager = LinearLayoutManager(activity)
+
+        btnSetAdmin.setOnClickListener {
+            if(userAdmin != null && teamId != null && teamName != null){
+                modelFriend.inviteInTeam(userAdmin!!, teamId!!.toInt(), teamName!!, "admin")
+            }else{
+                Toast.makeText(requireContext(), "Выберите пользователя!", Toast.LENGTH_SHORT).show()
+            }
+        }
 
 
     }
