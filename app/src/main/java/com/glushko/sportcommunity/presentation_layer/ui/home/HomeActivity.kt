@@ -340,8 +340,10 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         ).commit()
     }
 
-    private fun openSquadFragment(team_id: Int, team_name: String, isLeader: Boolean){
-        val squadFragment = SquadFragment(team_id, team_name, isLeader, object : SquadFragment.Callback{
+    private fun openSquadFragment(leader_id: Long, team_id: Int, team_name: String, isLeader: Boolean){
+        whichFragmentOpen = null
+        invalidateOptionsMenu()
+        val squadFragment = SquadFragment(leader_id, team_id, team_name, isLeader, object : SquadFragment.Callback{
             override fun onClickPlayerInApp(
                 user_id: Long,
                 user_name: String?,
@@ -397,9 +399,9 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         openDialogFragment(idLeader, type_dialog = 0)
     }
 
-    override fun onClickSquad(team_id: Long, team_name: String, isLeader: Boolean) {
+    override fun onClickSquad(leader_id: Long, team_id: Long, team_name: String, isLeader: Boolean) {
         toolbar.title = "Состав"
-        openSquadFragment(team_id.toInt(), team_name, isLeader)
+        openSquadFragment(leader_id, team_id.toInt(), team_name, isLeader)
     }
 
     override fun onClickUpperLeftButton(teamName: String, teamId: Int) {

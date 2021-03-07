@@ -17,7 +17,7 @@ import com.tsuryo.swipeablerv.SwipeLeftRightCallback
 import kotlinx.android.synthetic.main.fragment_team_squad.*
 import kotlinx.android.synthetic.main.fragment_team_squad_content_main.*
 
-class SquadFragment(private val team_id: Int, private val team_name: String, private val isLeader: Boolean, val callback: Callback): Fragment() {
+class SquadFragment(private val leader_id: Long, private val team_id: Int, private val team_name: String, private val isLeader: Boolean, val callback: Callback): Fragment() {
 
     val layoutId: Int = R.layout.fragment_team_squad
 
@@ -186,6 +186,15 @@ class SquadFragment(private val team_id: Int, private val team_name: String, pri
                 val manager = childFragmentManager
                 dialogFind.show(manager, "dialogFind")
             }
+            fabLayout_add_admin.setOnClickListener{
+                val list = squadList.filter{ it.in_app == 1 && it.id_user != leader_id }
+                if(list.isNotEmpty()){
+                    val dialogSetAdmin = SetAdminDialog.newInstance(team_id.toLong(), team_name, list)
+                    dialogSetAdmin.show(childFragmentManager, SetAdminDialog.TAG)
+                }else{
+                    Toast.makeText(requireContext(), "Нет пользователей для назначения", Toast.LENGTH_SHORT)
+                }
+            }
         }else{
             fab.visibility = View.GONE
         }
@@ -194,15 +203,18 @@ class SquadFragment(private val team_id: Int, private val team_name: String, pri
     private fun showFABMenu() {
         fabLayout_compare.visibility = View.VISIBLE
         fabLayout_add_player.visibility = View.VISIBLE
+        fabLayout_add_admin.visibility = View.VISIBLE
         fabBGLayout.visibility = View.VISIBLE
         fab.animate().rotationBy(180F)
         fabLayout_compare.animate().translationY(-resources.getDimension(R.dimen.standard_75))
         fabLayout_add_player.animate().translationY(-resources.getDimension(R.dimen.standard_120))
+        fabLayout_add_admin.animate().translationY(-resources.getDimension(R.dimen.standard_165))
     }
 
     private fun closeFABMenu() {
         fabBGLayout.visibility = View.GONE
         fab.animate().rotation(0F)
+        fabLayout_add_admin.animate().translationY(0F)
         fabLayout_compare.animate().translationY(0f)
         fabLayout_add_player.animate().translationY(0f)
             .setListener(object : Animator.AnimatorListener {
@@ -211,6 +223,7 @@ class SquadFragment(private val team_id: Int, private val team_name: String, pri
                     if (View.GONE == fabBGLayout.visibility) {
                         fabLayout_compare.visibility = View.GONE
                         fabLayout_add_player.visibility = View.GONE
+                        fabLayout_add_admin.visibility = View.GONE
                     }
                 }
 

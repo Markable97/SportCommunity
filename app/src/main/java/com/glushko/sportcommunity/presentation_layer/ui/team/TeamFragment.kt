@@ -200,8 +200,9 @@ class TeamFragment() : Fragment() {
         }
 
         btn_team_squad.setOnClickListener {
-            val teamId = teamId?:0
-            callback.onClickSquad(teamId.toLong(),teamName!!, isLeader!!)
+            if(teamId != null && leaderId != null){
+                callback.onClickSquad(leaderId!!, teamId!!.toLong(),teamName!!, isLeader!!)
+            }
         }
 
         btn_squad_events.setOnClickListener {
@@ -217,7 +218,7 @@ class TeamFragment() : Fragment() {
 
     interface CallbackTeamFragment{
         fun onClickUpperRightButton(idLeader: Long, leaderName: String)
-        fun onClickSquad(team_id: Long, team_name: String, isLeader: Boolean)
+        fun onClickSquad(leader_id: Long, team_id: Long, team_name: String, isLeader: Boolean)
         fun onClickUpperLeftButton(teamName: String, teamId: Int)
         fun onClickEvents(team_id: Long, team_name: String, isLeader: Boolean)
     }
