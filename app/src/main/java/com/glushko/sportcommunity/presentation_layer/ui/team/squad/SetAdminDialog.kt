@@ -1,6 +1,8 @@
 package com.glushko.sportcommunity.presentation_layer.ui.team.squad
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Squad
+import com.glushko.sportcommunity.presentation_layer.ui.team.events.CreateEventDialog
 import com.glushko.sportcommunity.presentation_layer.vm.FriendsViewModel
 import kotlinx.android.synthetic.main.dialog_set_admin.*
 
@@ -23,8 +26,8 @@ class SetAdminDialog : DialogFragment()  {
     companion object{
 
         const val TAG = "adm_dialog"
-
-        private const val KEY1 = "team_id"
+        const val TAG_INT = 3
+        const val KEY1 = "team_id"
         private const val KEY2 = "team_name"
         private const val KEY3 = "squad_list"
 
@@ -74,6 +77,11 @@ class SetAdminDialog : DialogFragment()  {
             println("SetAdminDialog Live Data invitation $it")
             if(it.success == 1){
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                val intent = Intent()
+                intent.putExtra(TAG, "UPDATE")
+                intent.putExtra(KEY1, userAdmin)
+                println("Test = $targetFragment")
+                targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
                 dismiss()
             }else{
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()

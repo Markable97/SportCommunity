@@ -1,6 +1,8 @@
 package com.glushko.sportcommunity.presentation_layer.ui.team.squad
 
 import android.animation.Animator
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.Squad
+import com.glushko.sportcommunity.presentation_layer.ui.team.events.CreateEventDialog
 import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback
 import kotlinx.android.synthetic.main.fragment_team_squad.*
@@ -187,12 +190,13 @@ class SquadFragment(private val leader_id: Long, private val team_id: Int, priva
                 dialogFind.show(manager, "dialogFind")
             }
             fabLayout_add_admin.setOnClickListener{
-                val list = squadList.filter{ it.in_app == 1 && it.id_user != leader_id }
+                val list = squadList.filter{ it.in_app == 1 && it.id_user != leader_id && it.status_invite != "admin" }
                 if(list.isNotEmpty()){
                     val dialogSetAdmin = SetAdminDialog.newInstance(team_id.toLong(), team_name, list)
-                    dialogSetAdmin.show(childFragmentManager, SetAdminDialog.TAG)
+                    dialogSetAdmin.setTargetFragment(this@SquadFragment, SetAdminDialog.TAG_INT)
+                    dialogSetAdmin.show(parentFragmentManager, SetAdminDialog.TAG)
                 }else{
-                    Toast.makeText(requireContext(), "Нет пользователей для назначения", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), "Нет пользователей для назначения", Toast.LENGTH_SHORT).show()
                 }
             }
         }else{
@@ -231,6 +235,27 @@ class SquadFragment(private val leader_id: Long, private val team_id: Int, priva
                 override fun onAnimationRepeat(animator: Animator) {}
             })
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        println("Events Fragment: onActivityResult")
+        if (resultCode == Activity.RESULT_OK) {
+            when(requestCode){
+                SetAdminDialog.TAG_INT ->{
+                    val result = data?.getStringExtra(SetAdminDialog.TAG)
+                    if(result == "UPDATE"){
+                        val id = data.getLongExtra(SetAdminDialog.KEY1, 0)
+                        if(id != 0L){
+                            val position = squadList.indexOf( squadList.find {
+                                it.id_user == id
+                            })
+                            squadList[position].status_invite = "admin"
+                        }
+                    }
+                }
+            }
+        }
     }
 
     interface Callback{
