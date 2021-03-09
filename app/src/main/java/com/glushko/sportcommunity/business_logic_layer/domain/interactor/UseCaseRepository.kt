@@ -178,6 +178,7 @@ class UseCaseRepository {
             }
             dao.insertLastMessage(response.lastMessages.toList())
             dao.updateLastMessageNotification()
+            dao.deleteBadLastMessages(response.lastMessages.map{ it.contact_id })
             liveData.postValue(response)
         }catch (cause: Throwable){
             println("Error!!!!${cause.message}")

@@ -48,7 +48,7 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
     companion object{
         var USER_ID: Long? = null
         var USER_NAME: String? = null
-
+        var isLeader: Boolean = false
         var whichFragmentOpen: String? = null //Какой фрмагмент открыт в данный момент
     }
 
@@ -68,9 +68,20 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
     //lateinit var dataNotificationChats: LiveData<List<ChatsNotification>>
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        println("onCreateOptionsMenu")
         whichFragmentOpen?.let {
             when (it){
                 TeamFragment.TAG -> menuInflater.inflate(R.menu.team_menu, menu)
+            }
+        }
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        println("onPrepareOptionsMen")
+        whichFragmentOpen?.let {
+            when (it){
+                TeamFragment.TAG -> menu?.getItem(0)?.title = "Удалить команду"
             }
         }
         return true
@@ -229,6 +240,8 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
                 when(whichFragmentOpen){
                     TeamFragment.TAG -> {
                         this.supportFragmentManager.popBackStack()
+                        whichFragmentOpen = null
+                        invalidateOptionsMenu()
                         toolbar.title = "Профиль"
                         Toast.makeText(this, "Вы покинули команду!", Toast.LENGTH_SHORT).show()
                     }
@@ -324,12 +337,18 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         val userId = model.liveDataLogin.value?.idUser?:0
         teamId = team_id.toLong()
         whichFragmentOpen = TeamFragment.TAG
+        println("Invalidation menu")
+        isLeader = leader_id.toLong() == USER_ID
         invalidateOptionsMenu()
+
         /*var isLeader = false
         if(userId == leader_id)
             isLeader = true*/
+        println("Создание фрагмента")
         val fragmentTeamProfile = TeamFragment.newInstance("from profile", team_id.toLong(), teamName, userId.toLong(), teamDesc, leader_name, leader_id.toLong(), bitmap)
         supportFragmentManager.beginTransaction().add(fragmentContainer, fragmentTeamProfile).addToBackStack(null).commit()
+        println("фрагмент создан")
+
     }
 
     private fun openSquadEvents(team_id: Long, team_name: String, isLeader: Boolean){

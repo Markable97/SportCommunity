@@ -169,6 +169,9 @@ interface MessageDao{
     @Query("update last_messages_table  set count_notification = (select sum(count) from notification_chats  where  notification_chats.contact_id = last_messages_table.contact_id)")
     fun updateLastMessageNotification()
 
+    @Query("delete from last_messages_table where contact_id not in (:ids) ")
+    suspend fun deleteBadLastMessages(ids: List<Long>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLastMessage(entity: LastMessage.Params)
 
