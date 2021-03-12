@@ -30,6 +30,7 @@ import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.squad.SquadFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.TeamFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.events.EventsFragment
+import com.glushko.sportcommunity.presentation_layer.ui.tournament_table.TournamentTableFootballFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.ActionMenuToolbarViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.NotificationDrawerViewModel
@@ -48,7 +49,7 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
     companion object{
         var USER_ID: Long? = null
         var USER_NAME: String? = null
-        var isLeader: Boolean = false
+        var IS_LEADER: Boolean = false
         var whichFragmentOpen: String? = null //Какой фрмагмент открыт в данный момент
     }
 
@@ -81,7 +82,7 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         println("onPrepareOptionsMen")
         whichFragmentOpen?.let {
             when (it){
-                TeamFragment.TAG -> menu?.getItem(0)?.title = "Удалить команду"
+                TeamFragment.TAG -> menu?.getItem(0)?.title = if(IS_LEADER) "Удалить команду" else "Выйти из команды"
             }
         }
         return true
@@ -338,7 +339,7 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         teamId = team_id.toLong()
         whichFragmentOpen = TeamFragment.TAG
         println("Invalidation menu")
-        isLeader = leader_id.toLong() == USER_ID
+        IS_LEADER = leader_id.toLong() == USER_ID
         invalidateOptionsMenu()
 
         /*var isLeader = false
@@ -356,6 +357,16 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         val squadEventsFragment = EventsFragment(team_id, team_name, isLeader)
         supportFragmentManager.beginTransaction().replace(fragmentContainer,
             squadEventsFragment
+        ).commit()
+    }
+
+    private fun openTeamStatistics(team_id: Long){
+        toolbar.title = "Статистика"
+        whichFragmentOpen = null
+        invalidateOptionsMenu()
+        val tournamentTableFragment = TournamentTableFootballFragment.newInstance(team_id)
+        supportFragmentManager.beginTransaction().replace(fragmentContainer,
+            tournamentTableFragment
         ).commit()
     }
 
@@ -403,6 +414,7 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         }
     }
 
+    //Нажатие внутри команды
     override fun onClickEvent(type_notification: String, team_id: Long, team_name: String, notification_id: Long) {
         if(type_notification != "event"){
             //открытие окна команды
@@ -429,6 +441,14 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
 
     override fun onClickEvents(team_id: Long, team_name: String, isLeader: Boolean) {
         openSquadEvents(team_id, team_name, isLeader)
+    }
+
+    override fun onClickStatistics(team_id: Long) {
+        if(team_id!=0L){
+            openTeamStatistics(team_id)
+        }else{
+            Toast.makeText(this, "Не удается открыть статистику", Toast.LENGTH_SHORT).show()
+        }
     }
 }
 

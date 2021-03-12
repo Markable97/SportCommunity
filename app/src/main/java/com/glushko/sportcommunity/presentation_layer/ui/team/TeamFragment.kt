@@ -206,12 +206,17 @@ class TeamFragment() : Fragment() {
         }
 
         btn_squad_events.setOnClickListener {
-            val teamId = teamId?:0
+            val teamId = this.teamId?:0
             if(inTeam == 1){
                 callback.onClickEvents(teamId.toLong(), teamName!!, isLeader!!)
             }else{
                 Toast.makeText(requireContext(), "Вы не в команде. События недоступны", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        btn_team_statistics.setOnClickListener {
+            val teamId = this.teamId?:0
+            callback.onClickStatistics(teamId.toLong())
         }
 
     }
@@ -221,5 +226,6 @@ class TeamFragment() : Fragment() {
         fun onClickSquad(leader_id: Long, team_id: Long, team_name: String, isLeader: Boolean)
         fun onClickUpperLeftButton(teamName: String, teamId: Int)
         fun onClickEvents(team_id: Long, team_name: String, isLeader: Boolean)
+        fun onClickStatistics(team_id: Long)
     }
 }

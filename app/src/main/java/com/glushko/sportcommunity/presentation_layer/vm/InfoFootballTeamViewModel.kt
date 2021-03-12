@@ -5,10 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.glushko.sportcommunity.business_logic_layer.domain.interactor.UseCaseRepository
-import com.glushko.sportcommunity.data_layer.datasource.response.BaseResponse
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootballDivisions
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootballLeagues
-import com.glushko.sportcommunity.data_layer.datasource.response.ResponseFootballTeams
+import com.glushko.sportcommunity.data_layer.datasource.response.*
 import com.glushko.sportcommunity.data_layer.repository.SharedPrefsManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -21,6 +18,8 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
     val liveDataDivisions: MutableLiveData<ResponseFootballDivisions> = MutableLiveData()
     val liveDataTeams: MutableLiveData<ResponseFootballTeams> = MutableLiveData()
     val liveDataCreateTeam : MutableLiveData<BaseResponse> = MutableLiveData()
+
+    val liveDataTable: MutableLiveData<ResponseTournamentTableFootball> = MutableLiveData()
 
     init{
         myCompositeDisposable = CompositeDisposable()
@@ -71,6 +70,15 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
         )
     }
 
+    fun getTournamentTableFootball(division_id: Int = 0, season_id: Int = 0, team_id: Long = 0){
+        myCompositeDisposable?.add(
+            useCaseRepository.getTournamentTableFootball(division_id, season_id, team_id)
+                .observeOn(AndroidSchedulers.mainThread())
+
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponse, this::handleErrorTournamentTable)
+        )
+    }
 
     fun createTeam(team_id: String){
         val pref = SharedPrefsManager(getApplication<Application>().
@@ -88,6 +96,11 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse, this::handleErrorCreate)
         )
+    }
+
+    private fun handleResponse(responseServer: ResponseTournamentTableFootball) {
+        println(" Запрос таблиц вернул ${responseServer.success} ${responseServer.message} ${responseServer.tournament_table}")
+        liveDataTable.postValue(responseServer)
     }
 
     private fun handleResponse(responseServer: ResponseFootballLeagues) {
@@ -119,6 +132,11 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
         println("ошибка лиг ${err.message}")
     }
 
+    private fun handleErrorTournamentTable(err: Throwable){
+        liveDataTable.postValue(ResponseTournamentTableFootball(0, err.localizedMessage))
+        println("ошибка таблиц ${err.message}")
+    }
+
     private fun handleErrorDivisions(err: Throwable){
         liveDataDivisions.postValue(ResponseFootballDivisions(0, err.localizedMessage))
         println("ошибка дивизионов ${err.message}")
@@ -130,5 +148,11 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
     private fun handleErrorCreate(err: Throwable){
         liveDataCreateTeam.postValue(BaseResponse(0, err.localizedMessage))
         println("ошибка создания ${err.message}")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        myCompositeDisposable?.clear()
+        println("Метод очистки InfoFootballTeamViewModel!!")
     }
 }

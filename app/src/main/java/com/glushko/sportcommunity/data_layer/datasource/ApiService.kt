@@ -25,6 +25,7 @@ interface ApiService {
         const val GET_FOOTBALL_LEAGUES = "GetFootballLeague"
         const val GET_FOOTBALL_DIVISIONS = "GetFootballDivisions"
         const val GET_FOOTBALL_TEAMS = "GetFootballTeams"
+        const val GET_TOURNAMENT_TABLE_FOOTBALL = "GetTournamentTableFootball"
         const val CREATE_TEAM = "CreateTeam"
         const val INVITE_IN_TEAM = "InviteInTeam"
         const val GET_SQUAD_TEAM_LIST = "SquadTeamList"
@@ -34,6 +35,7 @@ interface ApiService {
         const val CREATE_EVENT = "CreateEvent"
         const val DELETE_EVENT = "DeleteEvent"
         const val MODIFY_CHOICE_EVENT = "ModifyChoiceEvent"
+
         //params
         const val PARAM_EMAIL = "email"
         const val PARAM_PASSWORD = "password"
@@ -51,6 +53,7 @@ interface ApiService {
         const val PARAM_FRIENDSHIP_ACTION = "action"
         const val PARAM_FOOTBALL_LEAGUE_ID = "league_id"
         const val PARAM_FOOTBALL_DIVISION_ID = "division_id"
+        const val PARAM_FOOTBALL_SEASON_ID = "season_id"
         const val PARAM_TEAM_ID = "team_id"
         const val PARAM_TEAM_NAME = "team_name"
         const val PARAM_TYPE_FIND_USER = "type_find"
@@ -135,6 +138,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST(GET_FOOTBALL_TEAMS)
     fun getFootballTeams(@FieldMap params: Map<String, String>):Observable<ResponseFootballTeams>
+
+    @FormUrlEncoded
+    @POST(GET_TOURNAMENT_TABLE_FOOTBALL)
+    fun getTournamentTableFootball(@FieldMap params: Map<String, String>): Observable<ResponseTournamentTableFootball>
 
     @FormUrlEncoded
     @POST(CREATE_TEAM)
