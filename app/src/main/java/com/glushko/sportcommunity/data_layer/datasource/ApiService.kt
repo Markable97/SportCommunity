@@ -26,6 +26,7 @@ interface ApiService {
         const val GET_FOOTBALL_DIVISIONS = "GetFootballDivisions"
         const val GET_FOOTBALL_TEAMS = "GetFootballTeams"
         const val GET_TOURNAMENT_TABLE_FOOTBALL = "GetTournamentTableFootball"
+        const val GET_FOOTBALL_MATCHES_TEAM = "GetFootballMatchesTeam"
         const val CREATE_TEAM = "CreateTeam"
         const val INVITE_IN_TEAM = "InviteInTeam"
         const val GET_SQUAD_TEAM_LIST = "SquadTeamList"
@@ -142,6 +143,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST(GET_TOURNAMENT_TABLE_FOOTBALL)
     fun getTournamentTableFootball(@FieldMap params: Map<String, String>): Observable<ResponseTournamentTableFootball>
+
+    @FormUrlEncoded
+    @POST(GET_FOOTBALL_MATCHES_TEAM)
+    fun getFootballMatchesTeam(@FieldMap params: Map<String, String>): Observable<ResponseFootballMatches>
 
     @FormUrlEncoded
     @POST(CREATE_TEAM)

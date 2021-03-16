@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
-import com.glushko.sportcommunity.presentation_layer.ui.notification.NotificationFragment
 import com.glushko.sportcommunity.presentation_layer.vm.SquadViewModel
 import kotlinx.android.synthetic.main.activity_team_profile.*
 
@@ -214,9 +213,14 @@ class TeamFragment() : Fragment() {
             }
         }
 
-        btn_team_statistics.setOnClickListener {
+        btn_team_table.setOnClickListener {
             val teamId = this.teamId?:0
             callback.onClickStatistics(teamId.toLong())
+        }
+
+        btn_squad_matches.setOnClickListener {
+            val teamId = this.teamId?:0
+            callback.onClickMatches(teamId.toLong())
         }
 
     }
@@ -227,5 +231,6 @@ class TeamFragment() : Fragment() {
         fun onClickUpperLeftButton(teamName: String, teamId: Int)
         fun onClickEvents(team_id: Long, team_name: String, isLeader: Boolean)
         fun onClickStatistics(team_id: Long)
+        fun onClickMatches(team_id: Long)
     }
 }

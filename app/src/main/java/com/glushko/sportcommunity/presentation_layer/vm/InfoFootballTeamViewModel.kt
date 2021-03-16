@@ -20,6 +20,7 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
     val liveDataCreateTeam : MutableLiveData<BaseResponse> = MutableLiveData()
 
     val liveDataTable: MutableLiveData<ResponseTournamentTableFootball> = MutableLiveData()
+    val liveDataMatches: MutableLiveData<ResponseFootballMatches> = MutableLiveData()
 
     init{
         myCompositeDisposable = CompositeDisposable()
@@ -80,6 +81,16 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
         )
     }
 
+    fun getFootballMatchesTeam(team_id: Long){
+        myCompositeDisposable?.add(
+            useCaseRepository.getFootballTeamMatches(team_id)
+                .observeOn(AndroidSchedulers.mainThread())
+
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponse, this::handleErrorMatches)
+        )
+    }
+
     fun createTeam(team_id: String){
         val pref = SharedPrefsManager(getApplication<Application>().
         getSharedPreferences(this.getApplication<Application>().packageName, Context.MODE_PRIVATE))
@@ -96,6 +107,11 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse, this::handleErrorCreate)
         )
+    }
+
+    private fun handleResponse(responseServer: ResponseFootballMatches) {
+        println(" Запрос таблиц вернул ${responseServer.success} ${responseServer.message} ${responseServer.matches}")
+        liveDataMatches.postValue(responseServer)
     }
 
     private fun handleResponse(responseServer: ResponseTournamentTableFootball) {
@@ -137,6 +153,12 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
         println("ошибка таблиц ${err.message}")
     }
 
+    private fun handleErrorMatches(err: Throwable) {
+        liveDataMatches.postValue(ResponseFootballMatches(0, err.localizedMessage))
+        println("ошибка таблиц ${err.message}")
+    }
+
+
     private fun handleErrorDivisions(err: Throwable){
         liveDataDivisions.postValue(ResponseFootballDivisions(0, err.localizedMessage))
         println("ошибка дивизионов ${err.message}")
@@ -156,3 +178,4 @@ class InfoFootballTeamViewModel(application: Application) : AndroidViewModel(app
         println("Метод очистки InfoFootballTeamViewModel!!")
     }
 }
+

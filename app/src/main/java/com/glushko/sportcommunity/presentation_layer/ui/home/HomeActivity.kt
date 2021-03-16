@@ -30,7 +30,8 @@ import com.glushko.sportcommunity.presentation_layer.ui.setting.SettingFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.squad.SquadFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.TeamFragment
 import com.glushko.sportcommunity.presentation_layer.ui.team.events.EventsFragment
-import com.glushko.sportcommunity.presentation_layer.ui.tournament_table.TournamentTableFootballFragment
+import com.glushko.sportcommunity.presentation_layer.ui.team.matches.MatchesFragment
+import com.glushko.sportcommunity.presentation_layer.ui.team.tournament_table.TournamentTableFootballFragment
 import com.glushko.sportcommunity.presentation_layer.vm.AccountViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.ActionMenuToolbarViewModel
 import com.glushko.sportcommunity.presentation_layer.vm.NotificationDrawerViewModel
@@ -370,6 +371,16 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
         ).commit()
     }
 
+    private fun openTeamMatches(team_id: Long){
+        toolbar.title = "Матчи"
+        whichFragmentOpen = null
+        invalidateOptionsMenu()
+        val matchesFragment = MatchesFragment.newInstance(team_id)
+        supportFragmentManager.beginTransaction().replace(fragmentContainer,
+            matchesFragment
+        ).commit()
+    }
+
     private fun openSquadFragment(leader_id: Long, team_id: Int, team_name: String, isLeader: Boolean){
         whichFragmentOpen = null
         invalidateOptionsMenu()
@@ -448,6 +459,14 @@ class HomeActivity :  AppCompatActivity(), NotificationFragment.CallbackNotifica
             openTeamStatistics(team_id)
         }else{
             Toast.makeText(this, "Не удается открыть статистику", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onClickMatches(team_id: Long) {
+        if(team_id!=0L){
+            openTeamMatches(team_id)
+        }else{
+            Toast.makeText(this, "Не удается открыть матчи", Toast.LENGTH_SHORT).show()
         }
     }
 }

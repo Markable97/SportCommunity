@@ -1,4 +1,4 @@
-package com.glushko.sportcommunity.presentation_layer.ui.tournament_table
+package com.glushko.sportcommunity.presentation_layer.ui.team.tournament_table
 
 import android.os.Bundle
 import android.view.LayoutInflater

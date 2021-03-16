@@ -1,9 +1,6 @@
-package com.glushko.sportcommunity.presentation_layer.ui.tournament_table
-import android.content.Intent
-import android.graphics.BitmapFactory
+package com.glushko.sportcommunity.presentation_layer.ui.team.tournament_table
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Base64
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -15,11 +12,11 @@ import com.bumptech.glide.Glide
 import com.glushko.sportcommunity.R
 import com.glushko.sportcommunity.business_logic_layer.domain.TournamentTableFootball
 import com.glushko.sportcommunity.data_layer.datasource.NetworkService
-import kotlinx.android.synthetic.main.fragment_tournament_table_football.*
+import kotlinx.android.synthetic.main.fragment_team_tournament_table.*
 
 class TournamentTableFootballFragment: TournamentTableFragment() {
 
-    override val layoutId: Int = R.layout.fragment_tournament_table_football
+    override val layoutId: Int = R.layout.fragment_team_tournament_table
 
     companion object{
 
