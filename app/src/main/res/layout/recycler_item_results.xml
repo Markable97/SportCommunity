@@ -146,12 +146,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <View
-                android:id="@+id/view3"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray" />
-
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

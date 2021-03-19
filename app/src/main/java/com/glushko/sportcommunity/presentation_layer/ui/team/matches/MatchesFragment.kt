@@ -17,6 +17,7 @@ class MatchesFragment: Fragment() {
 
     val layoutId: Int = R.layout.fragment_team_matches
     lateinit var model: InfoFootballTeamViewModel
+    lateinit var adapter: MatchesPagerAdapter
     companion object{
 
         const val TAG = "KEY_MATCHES_FOOTBALL"
@@ -38,14 +39,12 @@ class MatchesFragment: Fragment() {
         model.liveDataMatches.observe(this, Observer {
             if(it.success == 1){
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                adapter.updateMatchesFragment(it.matches)
             }else{
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
             }
         })
 
-        arguments?.let {
-            model.getFootballMatchesTeam(team_id = it.getLong(MatchesFragment.KEY1))
-        }
     }
 
     override fun onCreateView(
@@ -58,9 +57,12 @@ class MatchesFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = MatchesPagerAdapter(parentFragmentManager)
+        adapter = MatchesPagerAdapter(parentFragmentManager)
         viewPagerMatches.adapter = adapter
         sliding_tabs_for_matches.setupWithViewPager(viewPagerMatches)
+        arguments?.let {
+            model.getFootballMatchesTeam(team_id = it.getLong(MatchesFragment.KEY1))
+        }
     }
 
 
