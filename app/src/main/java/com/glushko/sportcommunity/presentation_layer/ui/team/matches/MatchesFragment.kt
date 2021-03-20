@@ -57,7 +57,7 @@ class MatchesFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = MatchesPagerAdapter(parentFragmentManager)
+        adapter = MatchesPagerAdapter(childFragmentManager)
         viewPagerMatches.adapter = adapter
         sliding_tabs_for_matches.setupWithViewPager(viewPagerMatches)
         arguments?.let {
