@@ -271,4 +271,8 @@ class UseCaseRepository {
     fun modifyChoiceEvent(user_id: Long, token: String, event_id: Long, choice_mode: String, choice: String): Observable<BaseResponse>{
         return NetworkService.makeNetworkServiceRxJava().modifyChoiceEvent(Event.createMap(user_id, token, event_id, choice_mode, choice))
     }
+
+    fun getPlayersInMath(match_id: Long): Observable<ResponsePlayersInMatch>{
+        return NetworkService.makeNetworkServiceRxJava().getPlayersInMatch(ResponsePlayersInMatch.createMap(match_id))
+    }
 }
